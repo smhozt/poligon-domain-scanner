@@ -1,135 +1,74 @@
-import asyncio
-import aiohttp
 import os
-import re
-from urllib.parse import urlparse
+import json
+import urllib.request
+import urllib.parse
 
-TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
-TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
+# Şifreleri Github'dan alıyoruz
+API_KEY = os.environ.get("GOOGLE_API_KEY")
+CX = os.environ.get("GOOGLE_CX")
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+TELEGRAM_CHAT_IDS = os.environ.get("TELEGRAM_CHAT_IDS", "").split(",")
 
-# Arama terimleri
-SEARCH_QUERIES = [
-    "superbetin",
-    "superbetin giris",
-    "superbetin yeni adres",
-    "betsat",
-    "betsat giris",
-    "turkbet",
-    "turkbet giris",
+# Google'da aranacak kelimeler
+QUERIES = ["superbetin", "superbetin giriş", "superbetin güncel adres", "superbetin yeni adres"]
+
+# Alarm VERİLMEYECEK güvenli ve resmi domainler listesi
+WHITELIST = [
+    "superbetin.com", "superbetin1813.com", "superbetin1814.com", "superbetin1815.com",
+    "superbetinturkey.vip", "twitter.com", "t.me", "youtube.com", "x.com",
+    "instagram.com", "facebook.com", "pinterest.com", "linkedin.com"
 ]
 
-# Bizim güvenli domainler
-SAFE_DOMAINS = {
-    "superbetin.com", "superbetin1813.com", "superbetin1814.com",
-    "superbetinturkey.com", "t.me", "twitter.com", "x.com",
-    "instagram.com", "youtube.com", "google.com", "wikipedia.org",
-    "betsat.com", "turkbet.com",
-    # 1814-1974 arasi superbetin
-}
-# superbetin 1814-1974 arasi ekle
-for i in range(1814, 1975):
-    SAFE_DOMAINS.add(f"superbetin{i}.com")
-# betsat
-for i in range(1539, 1710):
-    SAFE_DOMAINS.add(f"betsat{i}.com")
-# turkbet
-for i in range(709, 874):
-    SAFE_DOMAINS.add(f"{i}turkbet.com")
+def send_telegram(text):
+    for chat_id in TELEGRAM_CHAT_IDS:
+        if not chat_id.strip(): continue
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        data = json.dumps({"chat_id": chat_id.strip(), "text": text, "parse_mode": "HTML", "disable_web_page_preview": True}).encode('utf-8')
+        req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json'})
+        try:
+            urllib.request.urlopen(req)
+        except Exception as e:
+            print(f"Telegram hatasi: {e}")
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-}
+def main():
+    if not API_KEY or not CX:
+        print("HATA: Google API Key veya CX kodu eksik!")
+        return
 
-def extract_domain(url):
-    try:
-        parsed = urlparse(url)
-        domain = parsed.netloc.lower()
-        # www. kaldir
-        if domain.startswith("www."):
-            domain = domain[4:]
-        return domain
-    except:
-        return ""
+    found_suspicious = []
 
-def is_suspicious(domain, query):
-    if not domain:
-        return False
-    if domain in SAFE_DOMAINS:
-        return False
-    
-    # Marka iceriyor mu ama bizim degilse
-    brands = ["superbetin", "betsat", "turkbet", "superbetim"]
-    for brand in brands:
-        if brand in domain:
-            return True
-    return False
-
-async def google_search(session, query):
-    url = f"https://www.google.com/search?q={query}&gl=tr&hl=tr&num=10"
-    try:
-        async with session.get(url, headers=HEADERS, timeout=aiohttp.ClientTimeout(total=10)) as resp:
-            if resp.status == 200:
-                html = await resp.text()
-                # Google sonuc linklerini cek
-                links = re.findall(r'href="(https?://[^"&]+)"', html)
-                domains = set()
-                for link in links:
-                    domain = extract_domain(link)
-                    if domain and not domain.startswith("google"):
-                        domains.add(domain)
-                return list(domains)
-    except Exception as e:
-        print(f"Google search hatasi ({query}): {e}")
-    return []
-
-async def send_telegram(message):
-    async with aiohttp.ClientSession() as session:
-        for chat_id in TELEGRAM_CHAT_IDS:
-            chat_id = chat_id.strip()
-            url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-            try:
-                await session.post(url, json={
-                    "chat_id": chat_id,
-                    "text": message,
-                    "parse_mode": "Markdown"
-                })
-            except:
-                pass
-
-async def main():
-    found = []
-    
-    connector = aiohttp.TCPConnector(limit=3)
-    async with aiohttp.ClientSession(connector=connector) as session:
-        for query in SEARCH_QUERIES:
-            print(f"Araniyor: {query}")
-            domains = await google_search(session, query)
-            
-            for domain in domains:
-                if is_suspicious(domain, query):
-                    if not any(f["domain"] == domain for f in found):
-                        found.append({
-                            "domain": domain,
-                            "query": query
-                        })
-                        print(f"[SUSPICIOUS] {domain} ('{query}' aramasinda)")
-            
-            await asyncio.sleep(5)  # Google rate limit icin bekle
-
-    if found:
-        msg = "[ALARM] Google Aramasinda Sahte Site!\n"
-        msg += f"{len(found)} supheli domain bulundu:\n\n"
-        for item in found:
-            msg += f"[GOOGLE] `{item['domain']}`\n"
-            msg += f"   Arama: '{item['query']}'\n\n"
-        msg += "Kontrol edin: https://www.google.com/search?q=superbetin&gl=tr"
+    for query in QUERIES:
+        print(f"Araniyor: {query}")
+        # gl=tr ve hl=tr parametreleri ile %100 Türkiye sonuclarini zorluyoruz
+        url = f"https://www.googleapis.com/customsearch/v1?q={urllib.parse.quote(query)}&cx={CX}&key={API_KEY}&gl=tr&hl=tr&num=10"
         
-        print(msg)
-        await send_telegram(msg)
+        try:
+            req = urllib.request.Request(url)
+            response = urllib.request.urlopen(req)
+            data = json.loads(response.read())
+
+            for item in data.get("items", []):
+                link = item.get("link", "")
+                domain = urllib.parse.urlparse(link).netloc.lower()
+                if domain.startswith("www."):
+                    domain = domain[4:]
+
+                # Domain "superbetin" iceriyorsa ama Whitelist'te yoksa yakala!
+                if "superbetin" in domain and domain not in WHITELIST:
+                    if domain not in [d['domain'] for d in found_suspicious]:
+                        found_suspicious.append({"domain": domain, "link": link})
+
+        except Exception as e:
+            print(f"Google API Hatasi ({query}): {e}")
+
+    if found_suspicious:
+        msg = "🚨 <b>Google Arama Tarayıcısı: Şüpheli Siteler Tespit Edildi!</b>\n\n"
+        for s in found_suspicious:
+            msg += f"🌐 Domain: <code>{s['domain']}</code>\n🔗 Link: {s['link']}\n\n"
+        send_telegram(msg)
+        print("Supheli siteler Telegram'a gonderildi.")
     else:
-        print("Google taramasi temiz - sahte site bulunamadi.")
+        print("Tarama temiz, sahte site bulunamadi.")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
