@@ -2,15 +2,18 @@ name: Domain Scanner
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *' # Her saat başı çalışır
   workflow_dispatch:
+
+permissions:
+  contents: write # Botun hafızayı repoya yazabilmesi için izin veriyoruz
 
 jobs:
   scan:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -27,10 +30,11 @@ jobs:
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
         run: python scanner.py
 
-      - name: Save reported domains
-        uses: actions/upload-artifact@v4
-        with:
-          name: reported-domains
-          path: reported.json
-          retention-days: 90
-        if: always()
+      # Amnezi Çözümü: Güncellenen reported.json dosyasını repoya kalıcı olarak kaydet
+      - name: Commit and Push Memory (reported.json)
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add reported.json
+          git commit -m "update: hafiza dosyasi guncellendi [skip ci]" || echo "No changes to commit"
+          git push
