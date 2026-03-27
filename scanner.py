@@ -55,6 +55,23 @@ SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 2501)  # 1975-2500
 SUPERBETIM_RANGE = range(1000, 2151)  # 1000-2150
 
+# VIP domain listesi - bilinen sahte domainler + genel pattern
+VIP_DOMAINS = [
+    "superbetinturkey.vip",
+    "superbetingirisi.vip",
+    "superbetinadres.vip",
+    "m.superbetinturkey.vip",
+    "m.superbetingirisi.vip",
+    "m.superbetinadres.vip",
+    "superbetingiris.vip",
+    "superbetinlink.vip",
+    "superbetinguncel.vip",
+    "superbetinyeni.vip",
+    "superbetingiris1.vip",
+    "superbetingiris2.vip",
+    "superbetingiris3.vip",
+]
+
 # Daha once rapor edilenleri takip et
 REPORTED_FILE = "reported.json"
 
@@ -149,6 +166,10 @@ async def main():
         domain = f"superbetim{num}.com"
         domains_to_scan.append((domain, "superbetim", "TYPO", set()))
 
+    # VIP domainler
+    for domain in VIP_DOMAINS:
+        domains_to_scan.append((domain, "vip", "VIP", set()))
+
     print(f"Toplam {len(domains_to_scan)} domain taranacak...")
 
     # Paralel tarama - 50 ayni anda
@@ -169,7 +190,7 @@ async def main():
         msg = "[ALARM] Aktif Sahte Domain Tespit Edildi!\n"
         msg += f"{len(found)} domain aktif:\n\n"
         for item in found:
-            icon = "[TYPO]" if item["type"] == "TYPO" else "[!]" if item["type"] == "BOSLUK" else "[YENI]"
+            icon = "[TYPO]" if item["type"] == "TYPO" else "[!]" if item["type"] == "BOSLUK" else "[VIP]" if item["type"] == "VIP" else "[YENI]"
             msg += f"{icon} `{item['domain']}` ({item['detected_by']}: {item['status']})\n"
             if item["ip"]:
                 msg += f"   IP: {item['ip']}\n"
