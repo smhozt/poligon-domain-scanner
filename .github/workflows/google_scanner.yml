@@ -2,9 +2,8 @@ name: Google Search Scanner
 
 on:
   schedule:
-    - cron: '0 8 * * *'   # Her gun 08:00
-    - cron: '0 14 * * *'  # Her gun 14:00
-    - cron: '0 20 * * *'  # Her gun 20:00
+    # Gunde 3 kez calisir (08:00, 14:00, 20:00 UTC)
+    - cron: '0 8,14,20 * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -20,11 +19,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: pip install aiohttp
-
       - name: Run Google Scanner
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_CX: ${{ secrets.GOOGLE_CX }}
         run: python google_scanner.py
