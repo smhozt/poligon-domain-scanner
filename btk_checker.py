@@ -36,7 +36,8 @@ async def check_domain(session, domain):
             if code == 203:
                 return {"domain": domain, "status": "BLOCKED", "detail": "BTK tarafindan engellendi (HTTP 203)"}
             if code == 429:
-                await asyncio.sleep(5)
+                print(f"[RATE LIMIT] {domain} - 15sn bekleniyor...")
+                await asyncio.sleep(15)
                 async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as retry:
                     if retry.status == 203:
                         return {"domain": domain, "status": "BLOCKED", "detail": "BTK tarafindan engellendi (HTTP 203)"}
@@ -66,9 +67,13 @@ async def main():
     prev_status = load_status()
     timestamp = datetime.now().strftime("%d.%m.%Y %H:%M")
 
+    results = []
     async with aiohttp.ClientSession() as session:
-        tasks = [check_domain(session, d) for d in DOMAINS]
-        results = await asyncio.gather(*tasks)
+        for domain in DOMAINS:
+            result = await check_domain(session, domain)
+            results.append(result)
+            print(f"[OK] {domain}: {result['status']}")
+            await asyncio.sleep(10)  # Domainler arasi 10sn bekle
 
     new_status = {}
     changes = []
@@ -86,8 +91,6 @@ async def main():
         if previous and previous != current:
             changes.append({**r, "from": previous})
             print(f"[CHANGE] {domain}: {previous} -> {current}")
-        else:
-            print(f"[OK] {domain}: {current}")
 
     save_status(new_status)
 
@@ -104,7 +107,6 @@ async def main():
             msg += "\n"
         await send_telegram(msg)
     else:
-        # Rutin durum bildirimi
         msg = f"[BTK Kontrol] {timestamp}\n"
         msg += "\n".join(status_lines)
         await send_telegram(msg)
