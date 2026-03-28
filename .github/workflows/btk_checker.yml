@@ -1,0 +1,42 @@
+name: BTK Domain Checker
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'  # Her 2 saatte bir
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  btk-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install aiohttp
+
+      - name: Run BTK Checker
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+        run: python btk_checker.py
+
+      - name: Commit BTK status
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add btk_status.json
+          git commit -m "update: btk status guncellendi [skip ci]" || echo "No changes"
+          git push
