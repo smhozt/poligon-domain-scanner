@@ -28,6 +28,25 @@ WHITELIST = [
     "instagram.com", "facebook.com", "pinterest.com", "linkedin.com"
 ]
 
+# Hafıza Dosyası (Aynı siteyi defalarca atmaması için)
+REPORTED_FILE = "reported_google.json"
+
+def load_reported():
+    try:
+        if os.path.exists(REPORTED_FILE):
+            with open(REPORTED_FILE, "r") as f:
+                return set(json.load(f))
+    except Exception as e:
+        print(f"Hafıza yükleme hatası: {e}")
+    return set()
+
+def save_reported(reported):
+    try:
+        with open(REPORTED_FILE, "w") as f:
+            json.dump(list(reported), f)
+    except Exception as e:
+        print(f"Hafıza kaydetme hatası: {e}")
+
 def send_telegram(text):
     for chat_id in TELEGRAM_CHAT_IDS:
         if not chat_id.strip(): continue
@@ -44,11 +63,12 @@ def main():
         print("HATA: Google API Key veya CX kodu eksik!")
         return
 
+    reported_domains = load_reported()
     found_suspicious = []
 
     for query in QUERIES:
         print(f"Araniyor: {query}")
-        # gl=tr ve hl=tr parametreleri ile %100 Türkiye sonuclarini zorluyoruz
+        # gl=tr ve hl=tr parametreleri ile Türkiye sonuclarini zorluyoruz
         url = f"https://www.googleapis.com/customsearch/v1?q={urllib.parse.quote(query)}&cx={CX}&key={API_KEY}&gl=tr&hl=tr&num=10"
         
         try:
@@ -62,22 +82,25 @@ def main():
                 if domain.startswith("www."):
                     domain = domain[4:]
 
-                # Domain "superbetin" iceriyorsa ama Whitelist'te yoksa yakala!
-                if "superbetin" in domain and domain not in WHITELIST:
-                    if domain not in [d['domain'] for d in found_suspicious]:
+                # Hem "superbetin" hem de "superbetim" (typo) geçenleri yakala!
+                if ("superbetin" in domain or "superbetim" in domain) and domain not in WHITELIST:
+                    # Eğer daha önce raporlanmadıysa listeye ekle
+                    if domain not in reported_domains and domain not in [d['domain'] for d in found_suspicious]:
                         found_suspicious.append({"domain": domain, "link": link})
+                        reported_domains.add(domain)
 
         except Exception as e:
             print(f"Google API Hatasi ({query}): {e}")
 
     if found_suspicious:
+        save_reported(reported_domains) # Yeni siteleri hafızaya kaydet
         msg = "🚨 <b>Google Arama Tarayıcısı: Şüpheli Siteler Tespit Edildi!</b>\n\n"
         for s in found_suspicious:
             msg += f"🌐 Domain: <code>{s['domain']}</code>\n🔗 Link: {s['link']}\n\n"
         send_telegram(msg)
-        print("Supheli siteler Telegram'a gonderildi.")
+        print("Şüpheli siteler Telegram'a gonderildi.")
     else:
-        print("Tarama temiz, sahte site bulunamadi.")
+        print("Tarama temiz, yeni sahte site bulunamadi.")
 
 if __name__ == "__main__":
     main()
