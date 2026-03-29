@@ -7,9 +7,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
+TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
 SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD")
-TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 
 # Bizim domainlerimiz - whitelist
 SUPERBETIN_WHITELIST = set([
@@ -72,13 +72,11 @@ VIP_DOMAINS = set([
     "m.superbetinturkey.vip", "m.superbetingirisi.vip", "m.superbetinadres.vip"
 ])
 
-# Otomatik VIP kombinasyonları üret (superbetin[kelime].vip ve m.superbetin[kelime].vip)
 for word in VIP_KEYWORDS:
     VIP_DOMAINS.add(f"superbetin{word}.vip")
     VIP_DOMAINS.add(f"m.superbetin{word}.vip")
-    VIP_DOMAINS.add(f"superbetim{word}.vip") # Typosquatting için
+    VIP_DOMAINS.add(f"superbetim{word}.vip") 
 
-# Daha once rapor edilenleri takip et
 REPORTED_FILE = "reported.json"
 
 def load_reported():
@@ -91,6 +89,45 @@ def load_reported():
 def save_reported(reported):
     with open(REPORTED_FILE, "w") as f:
         json.dump(list(reported), f)
+
+# NICE NIC OTOMATIK SIKAYET FONKSIYONU (THE EXECUTIONER)
+def send_execution_email(domain):
+    if not SENDER_EMAIL or not SENDER_PASSWORD:
+        print(f"[{domain}] Mail bilgileri eksik, otomatik şikayet atlanıyor.")
+        return
+
+    receiver_email = "abuse@nicenic.net"
+    subject = f"URGENT Phishing Domain Takedown - {domain}"
+    
+    body = f"""Dear NiceNIC Abuse Team,
+
+We are Poligon Entertainment N.V. (Curaçao License OGL/2024/815/0653), the legitimate operator of superbetin.com and superbetin1815.com.
+
+The domain {domain} registered through your registrar is actively used for phishing and credential harvesting targeting Turkish users.
+
+This matches the exact pattern of recently suspended phishing domains by the same threat actor (e.g., superbetin1977.com, superbetin1978.com, superbetingirisi.vip).
+
+Please suspend this domain immediately to prevent further financial fraud.
+
+Best regards,
+Poligon Entertainment N.V.
+License: OGL/2024/815/0653
+"""
+    msg = MIMEMultipart()
+    msg['From'] = SENDER_EMAIL
+    msg['To'] = receiver_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(SENDER_EMAIL, SENDER_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        print(f"[{domain}] Icin infaz maili NiceNIC'e basariyla atildi! 🔫")
+    except Exception as e:
+        print(f"Mail gonderim hatasi ({domain}): {e}")
 
 async def check_dns(session, domain):
     try:
@@ -154,31 +191,25 @@ async def main():
     reported = load_reported()
     found = []
 
-    # Taranacak domain listesini oluştur
     domains_to_scan = []
     
-    # superbetin bosluklar
     for num in SUPERBETIN_GAPS:
         domain = f"superbetin{num}.com"
         domains_to_scan.append((domain, "superbetin", "BOSLUK", SUPERBETIN_WHITELIST))
     
-    # superbetin 1975-2500
     for num in SUPERBETIN_RANGE:
         domain = f"superbetin{num}.com"
         domains_to_scan.append((domain, "superbetin", "YENI", SUPERBETIN_WHITELIST))
     
-    # superbetim 1000-2150
     for num in SUPERBETIM_RANGE:
         domain = f"superbetim{num}.com"
         domains_to_scan.append((domain, "superbetim", "TYPO", set()))
 
-    # VIP domainler
     for domain in VIP_DOMAINS:
         domains_to_scan.append((domain, "vip", "VIP", set()))
 
     print(f"Toplam {len(domains_to_scan)} domain taranacak...")
 
-    # Paralel tarama - 50 ayni anda
     connector = aiohttp.TCPConnector(limit=50)
     async with aiohttp.ClientSession(connector=connector) as session:
         semaphore = asyncio.Semaphore(50)
@@ -193,13 +224,16 @@ async def main():
     save_reported(reported)
 
     if found:
-        msg = "[ALARM] Aktif Sahte Domain Tespit Edildi!\n"
+        msg = "🚨 *[ALARM] Aktif Sahte Domain Tespit Edildi!*\n"
         msg += f"{len(found)} domain aktif:\n\n"
         for item in found:
-            icon = "[TYPO]" if item["type"] == "TYPO" else "[!]" if item["type"] == "BOSLUK" else "[VIP]" if item["type"] == "VIP" else "[YENI]"
+            icon = "🦇 [TYPO]" if item["type"] == "TYPO" else "⚠️ [!]" if item["type"] == "BOSLUK" else "💎 [VIP]" if item["type"] == "VIP" else "🔥 [YENI]"
             msg += f"{icon} `{item['domain']}` ({item['detected_by']}: {item['status']})\n"
             if item["ip"]:
                 msg += f"   IP: {item['ip']}\n"
+            
+            # THE EXECUTIONER: Maili Atesle! (İşte tetiğe bastığımız yer burası)
+            send_execution_email(item['domain'])
         
         print(msg)
         await send_telegram(msg)
