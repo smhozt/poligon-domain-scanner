@@ -1,36 +1,14 @@
-name: Update Dashboard
-
-on:
-  push:
-    paths:
-      - 'btk_status.json'
-      - 'reported.json'
-      - 'reported_google.json'
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  update-md:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Generate Dashboard
-        run: python update_dashboard.py
-
-      - name: Commit and Push
+- name: Commit and Push
         run: |
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "action@github.com"
+          
+          # 1. ÖNCE ELİMİZDEKİLERİ KAYDEDİYORUZ (ADD & COMMIT)
+          git add -A
+          git commit -m "update: sistem guncellendi [skip ci]" || echo "No changes"
+          
+          # 2. SONRA EĞER GITHUB'DA YENİ BİR ŞEY VARSA ÇEKİYORUZ (PULL)
           git pull --rebase origin main
-          git add DASHBOARD.md
-          git commit -m "update: dashboard guncellendi [skip ci]" || echo "No changes"
+          
+          # 3. EN SON HEPSİNİ YUKARI FIRLATIYORUZ (PUSH)
           git push
