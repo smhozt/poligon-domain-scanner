@@ -36,7 +36,7 @@ async def check_domain(session, domain):
             if code == 203:
                 return {"domain": domain, "status": "BLOCKED", "detail": "BTK tarafindan engellendi (HTTP 203)"}
             if code == 429:
-                print(f"[RATE LIMIT] {domain} - 15sn bekleniyor...")
+                print(f"[RATE LIMIT] {domain} - 15sn bekleniyor (Yeniden deneme)...")
                 await asyncio.sleep(15)
                 async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as retry:
                     if retry.status == 203:
@@ -73,7 +73,10 @@ async def main():
             result = await check_domain(session, domain)
             results.append(result)
             print(f"[OK] {domain}: {result['status']}")
-            await asyncio.sleep(10)  # Domainler arasi 10sn bekle
+            
+            # API'yi yormamak ve Rate Limit yememek için 3 dakika bekleme
+            print(f"Sıradaki domain için 3 dakika (180sn) bekleniyor...")
+            await asyncio.sleep(180)  
 
     new_status = {}
     changes = []
