@@ -6,6 +6,14 @@ on:
     - cron: '0 8,14,20 * * *'
   workflow_dispatch:
 
+# Botun hafızayı repoya yazabilmesi için GEREKLİ İZİN:
+permissions:
+  contents: write
+
+# Sarı uyarıyı kapatan sihirli kod:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   google-scan:
     runs-on: ubuntu-latest
@@ -15,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -26,3 +34,12 @@ jobs:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GOOGLE_CX: ${{ secrets.GOOGLE_CX }}
         run: python google_scanner.py
+
+      # Amneziyi (Hafıza Kaybını) Çözen Kayıt Adımı:
+      - name: Commit and Push Google Memory (reported_google.json)
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add reported_google.json
+          git commit -m "update: google hafiza dosyasi guncellendi [skip ci]" || echo "No changes to commit"
+          git push
