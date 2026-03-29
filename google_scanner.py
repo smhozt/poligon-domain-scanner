@@ -10,7 +10,16 @@ TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_IDS = os.environ.get("TELEGRAM_CHAT_IDS", "").split(",")
 
 # Google'da aranacak kelimeler
-QUERIES = ["superbetin", "superbetin giriş", "superbetin güncel adres", "superbetin yeni adres"]
+QUERIES = [
+    "superbetin", 
+    "superbetin giriş", 
+    "superbetin güncel adres", 
+    "superbetin yeni adres",
+    "superbetin vip",
+    "superbetin güncel giriş vip",
+    "m.superbetin vip",
+    "superbetin resmi vip"
+]
 
 # Alarm VERİLMEYECEK güvenli ve resmi domainler listesi
 WHITELIST = [
