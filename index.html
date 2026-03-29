@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poligon Siber İstihbarat Paneli</title>
+    <style>
+        /* Dark/Cyber Tema */
+        body { background-color: #0d1117; color: #c9d1d9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; }
+        h1 { color: #58a6ff; text-align: center; border-bottom: 1px solid #30363d; padding-bottom: 15px; text-transform: uppercase; letter-spacing: 2px;}
+        .container { max-width: 1200px; margin: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width: 768px) { .container { grid-template-columns: 1fr; } }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .card h2 { margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 10px; font-size: 1.3rem;}
+        
+        /* Renkler */
+        .color-btk { color: #d2a8ff; }
+        .color-scanner { color: #ff7b72; }
+        .color-google { color: #79c0ff; }
+        
+        .alert-text { color: #f85149; font-weight: bold; }
+        .ok-text { color: #3fb950; font-weight: bold; }
+        
+        ul { list-style-type: none; padding: 0; margin: 0; max-height: 400px; overflow-y: auto; }
+        li { padding: 10px 0; border-bottom: 1px solid #21262d; display: flex; justify-content: space-between; align-items: center; word-break: break-all; font-family: 'Courier New', Courier, monospace;}
+        li:last-child { border-bottom: none; }
+        
+        .badge { color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.85em; font-weight: bold; font-family: sans-serif;}
+        .badge.danger { background: #da3633; }
+        .badge.warning { background: #d29922; color: #000; }
+        
+        /* Scrollbar Ayarı */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0d1117; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8b949e; }
+    </style>
+</head>
+<body>
+    <h1>🛡️ Poligon Operasyon Merkezi</h1>
+    
+    <div class="container">
+        <div class="card">
+            <h2 class="color-btk">🇹🇷 BTK Erişim Durumu</h2>
+            <p style="font-size: 0.9em; color: #8b949e;">Resmi domainlerin anlık BTK kontrol sonuçları.</p>
+            <ul id="btk-list"><li>Veri yükleniyor...</li></ul>
+        </div>
+        
+        <div class="card">
+            <h2 class="color-google">🔍 Google Arama Radarı</h2>
+            <p style="font-size: 0.9em; color: #8b949e;">Arama motoruna sızmaya çalışan çakallar.</p>
+            <ul id="google-list"><li>Veri yükleniyor...</li></ul>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2 class="color-scanner">🎯 Olası Sahte Domainler (1500+ Tarama)</h2>
+            <p style="font-size: 0.9em; color: #8b949e;">Tespit edilen ve otomatik olarak NiceNIC'e infaz maili atılan siteler.</p>
+            <ul id="scanner-list"><li>Veri yükleniyor...</li></ul>
+        </div>
+    </div>
+
+    <script>
+        // BTK verisini çek
+        fetch('btk_status.json')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('btk-list');
+                list.innerHTML = '';
+                if(!data.statuses || Object.keys(data.statuses).length === 0) {
+                    list.innerHTML = '<li>Sistemde henüz kayıt yok.</li>';
+                    return;
+                }
+                for (const [domain, status] of Object.entries(data.statuses)) {
+                    const isBlocked = status.includes('BLOCKED');
+                    const statusClass = isBlocked ? 'alert-text' : 'ok-text';
+                    const statusText = isBlocked ? '🔴 ENGELLİ' : '✅ AKTİF';
+                    list.innerHTML += `<li><span>${domain}</span> <span class="${statusClass}">${statusText}</span></li>`;
+                }
+            }).catch(() => document.getElementById('btk-list').innerHTML = '<li>Log dosyası bekleniyor...</li>');
+
+        // Google verisini çek
+        fetch('reported_google.json')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('google-list');
+                list.innerHTML = '';
+                if(data.length === 0) { list.innerHTML = '<li>Saha temiz.</li>'; return; }
+                data.reverse().forEach(domain => {
+                    list.innerHTML += `<li><span>${domain}</span> <span class="badge warning">Google'da Görüldü</span></li>`;
+                });
+            }).catch(() => document.getElementById('google-list').innerHTML = '<li>Log dosyası bekleniyor...</li>');
+
+        // Scanner verisini çek
+        fetch('reported.json')
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('scanner-list');
+                list.innerHTML = '';
+                if(data.length === 0) { list.innerHTML = '<li>Saha temiz.</li>'; return; }
+                data.reverse().forEach(domain => {
+                    list.innerHTML += `<li><span>${domain}</span> <span class="badge danger">Tespit Edildi / İnfazlandı 🔫</span></li>`;
+                });
+            }).catch(() => document.getElementById('scanner-list').innerHTML = '<li>Log dosyası bekleniyor...</li>');
+    </script>
+</body>
+</html>
