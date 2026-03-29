@@ -55,22 +55,23 @@ SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 2501)  # 1975-2500
 SUPERBETIM_RANGE = range(1000, 2151)  # 1000-2150
 
-# VIP domain listesi - bilinen sahte domainler + genel pattern
-VIP_DOMAINS = [
-    "superbetinturkey.vip",
-    "superbetingirisi.vip",
-    "superbetinadres.vip",
-    "m.superbetinturkey.vip",
-    "m.superbetingirisi.vip",
-    "m.superbetinadres.vip",
-    "superbetingiris.vip",
-    "superbetinlink.vip",
-    "superbetinguncel.vip",
-    "superbetinyeni.vip",
-    "superbetingiris1.vip",
-    "superbetingiris2.vip",
-    "superbetingiris3.vip",
+# VIP domainler için kullanılacak anahtar kelimeler
+VIP_KEYWORDS = [
+    "turkey", "girisi", "adres", "resmi", "guncel", 
+    "guncelgiris", "giris", "link", "yeni", "vip", "girisadresi"
 ]
+
+# Sabit bilinenler ve otomatik üretilenler için liste
+VIP_DOMAINS = set([
+    "superbetinturkey.vip", "superbetingirisi.vip", "superbetinadres.vip",
+    "m.superbetinturkey.vip", "m.superbetingirisi.vip", "m.superbetinadres.vip"
+])
+
+# Otomatik VIP kombinasyonları üret (superbetin[kelime].vip ve m.superbetin[kelime].vip)
+for word in VIP_KEYWORDS:
+    VIP_DOMAINS.add(f"superbetin{word}.vip")
+    VIP_DOMAINS.add(f"m.superbetin{word}.vip")
+    VIP_DOMAINS.add(f"superbetim{word}.vip") # Typosquatting için
 
 # Daha once rapor edilenleri takip et
 REPORTED_FILE = "reported.json"
