@@ -33,10 +33,17 @@ jobs:
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
         run: python btk_checker.py
 
-      - name: Commit BTK status
+      - name: Commit and Push BTK status
         run: |
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "action@github.com"
+          # Önce dışarıdaki değişiklikleri çek ve bizimkilerle birleştir (rebase)
+          git pull --rebase origin main
+          # Dosyayı ekle
           git add btk_status.json
-          git commit -m "update: btk status guncellendi [skip ci]" || echo "No changes"
-          git push
+          # Eğer bir değişiklik varsa kaydet, yoksa sessizce geç
+          if git commit -m "update: btk status guncellendi [skip ci]"; then
+            git push origin main
+          else
+            echo "Herhangi bir durum degisikligi yok, push yapilmiyor."
+          fi
