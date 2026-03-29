@@ -35,11 +35,15 @@ jobs:
           GOOGLE_CX: ${{ secrets.GOOGLE_CX }}
         run: python google_scanner.py
 
-      # Amneziyi (Hafıza Kaybını) Çözen Kayıt Adımı:
-      - name: Commit and Push Google Memory (reported_google.json)
+      # Amneziyi (Hafıza Kaybını) Çözen Akıllı Kayıt Adımı:
+      - name: Commit and Push Google Memory
         run: |
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "action@github.com"
-          git add reported_google.json
-          git commit -m "update: google hafiza dosyasi guncellendi [skip ci]" || echo "No changes to commit"
-          git push
+          if [ -f reported_google.json ]; then
+            git add reported_google.json
+            git commit -m "update: google hafiza guncellendi [skip ci]" || echo "No changes to commit"
+            git push
+          else
+            echo "Yeni sahte site bulunamadigi icin dosya olusturulmadi. Her sey yolunda!"
+          fi
