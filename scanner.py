@@ -174,28 +174,39 @@ def save_to_google_sheets(found_items):
 
 # ---- HİZALANMIŞ YENİ FONKSİYON BURADA ----
 async def fetch_dynamic_vip_domains(session):
-    """Sadece içinde 'superbetin' geçen ve .vip ile bitenleri bulur"""
-    query = "%superbetin%.vip" 
-    url = f"https://crt.sh/?q={query}&output=json"
-    found_vips = set()
+    """Hem SEO (.vip) hem de Sahte Harf (xn--) leşlerini nokta atışı bulur"""
+    # İki ayrı frekans tarıyoruz
+    queries = ["%superbetin%.vip", "xn--superbet%"] 
+    found_domains = set()
     
-    print("🔍 İnternetin dibinde 'superbetin' geçen .vip adresleri aranıyor...")
+    print("🔍 İnternetin dibinde SEO (.vip) ve Sahte Harf (Punycode) adresleri aranıyor...")
     
-    try:
-        async with session.get(url, timeout=30) as resp:
-            if resp.status == 200:
-                data = await resp.json(content_type=None)
-                for entry in data:
-                    domain = entry['name_value'].lower().replace("*.", "")
-                    if "superbetin" in domain and domain.endswith(".vip"):
-                        found_vips.add(domain)
-                print(f"✅ Otomatik radara takılan taze leş sayısı: {len(found_vips)}")
-            else:
-                print("⚠️ crt.sh şu an meşgul, manuel listeyle devam ediliyor.")
-    except Exception as e:
-        print(f"❌ Dinamik VIP tarama hatası (Önemli değil, devam ediliyor): {e}")
+    for q in queries:
+        url = f"https://crt.sh/?q={q}&output=json"
+        try:
+            async with session.get(url, timeout=30) as resp:
+                if resp.status == 200:
+                    data = await resp.json(content_type=None)
+                    for entry in data:
+                        domain = entry['name_value'].lower().replace("*.", "")
+                        
+                        # FİLTRE 1: İçinde "superbetin" geçen, xn-- OLMAYAN normal vip siteleri
+                        if q == "%superbetin%.vip" and "superbetin" in domain and domain.endswith(".vip") and not domain.startswith("xn--"):
+                            found_domains.add(domain)
+                        
+                        # FİLTRE 2: "xn--" İLE BAŞLAYAN sahte harfli siteler. 
+                        # ('i' harfi şapkalı olup düştüğü için burada mecburen 'superbet' arıyoruz)
+                        elif q == "xn--superbet%" and domain.startswith("xn--") and "superbet" in domain:
+                            found_domains.add(domain)
+        except Exception as e:
+            pass # crt.sh meşgulse çökme, diğer taramaya geç
+            
+    if found_domains:
+        print(f"✅ Otomatik radara takılan sinsi leş sayısı: {len(found_domains)}")
+    else:
+        print("⚠️ crt.sh şu an veri vermedi, bir sonraki taramada tekrar denenecek.")
         
-    return found_vips
+    return found_domains
 
 async def check_dns(session, domain):
     try:
