@@ -5,11 +5,20 @@ import json
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from datetime import datetime
+
+# Google Sheets Kütüphaneleri
+import gspread
+from google.oauth2.service_account import Credentials
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
 SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD")
+
+# Google Sheets Ayarları
+GCP_CREDENTIALS = os.environ.get("GCP_CREDENTIALS")
+SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 
 # Bizim domainlerimiz - whitelist
 SUPERBETIN_WHITELIST = set([
@@ -90,7 +99,7 @@ def save_reported(reported):
     with open(REPORTED_FILE, "w") as f:
         json.dump(list(reported), f)
 
-# NICE NIC OTOMATIK SIKAYET FONKSIYONU (THE EXECUTIONER)
+# NICE NIC OTOMATIK SIKAYET FONKSIYONU
 def send_execution_email(domain):
     if not SENDER_EMAIL or not SENDER_PASSWORD:
         print(f"[{domain}] Mail bilgileri eksik, otomatik şikayet atlanıyor.")
@@ -128,6 +137,43 @@ License: OGL/2024/815/0653
         print(f"[{domain}] Icin infaz maili NiceNIC'e basariyla atildi! 🔫")
     except Exception as e:
         print(f"Mail gonderim hatasi ({domain}): {e}")
+
+# GOOGLE SHEETS KAYIT FONKSIYONU
+def save_to_google_sheets(found_items):
+    if not GCP_CREDENTIALS or not SPREADSHEET_ID:
+        print("Google Sheets kimlik bilgileri eksik, tabloya kaydedilmiyor.")
+        return
+
+    try:
+        # JSON stringini sözlüğe çevir ve yetkilendir
+        credentials_dict = json.loads(GCP_CREDENTIALS)
+        scopes = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
+        creds = Credentials.from_service_account_info(credentials_dict, scopes=scopes)
+        client = gspread.authorize(creds)
+        
+        # Tabloyu aç ve ilk sayfayı seç
+        sheet = client.open_by_key(SPREADSHEET_ID).sheet1
+        
+        # Eklenecek satırları hazırla
+        rows_to_add = []
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        for item in found_items:
+            row = [
+                current_time,           # A Sütunu: Tarih
+                item['domain'],         # B Sütunu: Domain
+                str(item['status']),    # C Sütunu: Durum (HTTP kod veya DNS)
+                item['ip'] if item['ip'] else "Bulunamadi" # D Sütunu: IP Adresi
+            ]
+            rows_to_add.append(row)
+        
+        # Toplu olarak tabloya ekle
+        if rows_to_add:
+            sheet.append_rows(rows_to_add)
+            print(f"✅ {len(rows_to_add)} domain Google E-Tablolara başarıyla kaydedildi!")
+            
+    except Exception as e:
+        print(f"Google Sheets'e kaydederken hata oluştu: {e}")
 
 async def check_dns(session, domain):
     try:
@@ -232,8 +278,11 @@ async def main():
             if item["ip"]:
                 msg += f"   IP: {item['ip']}\n"
             
-            # THE EXECUTIONER: Maili Atesle! (İşte tetiğe bastığımız yer burası)
+            # THE EXECUTIONER: Maili Atesle!
             send_execution_email(item['domain'])
+        
+        # GOOGLE SHEETS KAYIT İŞLEMİ (Yeni eklenen kısım)
+        save_to_google_sheets(found)
         
         print(msg)
         await send_telegram(msg)
