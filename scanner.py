@@ -63,6 +63,7 @@ SUPERBETIN_WHITELIST = set([
 SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 2501) 
 SUPERBETIM_RANGE = range(1000, 2151) 
+SUPERBET_TYPO_RANGE = range(1800, 2501) 
 
 # VIP domainler
 VIP_KEYWORDS = ["turkey", "girisi", "adres", "resmi", "guncel", "vip", "yeni", "link"]
@@ -172,11 +173,17 @@ async def main():
     found = []
     domains_to_scan = []
 
-    # 1. Standartlar ve Gaps
+    # 1. Standartlar, Gaps ve TYPO'lar
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
+    
     for num in SUPERBETIM_RANGE:
-        domains_to_scan.append((f"superbetim{num}.com", "TYPO", set()))
+        domains_to_scan.append((f"superbetim{num}.com", "TYPO-M", set()))
+
+    # YENİ EKLENEN TARAMA: superbet[num].com (in harfi eksik)
+    for num in SUPERBET_TYPO_RANGE:
+        domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
+
     for d in VIP_DOMAINS:
         domains_to_scan.append((d, "VIP", set()))
 
