@@ -2,45 +2,43 @@ name: Domain Scanner
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *' # Her saat başı çalışır
   workflow_dispatch:
 
 permissions:
   contents: write
 
-# Uyarıyı tamamen susturan sihirli ayar:
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   scan:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v5 # v4'ü v5 yaptık, tertemiz!
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install aiohttp
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests aiohttp gspread google-auth
 
-      - name: Run scanner
+      - name: Run Scanner
         env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
-          # THE EXECUTIONER (İnfazcı) için gereken mail bağlantıları:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
           SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
         run: python scanner.py
 
-      - name: Commit and Push Memory (reported.json)
+      - name: Commit changes
         run: |
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "action@github.com"
           git add reported.json
-          git commit -m "update: hafiza dosyasi guncellendi [skip ci]" || echo "No changes to commit"
+          git commit -m "update: yeni domainler eklendi [skip ci]" || echo "No changes to commit"
           git push
