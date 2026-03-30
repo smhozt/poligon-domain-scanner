@@ -11,8 +11,7 @@ def load_json(filename, default_val):
                 return default_val
     return default_val
 
-# Verileri topla
-btk_data = load_json('btk_status.json', {"statuses": {}})
+# Verileri topla (Sadece Radar ve Tarayıcı)
 reported = load_json('reported.json', [])
 google_reported = load_json('reported_google.json', [])
 
@@ -23,20 +22,7 @@ md = f"# 🛡️ Poligon Operasyon Merkezi - Canlı Dashboard\n\n"
 md += f"⏱️ **Son Güncelleme:** `{now} (UTC)`\n\n"
 md += "---\n\n"
 
-# 1. BTK Durumu
-md += "## 🇹🇷 BTK Erişim Durumu\n"
-md += "| Domain | Durum |\n"
-md += "|--------|-------|\n"
-if btk_data.get("statuses"):
-    for domain, status in btk_data["statuses"].items():
-        icon = "🔴 **ENGELLİ**" if "BLOCKED" in status else "✅ **AKTİF**"
-        md += f"| `{domain}` | {icon} |\n"
-else:
-    md += "| Bekleniyor... | - |\n"
-
-md += "\n---\n\n"
-
-# 2. Google Tarayıcı
+# 1. Google Tarayıcı
 md += "## 🔍 Google Arama Radarı (Typo & Sahte)\n"
 md += "| Yakalanan Domain | İşlem Durumu |\n"
 md += "|------------------|--------------|\n"
@@ -49,13 +35,13 @@ else:
 
 md += "\n---\n\n"
 
-# 3. Domain Tarayıcı (İnfaz Edilenler)
+# 2. Domain Tarayıcı (İnfaz Edilenler)
 md += "## 🎯 Olası Sahte Domainler (1500+ Tarama)\n"
 md += "| Yakalanan Domain | İşlem Durumu |\n"
 md += "|------------------|--------------|\n"
 if reported:
     for domain in reversed(reported):
-        md += f"| `{domain}` | 🔫 İnfazlandı (NiceNIC Şikayet Edildi) |\n"
+        md += f"| `{domain}` | 🔫 İnfazlandı (NiceNIC / Cloudflare Şikayet Edildi) |\n"
 else:
     md += "| 🟢 Saha Temiz | - |\n"
 
@@ -63,4 +49,4 @@ else:
 with open('DASHBOARD.md', 'w', encoding='utf-8') as f:
     f.write(md)
 
-print("DASHBOARD.md başarıyla güncellendi!")
+print("DASHBOARD.md başarıyla güncellendi (BTK Hariç)!")
