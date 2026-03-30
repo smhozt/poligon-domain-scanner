@@ -286,6 +286,22 @@ async def main():
 
     for domain in VIP_DOMAINS:
         domains_to_scan.append((domain, "vip", "VIP", set()))
+
+    # ---------------------------------------------------------
+    # 🕵️‍♂️ SİNSİ HARF (í) JENERATÖRÜ - Marka Koruması
+    # 1800'den 2500'e kadar tüm sayılar için adamların "í" hilesini otomatik üretiyoruz.
+    # ---------------------------------------------------------
+    print("🧬 Sahte harfli (í) Punycode varyasyonları üretiliyor...")
+    for num in range(1800, 2501):
+        fake_unicode = f"superbetín{num}.com" 
+        try:
+            # Python bunu otomatik olarak xn-- formatına (Punycode) çevirir
+            # Örn: superbetín1815.com -> xn--superbetn1815-3ib.com
+            punycode_domain = fake_unicode.encode("idna").decode("utf-8")
+            domains_to_scan.append((punycode_domain, "punycode", "IDN-SAHTE", set()))
+        except:
+            pass
+    # ---------------------------------------------------------
         
     # İNTERNETTEN OTOMATİK VIP AVINI BAŞLAT
     async with aiohttp.ClientSession() as temp_session:
