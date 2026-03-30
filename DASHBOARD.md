@@ -1,6 +1,6 @@
 # 🛡️ Poligon Operasyon Merkezi - Canlı Dashboard
 
-⏱️ **Son Güncelleme:** `30.03.2026 21:37 (UTC)`
+⏱️ **Son Güncelleme:** `30.03.2026 22:00 (UTC)`
 
 ---
 
