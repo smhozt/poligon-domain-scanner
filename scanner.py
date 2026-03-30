@@ -2,9 +2,6 @@ import asyncio
 import aiohttp
 import os
 import json
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 
 # Google Sheets Kütüphaneleri
@@ -13,8 +10,6 @@ from google.oauth2.service_account import Credentials
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
-SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
-SENDER_PASSWORD = os.environ.get("SENDER_PASSWORD")
 
 # Google Sheets Ayarları
 GCP_CREDENTIALS = os.environ.get("GCP_CREDENTIALS")
@@ -66,26 +61,18 @@ SUPERBETIN_WHITELIST = set([
 
 # Taranacak domainler
 SUPERBETIN_GAPS = [1825, 1879, 1911]
-SUPERBETIN_RANGE = range(1975, 2501)  # 1975-2500
-SUPERBETIM_RANGE = range(1000, 2151)  # 1000-2150
+SUPERBETIN_RANGE = range(1975, 2501) 
+SUPERBETIM_RANGE = range(1000, 2151) 
 
-# VIP domainler için kullanılacak anahtar kelimeler
-VIP_KEYWORDS = [
-    "turkey", "girisi", "adres", "resmi", "guncel", 
-    "guncelgiris", "giris", "link", "yeni", "vip", "girisadresi"
-]
-
-# Sabit bilinenler ve otomatik üretilenler için liste
+# VIP domainler
+VIP_KEYWORDS = ["turkey", "girisi", "adres", "resmi", "guncel", "vip", "yeni", "link"]
 VIP_DOMAINS = set([
     "superbetinturkey.vip", "superbetingirisi.vip", "superbetinadres.vip",
-    "m.superbetinturkey.vip", "m.superbetingirisi.vip", "m.superbetinadres.vip",
     "wwwsuperbetinmobil.vip", "m.wwwsuperbetinmobil.vip"
 ])
-
 for word in VIP_KEYWORDS:
     VIP_DOMAINS.add(f"superbetin{word}.vip")
     VIP_DOMAINS.add(f"m.superbetin{word}.vip")
-    VIP_DOMAINS.add(f"superbetim{word}.vip") 
 
 REPORTED_FILE = "reported.json"
 
@@ -100,87 +87,33 @@ def save_reported(reported):
     with open(REPORTED_FILE, "w") as f:
         json.dump(list(reported), f)
 
-# NICE NIC OTOMATIK SIKAYET FONKSIYONU
-def send_execution_email(domain):
-    if not SENDER_EMAIL or not SENDER_PASSWORD:
-        print(f"[{domain}] Mail bilgileri eksik, otomatik şikayet atlanıyor.")
-        return
-
-    receiver_email = "abuse@nicenic.net"
-    subject = f"URGENT Phishing Domain Takedown - {domain}"
-    
-    body = f"""Dear NiceNIC Abuse Team,
-
-We are Poligon Entertainment N.V. (Curaçao License OGL/2024/815/0653), the legitimate operator of superbetin.com and superbetin1815.com.
-
-The domain {domain} registered through your registrar is actively used for phishing and credential harvesting targeting Turkish users.
-
-This matches the exact pattern of recently suspended phishing domains by the same threat actor (e.g., superbetin1977.com, superbetin1978.com, superbetingirisi.vip).
-
-Please suspend this domain immediately to prevent further financial fraud.
-
-Best regards,
-Poligon Entertainment N.V.
-License: OGL/2024/815/0653
-"""
-    msg = MIMEMultipart()
-    msg['From'] = SENDER_EMAIL
-    msg['To'] = receiver_email
-    msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain'))
-
-    try:
-        # 587 ve starttls yerine direkt 465 SSL portundan dalıyoruz
-        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        server.send_message(msg)
-        server.quit()
-        print(f"[{domain}] Icin infaz maili NiceNIC'e basariyla atildi! 🔫")
-    except Exception as e:
-        print(f"Mail gonderim hatasi ({domain}): {e}")
-
-# GOOGLE SHEETS KAYIT FONKSIYONU
+# GOOGLE SHEETS KAYIT
 def save_to_google_sheets(found_items):
     if not GCP_CREDENTIALS or not SPREADSHEET_ID:
-        print("Google Sheets kimlik bilgileri eksik, tabloya kaydedilmiyor.")
+        print("Google Sheets kimlik bilgileri eksik.")
         return
-
     try:
         credentials_dict = json.loads(GCP_CREDENTIALS)
         scopes = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
         creds = Credentials.from_service_account_info(credentials_dict, scopes=scopes)
         client = gspread.authorize(creds)
-        
         sheet = client.open_by_key(SPREADSHEET_ID).sheet1
-        
         rows_to_add = []
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
         for item in found_items:
-            row = [
-                current_time,           # A Sütunu: Tarih
-                item['domain'],         # B Sütunu: Domain
-                str(item['status']),    # C Sütunu: Durum (HTTP kod veya DNS)
-                item['ip'] if item['ip'] else "Bulunamadi" # D Sütunu: IP Adresi
-            ]
+            row = [current_time, item['domain'], str(item['status']), item['ip'] if item['ip'] else "Bulunamadi"]
             rows_to_add.append(row)
-        
         if rows_to_add:
             sheet.append_rows(rows_to_add)
-            print(f"✅ {len(rows_to_add)} domain Google E-Tablolara başarıyla kaydedildi!")
-            
+            print(f"✅ {len(rows_to_add)} domain Google E-Tablolara kaydedildi!")
     except Exception as e:
-        print(f"Google Sheets'e kaydederken hata oluştu: {e}")
+        print(f"Sheets hatasi: {e}")
 
-# ---- HİZALANMIŞ YENİ FONKSİYON BURADA ----
 async def fetch_dynamic_vip_domains(session):
-    """Hem SEO (.vip) hem de Sahte Harf (xn--) leşlerini nokta atışı bulur"""
-    # İki ayrı frekans tarıyoruz
-    queries = ["%superbetin%.vip", "xn--superbet%"] 
+    """Hem SEO Hem Punycode arar"""
+    queries = ["%superbetin%.vip", "xn--superbet%"]
     found_domains = set()
-    
-    print("🔍 İnternetin dibinde SEO (.vip) ve Sahte Harf (Punycode) adresleri aranıyor...")
-    
+    print("🔍 İnternetin dibinde SEO ve Sahte Harf adresleri aranıyor...")
     for q in queries:
         url = f"https://crt.sh/?q={q}&output=json"
         try:
@@ -189,162 +122,93 @@ async def fetch_dynamic_vip_domains(session):
                     data = await resp.json(content_type=None)
                     for entry in data:
                         domain = entry['name_value'].lower().replace("*.", "")
-                        
-                        # FİLTRE 1: İçinde "superbetin" geçen, xn-- OLMAYAN normal vip siteleri
-                        if q == "%superbetin%.vip" and "superbetin" in domain and domain.endswith(".vip") and not domain.startswith("xn--"):
+                        if q == "%superbetin%.vip" and "superbetin" in domain and domain.endswith(".vip"):
                             found_domains.add(domain)
-                        
-                        # FİLTRE 2: "xn--" İLE BAŞLAYAN sahte harfli siteler. 
-                        # ('i' harfi şapkalı olup düştüğü için burada mecburen 'superbet' arıyoruz)
                         elif q == "xn--superbet%" and domain.startswith("xn--") and "superbet" in domain:
                             found_domains.add(domain)
-        except Exception as e:
-            pass # crt.sh meşgulse çökme, diğer taramaya geç
-            
-    if found_domains:
-        print(f"✅ Otomatik radara takılan sinsi leş sayısı: {len(found_domains)}")
-    else:
-        print("⚠️ crt.sh şu an veri vermedi, bir sonraki taramada tekrar denenecek.")
-        
+        except:
+            pass
     return found_domains
 
 async def check_dns(session, domain):
     try:
         url = f"https://dns.google/resolve?name={domain}&type=A"
-        async with session.get(url, timeout=aiohttp.ClientTimeout(total=5)) as resp:
+        async with session.get(url, timeout=5) as resp:
             if resp.status == 200:
-                data = await resp.json(content_type=None)
+                data = await resp.json()
                 if data.get("Status") == 0 and data.get("Answer"):
-                    ip = data["Answer"][0].get("data", "")
-                    return True, ip
-    except:
-        pass
+                    return True, data["Answer"][0].get("data", "")
+    except: pass
     return False, ""
 
 async def check_http(session, domain):
     try:
-        async with session.get(
-            f"https://{domain}",
-            timeout=aiohttp.ClientTimeout(total=5),
-            allow_redirects=True,
-            headers={"User-Agent": "Mozilla/5.0", "Accept-Language": "tr-TR,tr;q=0.9"}
-        ) as resp:
+        async with session.get(f"https://{domain}", timeout=5, allow_redirects=True) as resp:
             if resp.status in [200, 301, 302, 403]:
                 return True, resp.status
-    except:
-        pass
+    except: pass
     return False, 0
 
-async def scan_domain(session, domain, prefix, dtype, whitelist, reported, found):
-    if domain in whitelist or domain in reported:
-        return
-    
+async def scan_domain(session, domain, dtype, whitelist, reported, found):
+    if domain in whitelist or domain in reported: return
     dns_ok, ip = await check_dns(session, domain)
     http_ok, code = await check_http(session, domain)
-    
     if dns_ok or http_ok:
-        detected_by = "HTTP" if http_ok else "DNS"
-        status = str(code) if http_ok else f"DNS:{ip}"
-        found.append({
-            "domain": domain,
-            "type": dtype,
-            "detected_by": detected_by,
-            "status": status,
-            "ip": ip
-        })
+        found.append({"domain": domain, "type": dtype, "status": code if http_ok else f"DNS:{ip}", "ip": ip, "detected_by": "HTTP" if http_ok else "DNS"})
         reported.add(domain)
-        print(f"[FOUND] {domain} ({detected_by}: {status})")
+        print(f"[FOUND] {domain} ({ip})")
 
 async def send_telegram(message):
     async with aiohttp.ClientSession() as session:
         for chat_id in TELEGRAM_CHAT_IDS:
-            chat_id = chat_id.strip()
             url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-            await session.post(url, json={
-                "chat_id": chat_id,
-                "text": message,
-                "parse_mode": "Markdown"
-            })
+            await session.post(url, json={"chat_id": chat_id.strip(), "text": message, "parse_mode": "Markdown"})
 
 async def main():
     reported = load_reported()
     found = []
-
     domains_to_scan = []
-    
-    for num in SUPERBETIN_GAPS:
-        domain = f"superbetin{num}.com"
-        domains_to_scan.append((domain, "superbetin", "BOSLUK", SUPERBETIN_WHITELIST))
-    
-    for num in SUPERBETIN_RANGE:
-        domain = f"superbetin{num}.com"
-        domains_to_scan.append((domain, "superbetin", "YENI", SUPERBETIN_WHITELIST))
-    
+
+    # 1. Standartlar ve Gaps
+    for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
+        domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
     for num in SUPERBETIM_RANGE:
-        domain = f"superbetim{num}.com"
-        domains_to_scan.append((domain, "superbetim", "TYPO", set()))
+        domains_to_scan.append((f"superbetim{num}.com", "TYPO", set()))
+    for d in VIP_DOMAINS:
+        domains_to_scan.append((d, "VIP", set()))
 
-    for domain in VIP_DOMAINS:
-        domains_to_scan.append((domain, "vip", "VIP", set()))
-
-    # ---------------------------------------------------------
-    # 🕵️‍♂️ SİNSİ HARF (í) JENERATÖRÜ - Marka Koruması
-    # 1800'den 2500'e kadar tüm sayılar için adamların "í" hilesini otomatik üretiyoruz.
-    # ---------------------------------------------------------
-    print("🧬 Sahte harfli (í) Punycode varyasyonları üretiliyor...")
+    # 2. SİNSİ HARF (í) JENERATÖRÜ
+    print("🧬 Sahte harfli (í) varyasyonlar üretiliyor...")
     for num in range(1800, 2501):
-        fake_unicode = f"superbetín{num}.com" 
         try:
-            # Python bunu otomatik olarak xn-- formatına (Punycode) çevirir
-            # Örn: superbetín1815.com -> xn--superbetn1815-3ib.com
-            punycode_domain = fake_unicode.encode("idna").decode("utf-8")
-            domains_to_scan.append((punycode_domain, "punycode", "IDN-SAHTE", set()))
-        except:
-            pass
-    # ---------------------------------------------------------
-        
-    # İNTERNETTEN OTOMATİK VIP AVINI BAŞLAT
+            puny = f"superbetín{num}.com".encode("idna").decode("utf-8")
+            domains_to_scan.append((puny, "IDN-SAHTE", set()))
+        except: pass
+
+    # 3. Dinamik crt.sh Taraması
     async with aiohttp.ClientSession() as temp_session:
-        dynamic_vips = await fetch_dynamic_vip_domains(temp_session)
-        for domain in dynamic_vips:
-            if domain not in SUPERBETIN_WHITELIST:
-                domains_to_scan.append((domain, "vip", "VIP_AUTO", set()))
+        dynamic = await fetch_dynamic_vip_domains(temp_session)
+        for d in dynamic:
+            if d not in SUPERBETIN_WHITELIST:
+                domains_to_scan.append((d, "OTO-VIP", set()))
 
     print(f"Toplam {len(domains_to_scan)} domain taranacak...")
-
-    connector = aiohttp.TCPConnector(limit=50)
-    async with aiohttp.ClientSession(connector=connector) as session:
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=50)) as session:
         semaphore = asyncio.Semaphore(50)
-        
-        async def bounded_scan(domain, prefix, dtype, whitelist):
-            async with semaphore:
-                await scan_domain(session, domain, prefix, dtype, whitelist, reported, found)
-        
-        tasks = [bounded_scan(d, p, t, w) for d, p, t, w in domains_to_scan]
-        await asyncio.gather(*tasks)
+        async def bounded_scan(d, t, w):
+            async with semaphore: await scan_domain(session, d, t, w, reported, found)
+        await asyncio.gather(*[bounded_scan(d, t, w) for d, t, w in domains_to_scan])
 
     save_reported(reported)
-
     if found:
-        msg = "🚨 *[ALARM] Aktif Sahte Domain Tespit Edildi!*\n"
-        msg += f"{len(found)} domain aktif:\n\n"
+        msg = "🚨 *[ALARM] Aktif Sahte Domain!*\n"
         for item in found:
-            # BONUS EKLENTİ: Botun kendi bulduğu "VIP_AUTO" olanlar farklı ikonla gelsin!
-            icon = "🤖 [OTO-VIP]" if item["type"] == "VIP_AUTO" else "🦇 [TYPO]" if item["type"] == "TYPO" else "⚠️ [!]" if item["type"] == "BOSLUK" else "💎 [VIP]" if item["type"] == "VIP" else "🔥 [YENI]"
-            msg += f"{icon} `{item['domain']}` ({item['detected_by']}: {item['status']})\n"
-            if item["ip"]:
-                msg += f"   IP: {item['ip']}\n"
-            
-            # THE EXECUTIONER: Maili Atesle!
-            send_execution_email(item['domain'])
-        
-        # GOOGLE SHEETS KAYIT İŞLEMİ
+            icon = "🎭" if item["type"] == "IDN-SAHTE" else "💎" if "VIP" in item["type"] else "🔥"
+            msg += f"{icon} `{item['domain']}` ({item['status']})\n"
         save_to_google_sheets(found)
-        
-        print(msg)
         await send_telegram(msg)
     else:
-        print("Temiz - yeni sahte domain bulunamadi.")
+        print("Temiz.")
 
 if __name__ == "__main__":
     asyncio.run(main())
