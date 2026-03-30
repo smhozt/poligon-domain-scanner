@@ -40,5 +40,11 @@ jobs:
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "action@github.com"
           git add reported.json
-          git commit -m "update: yeni domainler eklendi [skip ci]" || echo "No changes to commit"
+          
+          # Dashboard'u hemen burada güncelletiyoruz!
+          python update_dashboard.py
+          git add DASHBOARD.md
+          
+          git commit -m "update: yeni leşler eklendi ve dashboard güncellendi [skip ci]" || echo "No changes to commit"
+          git pull --rebase origin main
           git push
