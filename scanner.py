@@ -73,6 +73,9 @@ VIP_DOMAINS = set([
 for word in VIP_KEYWORDS:
     VIP_DOMAINS.add(f"superbetin{word}.vip")
     VIP_DOMAINS.add(f"m.superbetin{word}.vip")
+    # YENİ EKLENEN ZIRH: "www" hilesini de otomatik üret!
+    VIP_DOMAINS.add(f"wwwsuperbetin{word}.vip")
+    VIP_DOMAINS.add(f"m.wwwsuperbetin{word}.vip")
 
 REPORTED_FILE = "reported.json"
 
