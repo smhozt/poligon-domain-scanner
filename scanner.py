@@ -78,7 +78,7 @@ VIP_KEYWORDS = [
 # Sabit bilinenler ve otomatik üretilenler için liste
 VIP_DOMAINS = set([
     "superbetinturkey.vip", "superbetingirisi.vip", "superbetinadres.vip",
-    "m.superbetinturkey.vip", "m.superbetingirisi.vip", "m.superbetinadres.vip"
+    "m.superbetinturkey.vip", "m.superbetingirisi.vip", "m.superbetinadres.vip",
     "wwwsuperbetinmobil.vip", "m.wwwsuperbetinmobil.vip"
 ])
 
@@ -146,16 +146,13 @@ def save_to_google_sheets(found_items):
         return
 
     try:
-        # JSON stringini sözlüğe çevir ve yetkilendir
         credentials_dict = json.loads(GCP_CREDENTIALS)
         scopes = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
         creds = Credentials.from_service_account_info(credentials_dict, scopes=scopes)
         client = gspread.authorize(creds)
         
-        # Tabloyu aç ve ilk sayfayı seç
         sheet = client.open_by_key(SPREADSHEET_ID).sheet1
         
-        # Eklenecek satırları hazırla
         rows_to_add = []
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
@@ -168,13 +165,37 @@ def save_to_google_sheets(found_items):
             ]
             rows_to_add.append(row)
         
-        # Toplu olarak tabloya ekle
         if rows_to_add:
             sheet.append_rows(rows_to_add)
             print(f"✅ {len(rows_to_add)} domain Google E-Tablolara başarıyla kaydedildi!")
             
     except Exception as e:
         print(f"Google Sheets'e kaydederken hata oluştu: {e}")
+
+# ---- HİZALANMIŞ YENİ FONKSİYON BURADA ----
+async def fetch_dynamic_vip_domains(session):
+    """Sadece içinde 'superbetin' geçen ve .vip ile bitenleri bulur"""
+    query = "%superbetin%.vip" 
+    url = f"https://crt.sh/?q={query}&output=json"
+    found_vips = set()
+    
+    print("🔍 İnternetin dibinde 'superbetin' geçen .vip adresleri aranıyor...")
+    
+    try:
+        async with session.get(url, timeout=30) as resp:
+            if resp.status == 200:
+                data = await resp.json(content_type=None)
+                for entry in data:
+                    domain = entry['name_value'].lower().replace("*.", "")
+                    if "superbetin" in domain and domain.endswith(".vip"):
+                        found_vips.add(domain)
+                print(f"✅ Otomatik radara takılan taze leş sayısı: {len(found_vips)}")
+            else:
+                print("⚠️ crt.sh şu an meşgul, manuel listeyle devam ediliyor.")
+    except Exception as e:
+        print(f"❌ Dinamik VIP tarama hatası (Önemli değil, devam ediliyor): {e}")
+        
+    return found_vips
 
 async def check_dns(session, domain):
     try:
@@ -254,6 +275,13 @@ async def main():
 
     for domain in VIP_DOMAINS:
         domains_to_scan.append((domain, "vip", "VIP", set()))
+        
+    # İNTERNETTEN OTOMATİK VIP AVINI BAŞLAT
+    async with aiohttp.ClientSession() as temp_session:
+        dynamic_vips = await fetch_dynamic_vip_domains(temp_session)
+        for domain in dynamic_vips:
+            if domain not in SUPERBETIN_WHITELIST:
+                domains_to_scan.append((domain, "vip", "VIP_AUTO", set()))
 
     print(f"Toplam {len(domains_to_scan)} domain taranacak...")
 
@@ -274,7 +302,8 @@ async def main():
         msg = "🚨 *[ALARM] Aktif Sahte Domain Tespit Edildi!*\n"
         msg += f"{len(found)} domain aktif:\n\n"
         for item in found:
-            icon = "🦇 [TYPO]" if item["type"] == "TYPO" else "⚠️ [!]" if item["type"] == "BOSLUK" else "💎 [VIP]" if item["type"] == "VIP" else "🔥 [YENI]"
+            # BONUS EKLENTİ: Botun kendi bulduğu "VIP_AUTO" olanlar farklı ikonla gelsin!
+            icon = "🤖 [OTO-VIP]" if item["type"] == "VIP_AUTO" else "🦇 [TYPO]" if item["type"] == "TYPO" else "⚠️ [!]" if item["type"] == "BOSLUK" else "💎 [VIP]" if item["type"] == "VIP" else "🔥 [YENI]"
             msg += f"{icon} `{item['domain']}` ({item['detected_by']}: {item['status']})\n"
             if item["ip"]:
                 msg += f"   IP: {item['ip']}\n"
@@ -282,7 +311,7 @@ async def main():
             # THE EXECUTIONER: Maili Atesle!
             send_execution_email(item['domain'])
         
-        # GOOGLE SHEETS KAYIT İŞLEMİ (Yeni eklenen kısım)
+        # GOOGLE SHEETS KAYIT İŞLEMİ
         save_to_google_sheets(found)
         
         print(msg)
