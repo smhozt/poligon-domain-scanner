@@ -6,11 +6,9 @@ on:
     - cron: '0 8,14,20 * * *'
   workflow_dispatch:
 
-# Botun hafızayı repoya yazabilmesi için GEREKLİ İZİN:
 permissions:
   contents: write
 
-# Sarı uyarıyı kapatan sihirli kod:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -35,15 +33,24 @@ jobs:
           GOOGLE_CX: ${{ secrets.GOOGLE_CX }}
         run: python google_scanner.py
 
-      # Amneziyi (Hafıza Kaybını) Çözen Akıllı Kayıt Adımı:
-      - name: Commit and Push Google Memory
+      # Amneziyi Çözen ve Dashboard'u Güncelleyen TEK ADIM:
+      - name: Update Dashboard and Commit
         run: |
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "action@github.com"
+          
+          # 1. Eğer Google yeni bir site bulup json oluşturduysa onu ekle
           if [ -f reported_google.json ]; then
             git add reported_google.json
-            git commit -m "update: google hafiza guncellendi [skip ci]" || echo "No changes to commit"
-            git push
-          else
-            echo "Yeni sahte site bulunamadigi icin dosya olusturulmadi. Her sey yolunda!"
           fi
+          
+          # 2. Dashboard'u güncelle (Python dosyasını çalıştırır)
+          python update_dashboard.py
+          
+          # 3. Güncellenen Dashboard'u git'e ekle
+          git add DASHBOARD.md
+          
+          # 4. Hepsini tek seferde paketle ve GitHub'a yolla
+          git commit -m "update: google radar ve dashboard guncellendi [skip ci]" || echo "No changes to commit"
+          git pull --rebase origin main
+          git push
