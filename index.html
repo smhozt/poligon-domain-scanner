@@ -14,12 +14,8 @@
         .card h2 { margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 10px; font-size: 1.3rem;}
         
         /* Renkler */
-        .color-btk { color: #d2a8ff; }
         .color-scanner { color: #ff7b72; }
         .color-google { color: #79c0ff; }
-        
-        .alert-text { color: #f85149; font-weight: bold; }
-        .ok-text { color: #3fb950; font-weight: bold; }
         
         ul { list-style-type: none; padding: 0; margin: 0; max-height: 400px; overflow-y: auto; }
         li { padding: 10px 0; border-bottom: 1px solid #21262d; display: flex; justify-content: space-between; align-items: center; word-break: break-all; font-family: 'Courier New', Courier, monospace;}
@@ -41,50 +37,26 @@
     
     <div class="container">
         <div class="card">
-            <h2 class="color-btk">🇹🇷 BTK Erişim Durumu</h2>
-            <p style="font-size: 0.9em; color: #8b949e;">Resmi domainlerin anlık BTK kontrol sonuçları.</p>
-            <ul id="btk-list"><li>Veri yükleniyor...</li></ul>
-        </div>
-        
-        <div class="card">
             <h2 class="color-google">🔍 Google Arama Radarı</h2>
-            <p style="font-size: 0.9em; color: #8b949e;">Arama motoruna sızmaya çalışan çakallar.</p>
+            <p style="font-size: 0.9em; color: #8b949e;">Arama motoruna sızmaya çalışan sahte/typo siteler.</p>
             <ul id="google-list"><li>Veri yükleniyor...</li></ul>
         </div>
 
-        <div class="card" style="grid-column: 1 / -1;">
-            <h2 class="color-scanner">🎯 Olası Sahte Domainler (1500+ Tarama)</h2>
-            <p style="font-size: 0.9em; color: #8b949e;">Tespit edilen ve otomatik olarak NiceNIC'e infaz maili atılan siteler.</p>
+        <div class="card">
+            <h2 class="color-scanner">🎯 Olası Sahte Domainler</h2>
+            <p style="font-size: 0.9em; color: #8b949e;">Tespit edilen ve manuel infaz bekleyen siteler.</p>
             <ul id="scanner-list"><li>Veri yükleniyor...</li></ul>
         </div>
     </div>
 
     <script>
-        // BTK verisini çek
-        fetch('btk_status.json')
-            .then(res => res.json())
-            .then(data => {
-                const list = document.getElementById('btk-list');
-                list.innerHTML = '';
-                if(!data.statuses || Object.keys(data.statuses).length === 0) {
-                    list.innerHTML = '<li>Sistemde henüz kayıt yok.</li>';
-                    return;
-                }
-                for (const [domain, status] of Object.entries(data.statuses)) {
-                    const isBlocked = status.includes('BLOCKED');
-                    const statusClass = isBlocked ? 'alert-text' : 'ok-text';
-                    const statusText = isBlocked ? '🔴 ENGELLİ' : '✅ AKTİF';
-                    list.innerHTML += `<li><span>${domain}</span> <span class="${statusClass}">${statusText}</span></li>`;
-                }
-            }).catch(() => document.getElementById('btk-list').innerHTML = '<li>Log dosyası bekleniyor...</li>');
-
         // Google verisini çek
         fetch('reported_google.json')
             .then(res => res.json())
             .then(data => {
                 const list = document.getElementById('google-list');
                 list.innerHTML = '';
-                if(data.length === 0) { list.innerHTML = '<li>Saha temiz.</li>'; return; }
+                if(!data || data.length === 0) { list.innerHTML = '<li>Saha temiz.</li>'; return; }
                 data.reverse().forEach(domain => {
                     list.innerHTML += `<li><span>${domain}</span> <span class="badge warning">Google'da Görüldü</span></li>`;
                 });
@@ -96,9 +68,9 @@
             .then(data => {
                 const list = document.getElementById('scanner-list');
                 list.innerHTML = '';
-                if(data.length === 0) { list.innerHTML = '<li>Saha temiz.</li>'; return; }
+                if(!data || data.length === 0) { list.innerHTML = '<li>Saha temiz.</li>'; return; }
                 data.reverse().forEach(domain => {
-                    list.innerHTML += `<li><span>${domain}</span> <span class="badge danger">Tespit Edildi / İnfazlandı 🔫</span></li>`;
+                    list.innerHTML += `<li><span>${domain}</span> <span class="badge danger">İnfaz Bekliyor 🔫</span></li>`;
                 });
             }).catch(() => document.getElementById('scanner-list').innerHTML = '<li>Log dosyası bekleniyor...</li>');
     </script>
