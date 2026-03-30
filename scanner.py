@@ -79,6 +79,7 @@ VIP_KEYWORDS = [
 VIP_DOMAINS = set([
     "superbetinturkey.vip", "superbetingirisi.vip", "superbetinadres.vip",
     "m.superbetinturkey.vip", "m.superbetingirisi.vip", "m.superbetinadres.vip"
+    "wwwsuperbetinmobil.vip", "m.wwwsuperbetinmobil.vip"
 ])
 
 for word in VIP_KEYWORDS:
