@@ -65,18 +65,24 @@ SUPERBETIN_RANGE = range(1975, 2501)
 SUPERBETIM_RANGE = range(1000, 2151) 
 SUPERBET_TYPO_RANGE = range(1800, 2501) 
 
-# VIP domainler
-VIP_KEYWORDS = ["turkey", "girisi", "adres", "resmi", "guncel", "vip", "yeni", "link"]
+# VIP domainler ve Anahtar Kelimeler
+VIP_KEYWORDS = ["turkey", "giris", "girisi", "adres", "resmi", "guncel", "vip", "yeni", "link", "mobil"]
 VIP_DOMAINS = set([
     "superbetinturkey.vip", "superbetingirisi.vip", "superbetinadres.vip",
     "wwwsuperbetinmobil.vip", "m.wwwsuperbetinmobil.vip"
 ])
+
 for word in VIP_KEYWORDS:
+    # Klasik Bitişik Versiyonlar
     VIP_DOMAINS.add(f"superbetin{word}.vip")
     VIP_DOMAINS.add(f"m.superbetin{word}.vip")
-    # YENİ EKLENEN ZIRH: "www" hilesini de otomatik üret!
     VIP_DOMAINS.add(f"wwwsuperbetin{word}.vip")
     VIP_DOMAINS.add(f"m.wwwsuperbetin{word}.vip")
+    
+    # YENİ ZIRH: Tireli (-) sinsi versiyonlar!
+    VIP_DOMAINS.add(f"superbetin-{word}.vip")
+    VIP_DOMAINS.add(f"m.superbetin-{word}.vip")
+    VIP_DOMAINS.add(f"www.superbetin-{word}.vip")
 
 REPORTED_FILE = "reported.json"
 
