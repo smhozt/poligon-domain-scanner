@@ -182,13 +182,18 @@ async def main():
     # 1. Standartlar, Gaps ve TYPO'lar
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
+        # YENİ ZIRH: Rakamlı .vip uzantıları (superbetin1815.vip vb.)
+        domains_to_scan.append((f"superbetin{num}.vip", "YENI-VIP", set()))
     
     for num in SUPERBETIM_RANGE:
         domains_to_scan.append((f"superbetim{num}.com", "TYPO-M", set()))
+        domains_to_scan.append((f"superbetim{num}.vip", "TYPO-M-VIP", set()))
 
     # YENİ EKLENEN TARAMA: superbet[num].com (in harfi eksik)
     for num in SUPERBET_TYPO_RANGE:
         domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
+        # YENİ ZIRH: 'in' harfi eksik .vip uzantıları (superbet1814.vip vb.)
+        domains_to_scan.append((f"superbet{num}.vip", "TYPO-IN-EKSIK-VIP", set()))
 
     for d in VIP_DOMAINS:
         domains_to_scan.append((d, "VIP", set()))
