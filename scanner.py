@@ -61,28 +61,75 @@ SUPERBETIN_WHITELIST = set([
 
 # Taranacak domainler
 SUPERBETIN_GAPS = [1825, 1879, 1911]
-SUPERBETIN_RANGE = range(1975, 2501) 
-SUPERBETIM_RANGE = range(1000, 2151) 
-SUPERBET_TYPO_RANGE = range(1800, 2501) 
+SUPERBETIN_RANGE = range(1975, 2501)
+SUPERBETIM_RANGE = range(1000, 2151)
+SUPERBET_TYPO_RANGE = range(1800, 2501)
 
-# VIP domainler ve Anahtar Kelimeler
-VIP_KEYWORDS = ["turkey", "giris", "girisi", "adres", "resmi", "guncel", "vip", "yeni", "link", "mobil"]
+# ============================================================
+# VIP ANAHTAR KELİMELER - GENİŞLETİLMİŞ
+# ============================================================
+VIP_KEYWORDS = [
+    # Mevcut
+    "turkey", "giris", "girisi", "adres", "resmi", "guncel",
+    "vip", "yeni", "link", "mobil",
+    # YENİ - SEO pattern'leri
+    "plusgirisler", "plus", "girisler", "guncelgiris",
+    "guncellink", "yenigiris", "yeniadres", "turkeygiris",
+    "resmigiris", "resmilink", "resmisite", "resmiadres",
+    "gunceladres", "guncelsite", "yenilink", "yenisite",
+    "turkeylink", "turkeyadres", "turkeysite",
+    "girisadresi", "guncelgirisi", "yenigirisi",
+    "resmigirisi", "turkeygirisi",
+]
+
+# ============================================================
+# VIP DOMAINS - GENİŞLETİLMİŞ
+# ============================================================
 VIP_DOMAINS = set([
+    # Mevcut manuel liste
     "superbetinturkey.vip", "superbetingirisi.vip", "superbetinadres.vip",
-    "wwwsuperbetinmobil.vip", "m.wwwsuperbetinmobil.vip"
+    "wwwsuperbetinmobil.vip", "m.wwwsuperbetinmobil.vip",
+    # YENİ - Bilinen sahte siteler
+    "superbetinplusgirisler.vip", "m.superbetinplusgirisler.vip",
+    "tr.superbetinplusgirisler.vip",
+    "superbetinguncelgiris.vip", "m.superbetinguncelgiris.vip",
+    "superbetinresmi.vip", "m.superbetinresmi.vip",
+    "superbetingirisi.vip", "m.superbetingirisi.vip",
+    "superbetinguncel.vip", "m.superbetinguncel.vip",
+    "wwwsuperbetinresmi.vip", "m.wwwsuperbetinresmi.vip",
+    "wwwsuperbetinguncel.vip", "m.wwwsuperbetinguncel.vip",
+    "wwwsuperbetingirisi.vip", "m.wwwsuperbetingirisi.vip",
+    "wwwsuperbetingiris.vip", "m.wwwsuperbetingiris.vip",
+    "superbetinmobil.vip", "m.superbetinmobil.vip",
+    "superbetin-giris.vip", "m.superbetin-giris.vip",
 ])
 
+# VIP_KEYWORDS'den otomatik üretim
 for word in VIP_KEYWORDS:
-    # Klasik Bitişik Versiyonlar
-    VIP_DOMAINS.add(f"superbetin{word}.vip")
-    VIP_DOMAINS.add(f"m.superbetin{word}.vip")
-    VIP_DOMAINS.add(f"wwwsuperbetin{word}.vip")
-    VIP_DOMAINS.add(f"m.wwwsuperbetin{word}.vip")
-    
-    # YENİ ZIRH: Tireli (-) sinsi versiyonlar!
-    VIP_DOMAINS.add(f"superbetin-{word}.vip")
-    VIP_DOMAINS.add(f"m.superbetin-{word}.vip")
-    VIP_DOMAINS.add(f"www.superbetin-{word}.vip")
+    for prefix in ["superbetin", "superbetim"]:
+        # Bitişik versiyonlar
+        VIP_DOMAINS.add(f"{prefix}{word}.vip")
+        VIP_DOMAINS.add(f"m.{prefix}{word}.vip")
+        VIP_DOMAINS.add(f"www.{prefix}{word}.vip")
+        VIP_DOMAINS.add(f"wwwsuperbetin{word}.vip")
+        VIP_DOMAINS.add(f"m.wwwsuperbetin{word}.vip")
+        # Tireli versiyonlar
+        VIP_DOMAINS.add(f"{prefix}-{word}.vip")
+        VIP_DOMAINS.add(f"m.{prefix}-{word}.vip")
+        VIP_DOMAINS.add(f"www.{prefix}-{word}.vip")
+    # tr. prefix'li versiyonlar (yeni taktik)
+    VIP_DOMAINS.add(f"tr.superbetin{word}.vip")
+    VIP_DOMAINS.add(f"tr.superbetin-{word}.vip")
+
+# ============================================================
+# SAHTE HARF (IDN) KARAKTERLERİ - GENİŞLETİLMİŞ
+# ============================================================
+FAKE_CHARS = {
+    'i': ['í', 'ì', 'ï', 'î', 'ı'],   # i yerine
+    'e': ['é', 'è', 'ê', 'ë'],          # e yerine
+    'a': ['á', 'à', 'â', 'ä'],          # a yerine
+    'n': ['ñ'],                          # n yerine
+}
 
 REPORTED_FILE = "reported.json"
 
@@ -182,29 +229,50 @@ async def main():
     # 1. Standartlar, Gaps ve TYPO'lar
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
-        # YENİ ZIRH: Rakamlı .vip uzantıları (superbetin1815.vip vb.)
         domains_to_scan.append((f"superbetin{num}.vip", "YENI-VIP", set()))
-    
+
     for num in SUPERBETIM_RANGE:
         domains_to_scan.append((f"superbetim{num}.com", "TYPO-M", set()))
         domains_to_scan.append((f"superbetim{num}.vip", "TYPO-M-VIP", set()))
 
-    # YENİ EKLENEN TARAMA: superbet[num].com (in harfi eksik)
     for num in SUPERBET_TYPO_RANGE:
         domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
-        # YENİ ZIRH: 'in' harfi eksik .vip uzantıları (superbet1814.vip vb.)
         domains_to_scan.append((f"superbet{num}.vip", "TYPO-IN-EKSIK-VIP", set()))
 
     for d in VIP_DOMAINS:
         domains_to_scan.append((d, "VIP", set()))
 
-    # 2. SİNSİ HARF (í) JENERATÖRÜ
-    print("🧬 Sahte harfli (í) varyasyonlar üretiliyor...")
+    # 2. SİNSİ HARF (IDN) JENERATÖRÜ - GENİŞLETİLMİŞ
+    print("🧬 Sahte harfli varyasyonlar üretiliyor...")
+
     for num in range(1800, 2501):
-        try:
-            puny = f"superbetín{num}.com".encode("idna").decode("utf-8")
-            domains_to_scan.append((puny, "IDN-SAHTE", set()))
-        except: pass
+        # i → í, ì, ï, î, ı (superbet[i]n)
+        for fake_i in FAKE_CHARS['i']:
+            try:
+                puny = f"superbet{fake_i}n{num}.com".encode("idna").decode("utf-8")
+                domains_to_scan.append((puny, "IDN-SAHTE", set()))
+            except: pass
+
+        # e → é, è, ê, ë (sup[e]rbetin)
+        for fake_e in FAKE_CHARS['e']:
+            try:
+                puny = f"sup{fake_e}rbetin{num}.com".encode("idna").decode("utf-8")
+                domains_to_scan.append((puny, "IDN-SAHTE", set()))
+            except: pass
+
+        # n → ñ (superbetiñ)
+        for fake_n in FAKE_CHARS['n']:
+            try:
+                puny = f"superbeti{fake_n}{num}.com".encode("idna").decode("utf-8")
+                domains_to_scan.append((puny, "IDN-SAHTE", set()))
+            except: pass
+
+        # a → á, à, â, ä (superbet[i]n - 'a' yok ama superbetán gibi deneyelim)
+        for fake_a in FAKE_CHARS['a']:
+            try:
+                puny = f"superbet{fake_a}n{num}.com".encode("idna").decode("utf-8")
+                domains_to_scan.append((puny, "IDN-SAHTE", set()))
+            except: pass
 
     # 3. Dinamik crt.sh Taraması
     async with aiohttp.ClientSession() as temp_session:
