@@ -122,14 +122,9 @@ for word in VIP_KEYWORDS:
     VIP_DOMAINS.add(f"tr.superbetin-{word}.vip")
 
 # ============================================================
-# SAHTE HARF (IDN) KARAKTERLERİ - GENİŞLETİLMİŞ
+# SAHTE HARF (IDN) - Şimdilik sadece í kullanılıyor
+# Gerekirse genişletilebilir: ì, ï, î, ı, é, è, ê, ë, ñ vb.
 # ============================================================
-FAKE_CHARS = {
-    'i': ['í', 'ì', 'ï', 'î', 'ı'],   # i yerine
-    'e': ['é', 'è', 'ê', 'ë'],          # e yerine
-    'a': ['á', 'à', 'â', 'ä'],          # a yerine
-    'n': ['ñ'],                          # n yerine
-}
 
 REPORTED_FILE = "reported.json"
 
@@ -242,37 +237,14 @@ async def main():
     for d in VIP_DOMAINS:
         domains_to_scan.append((d, "VIP", set()))
 
-    # 2. SİNSİ HARF (IDN) JENERATÖRÜ - GENİŞLETİLMİŞ
-    print("🧬 Sahte harfli varyasyonlar üretiliyor...")
+    # 2. SİNSİ HARF (IDN) JENERATÖRÜ - Sadece í
+    print("🧬 Sahte harfli (í) varyasyonlar üretiliyor...")
 
     for num in range(1800, 2501):
-        # i → í, ì, ï, î, ı (superbet[i]n)
-        for fake_i in FAKE_CHARS['i']:
-            try:
-                puny = f"superbet{fake_i}n{num}.com".encode("idna").decode("utf-8")
-                domains_to_scan.append((puny, "IDN-SAHTE", set()))
-            except: pass
-
-        # e → é, è, ê, ë (sup[e]rbetin)
-        for fake_e in FAKE_CHARS['e']:
-            try:
-                puny = f"sup{fake_e}rbetin{num}.com".encode("idna").decode("utf-8")
-                domains_to_scan.append((puny, "IDN-SAHTE", set()))
-            except: pass
-
-        # n → ñ (superbetiñ)
-        for fake_n in FAKE_CHARS['n']:
-            try:
-                puny = f"superbeti{fake_n}{num}.com".encode("idna").decode("utf-8")
-                domains_to_scan.append((puny, "IDN-SAHTE", set()))
-            except: pass
-
-        # a → á, à, â, ä (superbet[i]n - 'a' yok ama superbetán gibi deneyelim)
-        for fake_a in FAKE_CHARS['a']:
-            try:
-                puny = f"superbet{fake_a}n{num}.com".encode("idna").decode("utf-8")
-                domains_to_scan.append((puny, "IDN-SAHTE", set()))
-            except: pass
+        try:
+            puny = f"superbetín{num}.com".encode("idna").decode("utf-8")
+            domains_to_scan.append((puny, "IDN-SAHTE", set()))
+        except: pass
 
     # 3. Dinamik crt.sh Taraması
     async with aiohttp.ClientSession() as temp_session:
