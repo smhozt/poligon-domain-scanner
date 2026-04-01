@@ -66,64 +66,9 @@ SUPERBETIM_RANGE = range(1000, 2151)
 SUPERBET_TYPO_RANGE = range(1800, 2501)
 
 # ============================================================
-# VIP ANAHTAR KELİMELER - GENİŞLETİLMİŞ
-# ============================================================
-VIP_KEYWORDS = [
-    # Mevcut
-    "turkey", "giris", "girisi", "adres", "resmi", "guncel",
-    "vip", "yeni", "link", "mobil",
-    # YENİ - SEO pattern'leri
-    "plusgirisler", "plus", "girisler", "guncelgiris",
-    "guncellink", "yenigiris", "yeniadres", "turkeygiris",
-    "resmigiris", "resmilink", "resmisite", "resmiadres",
-    "gunceladres", "guncelsite", "yenilink", "yenisite",
-    "turkeylink", "turkeyadres", "turkeysite",
-    "girisadresi", "guncelgirisi", "yenigirisi",
-    "resmigirisi", "turkeygirisi",
-]
-
-# ============================================================
-# VIP DOMAINS - GENİŞLETİLMİŞ
-# ============================================================
-VIP_DOMAINS = set([
-    # Mevcut manuel liste
-    "superbetinturkey.vip", "superbetingirisi.vip", "superbetinadres.vip",
-    "wwwsuperbetinmobil.vip", "m.wwwsuperbetinmobil.vip",
-    # YENİ - Bilinen sahte siteler
-    "superbetinplusgirisler.vip", "m.superbetinplusgirisler.vip",
-    "tr.superbetinplusgirisler.vip",
-    "superbetinguncelgiris.vip", "m.superbetinguncelgiris.vip",
-    "superbetinresmi.vip", "m.superbetinresmi.vip",
-    "superbetingirisi.vip", "m.superbetingirisi.vip",
-    "superbetinguncel.vip", "m.superbetinguncel.vip",
-    "wwwsuperbetinresmi.vip", "m.wwwsuperbetinresmi.vip",
-    "wwwsuperbetinguncel.vip", "m.wwwsuperbetinguncel.vip",
-    "wwwsuperbetingirisi.vip", "m.wwwsuperbetingirisi.vip",
-    "wwwsuperbetingiris.vip", "m.wwwsuperbetingiris.vip",
-    "superbetinmobil.vip", "m.superbetinmobil.vip",
-    "superbetin-giris.vip", "m.superbetin-giris.vip",
-])
-
-# VIP_KEYWORDS'den otomatik üretim
-for word in VIP_KEYWORDS:
-    for prefix in ["superbetin", "superbetim"]:
-        # Bitişik versiyonlar
-        VIP_DOMAINS.add(f"{prefix}{word}.vip")
-        VIP_DOMAINS.add(f"m.{prefix}{word}.vip")
-        VIP_DOMAINS.add(f"www.{prefix}{word}.vip")
-        VIP_DOMAINS.add(f"wwwsuperbetin{word}.vip")
-        VIP_DOMAINS.add(f"m.wwwsuperbetin{word}.vip")
-        # Tireli versiyonlar
-        VIP_DOMAINS.add(f"{prefix}-{word}.vip")
-        VIP_DOMAINS.add(f"m.{prefix}-{word}.vip")
-        VIP_DOMAINS.add(f"www.{prefix}-{word}.vip")
-    # tr. prefix'li versiyonlar (yeni taktik)
-    VIP_DOMAINS.add(f"tr.superbetin{word}.vip")
-    VIP_DOMAINS.add(f"tr.superbetin-{word}.vip")
-
-# ============================================================
-# SAHTE HARF (IDN) - Şimdilik sadece í kullanılıyor
+# SAHTE HARF (IDN) - Sadece í
 # Gerekirse genişletilebilir: ì, ï, î, ı, é, è, ê, ë, ñ vb.
+# VIP taraması ayrı repoda (seo-vip-scanner) yapılıyor.
 # ============================================================
 
 REPORTED_FILE = "reported.json"
@@ -160,27 +105,6 @@ def save_to_google_sheets(found_items):
             print(f"✅ {len(rows_to_add)} domain Google E-Tablolara kaydedildi!")
     except Exception as e:
         print(f"Sheets hatasi: {e}")
-
-async def fetch_dynamic_vip_domains(session):
-    """Hem SEO Hem Punycode arar"""
-    queries = ["%superbetin%.vip", "xn--superbet%"]
-    found_domains = set()
-    print("🔍 İnternetin dibinde SEO ve Sahte Harf adresleri aranıyor...")
-    for q in queries:
-        url = f"https://crt.sh/?q={q}&output=json"
-        try:
-            async with session.get(url, timeout=30) as resp:
-                if resp.status == 200:
-                    data = await resp.json(content_type=None)
-                    for entry in data:
-                        domain = entry['name_value'].lower().replace("*.", "")
-                        if q == "%superbetin%.vip" and "superbetin" in domain and domain.endswith(".vip"):
-                            found_domains.add(domain)
-                        elif q == "xn--superbet%" and domain.startswith("xn--") and "superbet" in domain:
-                            found_domains.add(domain)
-        except:
-            pass
-    return found_domains
 
 async def check_dns(session, domain):
     try:
@@ -221,37 +145,25 @@ async def main():
     found = []
     domains_to_scan = []
 
-    # 1. Standartlar, Gaps ve TYPO'lar
+    # 1. Sayısal domainler: superbetin[num].com
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
-        domains_to_scan.append((f"superbetin{num}.vip", "YENI-VIP", set()))
 
+    # TYPO-M: superbetim[num].com
     for num in SUPERBETIM_RANGE:
         domains_to_scan.append((f"superbetim{num}.com", "TYPO-M", set()))
-        domains_to_scan.append((f"superbetim{num}.vip", "TYPO-M-VIP", set()))
 
+    # TYPO-IN: superbet[num].com (in harfi eksik)
     for num in SUPERBET_TYPO_RANGE:
         domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
-        domains_to_scan.append((f"superbet{num}.vip", "TYPO-IN-EKSIK-VIP", set()))
 
-    for d in VIP_DOMAINS:
-        domains_to_scan.append((d, "VIP", set()))
-
-    # 2. SİNSİ HARF (IDN) JENERATÖRÜ - Sadece í
+    # 2. IDN SAHTE HARF: superbetín[num].com (sadece í)
     print("🧬 Sahte harfli (í) varyasyonlar üretiliyor...")
-
     for num in range(1800, 2501):
         try:
             puny = f"superbetín{num}.com".encode("idna").decode("utf-8")
             domains_to_scan.append((puny, "IDN-SAHTE", set()))
         except: pass
-
-    # 3. Dinamik crt.sh Taraması
-    async with aiohttp.ClientSession() as temp_session:
-        dynamic = await fetch_dynamic_vip_domains(temp_session)
-        for d in dynamic:
-            if d not in SUPERBETIN_WHITELIST:
-                domains_to_scan.append((d, "OTO-VIP", set()))
 
     print(f"Toplam {len(domains_to_scan)} domain taranacak...")
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=50)) as session:
@@ -264,7 +176,7 @@ async def main():
     if found:
         msg = "🚨 *[ALARM] Aktif Sahte Domain!*\n"
         for item in found:
-            icon = "🎭" if item["type"] == "IDN-SAHTE" else "💎" if "VIP" in item["type"] else "🔥"
+            icon = "🎭" if item["type"] == "IDN-SAHTE" else "🔥"
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
         save_to_google_sheets(found)
         await send_telegram(msg)
