@@ -157,7 +157,13 @@ async def main():
     for num in SUPERBET_TYPO_RANGE:
         domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
 
-    # 2. IDN SAHTE HARF: superbetín[num].com (sadece í)
+    # 2. TERS PATTERN: [num]superbetin.com (yeni taktik - sayı önde)
+    for num in range(1800, 2501):
+        domains_to_scan.append((f"{num}superbetin.com", "TERS-PATTERN", set()))
+        domains_to_scan.append((f"{num}superbetim.com", "TERS-PATTERN", set()))
+        domains_to_scan.append((f"{num}superbet.com", "TERS-PATTERN", set()))
+
+    # 3. IDN SAHTE HARF: superbetín[num].com (sadece í)
     print("🧬 Sahte harfli (í) varyasyonlar üretiliyor...")
     for num in range(1800, 2501):
         try:
@@ -176,7 +182,7 @@ async def main():
     if found:
         msg = "🚨 *[ALARM] Aktif Sahte Domain!*\n"
         for item in found:
-            icon = "🎭" if item["type"] == "IDN-SAHTE" else "🔥"
+            icon = "🎭" if item["type"] == "IDN-SAHTE" else "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
         save_to_google_sheets(found)
         await send_telegram(msg)
