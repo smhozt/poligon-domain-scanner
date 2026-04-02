@@ -2,7 +2,8 @@ import asyncio
 import aiohttp
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+TZ_SOFIA = timezone(timedelta(hours=3))
 
 # Google Sheets Kütüphaneleri
 import gspread
@@ -96,7 +97,7 @@ def save_to_google_sheets(found_items):
         client = gspread.authorize(creds)
         sheet = client.open_by_key(SPREADSHEET_ID).sheet1
         rows_to_add = []
-        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        current_time = datetime.now(TZ_SOFIA).strftime("%Y-%m-%d %H:%M:%S")
         for item in found_items:
             row = [current_time, item['domain'], str(item['status']), item['ip'] if item['ip'] else "Bulunamadi"]
             rows_to_add.append(row)
