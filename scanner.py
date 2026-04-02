@@ -64,7 +64,7 @@ SUPERBETIN_WHITELIST = set([
 SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 2501)
 SUPERBETIM_RANGE = range(1000, 2151)
-SUPERBET_TYPO_RANGE = range(1800, 2501)
+SUPERBET_TYPO_RANGE = range(1000, 2501)
 
 # ============================================================
 # SAHTE HARF (IDN) - Sadece í
