@@ -1,0 +1,43 @@
+name: Turkbet Domain Scanner
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Her 6 saatte bir çalışır (0, 6, 12, 18)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install aiohttp gspread google-auth
+
+      - name: Run Turkbet Scanner
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+        run: python turkbet_scanner.py
+
+      - name: Commit reported.json
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add turkbet_reported.json || true
+          git commit -m "update: turkbet reported domains [skip ci]" || echo "No changes"
+          git pull --rebase origin main
+          git push
