@@ -2,7 +2,7 @@ name: Betsat Domain Scanner
 
 on:
   schedule:
-    - cron: '30 * * * *'  # Her saat 30'da çalışır (superbetin ile çakışmaz)
+    - cron: '30 */3 * * *'  # Her 3 saatte bir, saat 30'da çalışır
   workflow_dispatch:
 
 permissions:
