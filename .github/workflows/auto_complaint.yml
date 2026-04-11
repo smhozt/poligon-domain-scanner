@@ -1,0 +1,48 @@
+name: Auto Complaint
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # Her gün 09:00 Sofia saati
+  workflow_dispatch:
+
+jobs:
+  complaint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install aiohttp
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            reported.json
+            complaint_reported.json
+          key: complaint-cache-${{ github.run_id }}
+          restore-keys: |
+            complaint-cache-
+            reported-
+
+      - name: Run Auto Complaint
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+        run: python auto_complaint.py
+
+      - name: Save cache
+        uses: actions/cache@v4
+        if: always()
+        with:
+          path: |
+            reported.json
+            complaint_reported.json
+          key: complaint-cache-${{ github.run_id }}
