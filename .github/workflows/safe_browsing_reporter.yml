@@ -1,0 +1,47 @@
+name: Safe Browsing Reporter
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # 4 saatte bir
+  workflow_dispatch:
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install aiohttp
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            reported.json
+            safe_browsing_reported.json
+          key: sb-cache-${{ github.run_id }}
+          restore-keys: |
+            sb-cache-
+            reported-
+
+      - name: Run Safe Browsing Reporter
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+          SAFE_BROWSING_API_KEY: ${{ secrets.SAFE_BROWSING_API_KEY }}
+        run: python safe_browsing_reporter.py
+
+      - name: Save cache
+        uses: actions/cache@v4
+        if: always()
+        with:
+          path: |
+            reported.json
+            safe_browsing_reported.json
+          key: sb-cache-${{ github.run_id }}
