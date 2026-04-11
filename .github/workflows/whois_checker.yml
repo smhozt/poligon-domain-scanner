@@ -2,7 +2,7 @@ name: WHOIS Checker
 
 on:
   schedule:
-    - cron: '30 * * * *'  # Her saat 30'da (scanner'dan 30 dk sonra)
+    - cron: '30 */3 * * *'  # Her 3 saatte bir (scanner'dan 30 dk sonra)
   workflow_dispatch:
 
 jobs:
