@@ -2,7 +2,7 @@ name: Safe Browsing Reporter
 
 on:
   schedule:
-    - cron: '0 */4 * * *'  # 4 saatte bir
+    - cron: '0 */6 * * *'  # 6 saatte bir
   workflow_dispatch:
 
 jobs:
