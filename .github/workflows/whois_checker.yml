@@ -5,6 +5,9 @@ on:
     - cron: '30 */3 * * *'  # Her 3 saatte bir (scanner'dan 30 dk sonra)
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   whois:
     runs-on: ubuntu-latest
@@ -19,28 +22,18 @@ jobs:
       - name: Install dependencies
         run: pip install aiohttp
 
-      - name: Restore reported cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            reported.json
-            whois_reported.json
-          key: whois-cache-${{ github.run_id }}
-          restore-keys: |
-            whois-cache-
-            reported-
-
       - name: Run WHOIS Checker
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
         run: python whois_checker.py
 
-      - name: Save cache
-        uses: actions/cache@v4
+      - name: Commit WHOIS state
         if: always()
-        with:
-          path: |
-            reported.json
-            whois_reported.json
-          key: whois-cache-${{ github.run_id }}
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add whois_reported.json || true
+          git diff --staged --quiet || git commit -m "update: whois_reported.json [skip ci]"
+          git pull --rebase origin main
+          git push
