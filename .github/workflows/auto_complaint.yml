@@ -5,6 +5,9 @@ on:
     - cron: '0 9 * * *'  # Her gün 09:00 Sofia saati
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   complaint:
     runs-on: ubuntu-latest
@@ -19,17 +22,6 @@ jobs:
       - name: Install dependencies
         run: pip install aiohttp
 
-      - name: Restore cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            reported.json
-            complaint_reported.json
-          key: complaint-cache-${{ github.run_id }}
-          restore-keys: |
-            complaint-cache-
-            reported-
-
       - name: Run Auto Complaint
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
@@ -38,11 +30,12 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
         run: python auto_complaint.py
 
-      - name: Save cache
-        uses: actions/cache@v4
+      - name: Commit complaint state
         if: always()
-        with:
-          path: |
-            reported.json
-            complaint_reported.json
-          key: complaint-cache-${{ github.run_id }}
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add complaint_reported.json || true
+          git diff --staged --quiet || git commit -m "update: complaint_reported.json [skip ci]"
+          git pull --rebase origin main
+          git push
