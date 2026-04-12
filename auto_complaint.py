@@ -14,8 +14,12 @@ TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 SMTP_USER = os.environ.get("SMTP_USER", "")
 SMTP_PASS = os.environ.get("SMTP_PASS", "")
 
-REPORTED_FILE = "reported.json"
-WHOIS_FILE = "whois_reported.json"
+# Tüm brand'lerin reported dosyaları
+REPORTED_FILES = [
+    "reported.json",
+    "betsat_reported.json",
+    "turkbet_reported.json",
+]
 COMPLAINT_FILE = "complaint_reported.json"
 
 # Şikayet gönderi adresleri
@@ -37,6 +41,13 @@ def save_json(filename, data):
     with open(filename, "w") as f:
         json.dump(list(data), f)
 
+def get_root(domain):
+    """Subdomain varsa root domain'i döndür: tr.foo.vip → foo.vip"""
+    parts = domain.split(".")
+    if len(parts) > 2:
+        return ".".join(parts[-2:])
+    return domain
+
 def detect_brand(domain):
     d = domain.lower()
     if "betsat" in d:
@@ -47,9 +58,7 @@ def detect_brand(domain):
         return "superbetin", "superbetin1821.com"
 
 def build_nicenic_email(domain, brand, official_domain):
-    """NICENIC için şikayet maili oluştur"""
     subject = f"URGENT: Phishing Domain - {domain} - Immediate ClientHold Required"
-
     body = f"""Dear NiceNIC Abuse Team,
 
 We are reporting a fraudulent domain registered through your services:
@@ -76,18 +85,15 @@ security@superbetin.com
     return subject, body
 
 def send_email(to_addresses, subject, body, from_name="Superbetin Security Team"):
-    """Gmail SMTP ile mail gönder"""
     if not SMTP_USER or not SMTP_PASS:
         print("SMTP bilgileri eksik!")
         return False
-
     try:
         msg = MIMEMultipart()
         msg["From"] = f"{from_name} <{SMTP_USER}>"
         msg["To"] = ", ".join(to_addresses)
         msg["Subject"] = subject
         msg.attach(MIMEText(body, "plain", "utf-8"))
-
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(SMTP_USER, SMTP_PASS)
             server.sendmail(SMTP_USER, to_addresses, msg.as_string())
@@ -111,11 +117,21 @@ async def send_telegram(message):
                 print(f"Telegram hatası: {e}")
 
 async def main():
-    reported_domains = load_json(REPORTED_FILE)
+    # Tüm brand'lerin reported domainlerini topla
+    all_reported = []
+    for f in REPORTED_FILES:
+        all_reported.extend(load_json(f))
+
+    # complaint_done hem original domain hem root domain izler
     complaint_done = set(load_json(COMPLAINT_FILE))
 
     # Daha önce şikayet edilmemiş domainler
-    new_domains = [d for d in reported_domains if d not in complaint_done]
+    # Root domain daha önce gönderildiyse subdomain'i de atla
+    new_domains = []
+    for d in all_reported:
+        root = get_root(d)
+        if d not in complaint_done and root not in complaint_done:
+            new_domains.append(d)
 
     if not new_domains:
         print("Şikayet gönderilecek yeni domain yok.")
@@ -125,14 +141,16 @@ async def main():
 
     success_list = []
     failed_list = []
+    sent_roots = set()  # Bu run içinde gönderilen root'ları takip et
 
-    for domain in new_domains[:20]:  # Günde max 20 mail — spam olmasın
-        # Subdomain ise root al
-        parts = domain.split(".")
-        if len(parts) > 2:
-            root = ".".join(parts[-2:])
-        else:
-            root = domain
+    for domain in new_domains[:20]:  # Günde max 20 mail
+        root = get_root(domain)
+
+        # Aynı run içinde aynı root'a tekrar mail gitmesin
+        if root in sent_roots:
+            print(f"  ⏭️ Atlandı (duplicate root): {root}")
+            complaint_done.add(domain)  # Original'ı da işaretleyelim
+            continue
 
         brand, official_domain = detect_brand(domain)
         subject, body = build_nicenic_email(root, brand, official_domain)
@@ -146,7 +164,9 @@ async def main():
 
         if success:
             success_list.append(domain)
-            complaint_done.add(domain)
+            complaint_done.add(domain)   # Original domain
+            complaint_done.add(root)     # Root domain — subdomain duplicate'leri engeller
+            sent_roots.add(root)
             print(f"  ✅ Gönderildi: {root}")
         else:
             failed_list.append(domain)
