@@ -3,7 +3,10 @@ name: Weekly Report
 on:
   schedule:
     - cron: '0 8 * * 1'  # Her Pazartesi 08:00 Sofia saati
-  workflow_dispatch:       # Manuel tetikleme
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   report:
@@ -19,38 +22,18 @@ jobs:
       - name: Install dependencies
         run: pip install aiohttp
 
-      - name: Restore all caches
-        uses: actions/cache@v4
-        with:
-          path: |
-            reported.json
-            betsat_reported.json
-            turkbet_reported.json
-            google_reported.json
-            whois_reported.json
-            weekly_stats.json
-          key: weekly-cache-${{ github.run_id }}
-          restore-keys: |
-            weekly-cache-
-            whois-cache-
-            reported-
-            google-reported-
-
       - name: Run Weekly Report
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
         run: python weekly_report.py
 
-      - name: Save stats cache
-        uses: actions/cache@v4
+      - name: Commit weekly stats
         if: always()
-        with:
-          path: |
-            reported.json
-            betsat_reported.json
-            turkbet_reported.json
-            google_reported.json
-            whois_reported.json
-            weekly_stats.json
-          key: weekly-cache-${{ github.run_id }}
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          git add weekly_stats.json || true
+          git diff --staged --quiet || git commit -m "update: weekly_stats.json [skip ci]"
+          git pull --rebase origin main
+          git push
