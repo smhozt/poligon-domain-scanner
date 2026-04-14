@@ -66,12 +66,6 @@ SUPERBETIN_RANGE = range(1975, 2501)
 SUPERBETIM_RANGE = range(1000, 2151)
 SUPERBET_TYPO_RANGE = range(1000, 2501)
 
-# ============================================================
-# SAHTE HARF (IDN) - Sadece í
-# Gerekirse genişletilebilir: ì, ï, î, ı, é, è, ê, ë, ñ vb.
-# VIP taraması ayrı repoda (seo-vip-scanner) yapılıyor.
-# ============================================================
-
 REPORTED_FILE = "reported.json"
 
 def load_reported():
@@ -158,8 +152,7 @@ async def main():
     for num in SUPERBET_TYPO_RANGE:
         domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
 
-    # 2. TERS PATTERN: [num]superbetin.com (yeni taktik - sayı önde)
-    # 1000'den başlatıldı — 1182superbetin.com gibi düşük sayılı domainleri de yakalar
+    # 2. TERS PATTERN: [num]superbetin.com
     for num in range(1000, 2501):
         domains_to_scan.append((f"{num}superbetin.com", "TERS-PATTERN", set()))
         domains_to_scan.append((f"{num}superbetim.com", "TERS-PATTERN", set()))
@@ -173,6 +166,13 @@ async def main():
             domains_to_scan.append((puny, "IDN-SAHTE", set()))
         except: pass
 
+    # 4. YENİ TİRELİ ÖNEKLER (m-, tr-, www-, vip-) — m-superbetin.com vb. yakalar!
+    print("🔗 Tireli önek (m-, tr- vb.) varyasyonları üretiliyor...")
+    PREFIXES = ["m-", "tr-", "www-", "vip-"]
+    for num in range(1000, 2501):
+        for prefix in PREFIXES:
+            domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-PATTERN", set()))
+
     print(f"Toplam {len(domains_to_scan)} domain taranacak...")
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=50)) as session:
         semaphore = asyncio.Semaphore(50)
@@ -184,7 +184,7 @@ async def main():
     if found:
         msg = "🚨 *[ALARM] Aktif Sahte Domain!*\n"
         for item in found:
-            icon = "🎭" if item["type"] == "IDN-SAHTE" else "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
+            icon = "🎭" if item["type"] == "IDN-SAHTE" else "🔗" if item["type"] == "PREFIX-PATTERN" else "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
         save_to_google_sheets(found)
         await send_telegram(msg)
