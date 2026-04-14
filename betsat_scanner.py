@@ -182,6 +182,13 @@ async def main():
                 puny = variant.encode("idna").decode("utf-8")
                 domains_to_scan.append((puny, "IDN-SAHTE", set()))
             except: pass
+            
+    # 7. YENİ TİRELİ ÖNEKLER (m-, tr-, www-, vip-) — m-betsat1396.com'u yakalar!
+    print("🔗 Tireli önek (m-, tr- vb.) varyasyonları üretiliyor...")
+    PREFIXES = ["m-", "tr-", "www-", "vip-"]
+    for num in range(1000, 2501):
+        for prefix in PREFIXES:
+            domains_to_scan.append((f"{prefix}betsat{num}.com", "PREFIX-PATTERN", set()))
 
     print(f"Toplam {len(domains_to_scan)} domain taranacak...")
 
@@ -197,7 +204,7 @@ async def main():
     if found:
         msg = "🚨 *[BETSAT ALARM] Aktif Sahte Domain!*\n"
         for item in found:
-            icon = "🎭" if item["type"] == "IDN-SAHTE" else "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
+            icon = "🎭" if item["type"] == "IDN-SAHTE" else "🔗" if item["type"] == "PREFIX-PATTERN" else "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
         save_to_google_sheets(found)
         await send_telegram(msg)
