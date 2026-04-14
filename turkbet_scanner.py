@@ -171,6 +171,14 @@ async def main():
     # 6. TYPO: trkbet (u eksik)
     for num in range(700, 2001):
         domains_to_scan.append((f"{num}trkbet.com", "TYPO-U-EKSIK", set()))
+        
+    # 7. YENİ TİRELİ ÖNEKLER (m-, tr-, www-, vip-) — m-710turkbet.com vb. yakalar!
+    print("🔗 Tireli önek (m-, tr- vb.) varyasyonları üretiliyor...")
+    PREFIXES = ["m-", "tr-", "www-", "vip-"]
+    for num in range(700, 2001):
+        for prefix in PREFIXES:
+            domains_to_scan.append((f"{prefix}{num}turkbet.com", "PREFIX-PATTERN", set()))
+            domains_to_scan.append((f"{prefix}turkbet{num}.com", "PREFIX-PATTERN", set()))
 
     print(f"Toplam {len(domains_to_scan)} domain taranacak...")
 
@@ -186,7 +194,7 @@ async def main():
     if found:
         msg = "🚨 *[TURKBET ALARM] Aktif Sahte Domain!*\n"
         for item in found:
-            icon = "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
+            icon = "🔗" if item["type"] == "PREFIX-PATTERN" else "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
         save_to_google_sheets(found)
         await send_telegram(msg)
