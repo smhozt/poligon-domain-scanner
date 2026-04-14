@@ -159,14 +159,15 @@ async def main():
         domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
 
     # 2. TERS PATTERN: [num]superbetin.com (yeni taktik - sayı önde)
-    for num in range(1800, 2501):
+    # 1000'den başlatıldı — 1182superbetin.com gibi düşük sayılı domainleri de yakalar
+    for num in range(1000, 2501):
         domains_to_scan.append((f"{num}superbetin.com", "TERS-PATTERN", set()))
         domains_to_scan.append((f"{num}superbetim.com", "TERS-PATTERN", set()))
         domains_to_scan.append((f"{num}superbet.com", "TERS-PATTERN", set()))
 
     # 3. IDN SAHTE HARF: superbetín[num].com (sadece í)
     print("🧬 Sahte harfli (í) varyasyonlar üretiliyor...")
-    for num in range(1800, 2501):
+    for num in range(1000, 2501):
         try:
             puny = f"superbetín{num}.com".encode("idna").decode("utf-8")
             domains_to_scan.append((puny, "IDN-SAHTE", set()))
