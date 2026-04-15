@@ -26,8 +26,29 @@ COMPLAINT_FILE = "complaint_reported.json"
 NICENIC_ABUSE = "abuse@nicenic.net"
 NICENIC_SUPPORT = "support@nicenic.net"
 
-# CGA Lisans linki
-CGA_LICENSE = "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
+# ============================================================
+# MARKA AYARLARI (GÜNCEL ADRESLERİ BURADAN DEĞİŞTİR)
+# ============================================================
+BRANDS = {
+    "superbetin": {
+        "name": "Superbetin",
+        "fixed_domain": "superbetin.com",
+        "active_domain": "superbetin1822.com",
+        "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
+    },
+    "betsat": {
+        "name": "Betsat",
+        "fixed_domain": "betsat.com",
+        "active_domain": "betsat1557.com",
+        "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
+    },
+    "turkbet": {
+        "name": "Turkbet",
+        "fixed_domain": "turkbet.io",
+        "active_domain": "717turkbet.com",
+        "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk="
+    }
+}
 
 def load_json(filename):
     try:
@@ -48,16 +69,22 @@ def get_root(domain):
         return ".".join(parts[-2:])
     return domain
 
-def detect_brand(domain):
+def detect_brand_key(domain):
     d = domain.lower()
     if "betsat" in d:
-        return "betsat", "betsat1540.com"
-    elif "turkbet" in d:
-        return "turkbet", "710turkbet.com"
+        return "betsat"
+    elif "turkbet" in d or "turcbet" in d or "trkbet" in d:
+        return "turkbet"
     else:
-        return "superbetin", "superbetin1821.com"
+        return "superbetin"
 
-def build_nicenic_email(domain, brand, official_domain):
+def build_nicenic_email(domain, brand_key):
+    brand_info = BRANDS[brand_key]
+    brand_name = brand_info["name"]
+    fixed_domain = brand_info["fixed_domain"]
+    active_domain = brand_info["active_domain"]
+    license_url = brand_info["license_url"]
+
     subject = f"URGENT: Phishing Domain - {domain} - Immediate ClientHold Required"
     body = f"""Dear NiceNIC Abuse Team,
 
@@ -65,26 +92,26 @@ We are reporting a fraudulent domain registered through your services:
 
 Domain: {domain}
 
-This domain is an active phishing site cloning our licensed brand ({brand.title()}), designed to steal user credentials and collect fraudulent bank transfers from Turkish users.
+This domain is an active phishing site cloning our licensed brand ({brand_name}), designed to steal user credentials and collect fraudulent bank transfers from Turkish users.
 
 This is part of an ongoing serial fraud operation using your platform. Multiple domains from the same registrant cluster have already been placed on ClientHold by NiceNIC based on our previous reports.
 
-We are a licensed operator: {brand}.com is operated by Poligon Entertainment N.V., licensed by the Curaçao Gaming Authority under license OGL/2024/815/0653 (Company Number 132517). Status: Active.
-License verification: {CGA_LICENSE}
+We are a licensed operator: {fixed_domain} is operated by Poligon Entertainment N.V., licensed by the Curaçao Gaming Authority under license OGL/2024/815/0653 (Company Number 132517). Status: Active.
+License verification: {license_url}
 
-Our official domains: {brand}.com / {official_domain}
+Our official domains: {fixed_domain} / {active_domain}
 
 We urgently request:
 1. Immediate ClientHold suspension of {domain}
 2. Investigation of all domains registered by the same registrant account
 
 Best regards,
-Superbetin Security Team
-security@superbetin.com
+{brand_name} Security Team
+security@{fixed_domain.replace('.io', '.com')}
 """
     return subject, body
 
-def send_email(to_addresses, subject, body, from_name="Superbetin Security Team"):
+def send_email(to_addresses, subject, body, from_name="Security Team"):
     if not SMTP_USER or not SMTP_PASS:
         print("SMTP bilgileri eksik!")
         return False
@@ -117,16 +144,12 @@ async def send_telegram(message):
                 print(f"Telegram hatası: {e}")
 
 async def main():
-    # Tüm brand'lerin reported domainlerini topla
     all_reported = []
     for f in REPORTED_FILES:
         all_reported.extend(load_json(f))
 
-    # complaint_done hem original domain hem root domain izler
     complaint_done = set(load_json(COMPLAINT_FILE))
 
-    # Daha önce şikayet edilmemiş domainler
-    # Root domain daha önce gönderildiyse subdomain'i de atla
     new_domains = []
     for d in all_reported:
         root = get_root(d)
@@ -141,50 +164,51 @@ async def main():
 
     success_list = []
     failed_list = []
-    sent_roots = set()  # Bu run içinde gönderilen root'ları takip et
+    sent_roots = set()
 
-    for domain in new_domains[:20]:  # Günde max 20 mail
+    for domain in new_domains[:20]:
         root = get_root(domain)
 
-        # Aynı run içinde aynı root'a tekrar mail gitmesin
         if root in sent_roots:
             print(f"  ⏭️ Atlandı (duplicate root): {root}")
-            complaint_done.add(domain)  # Original'ı da işaretleyelim
+            complaint_done.add(domain)
             continue
 
-        brand, official_domain = detect_brand(domain)
-        subject, body = build_nicenic_email(root, brand, official_domain)
+        brand_key = detect_brand_key(domain)
+        brand_name = BRANDS[brand_key]["name"]
+        
+        subject, body = build_nicenic_email(root, brand_key)
 
-        print(f"Şikayet gönderiliyor: {root} ({brand})")
+        print(f"Şikayet gönderiliyor: {root} ({brand_name})")
         success = send_email(
             [NICENIC_ABUSE, NICENIC_SUPPORT],
             subject,
-            body
+            body,
+            from_name=f"{brand_name} Security Team"
         )
 
         if success:
             success_list.append(domain)
-            complaint_done.add(domain)   # Original domain
-            complaint_done.add(root)     # Root domain — subdomain duplicate'leri engeller
+            complaint_done.add(domain)
+            complaint_done.add(root)
             sent_roots.add(root)
             print(f"  ✅ Gönderildi: {root}")
         else:
             failed_list.append(domain)
             print(f"  ❌ Başarısız: {root}")
 
-        await asyncio.sleep(5)  # Spam filtresi için bekle
+        await asyncio.sleep(5)
 
     save_json(COMPLAINT_FILE, list(complaint_done))
 
-    # Telegram özeti
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     msg = f"📧 *[OTO-ŞİKAYET] NICENIC Mail Raporu* — {now}\n\n"
 
     if success_list:
         msg += f"✅ *Gönderilen:* {len(success_list)} şikayet\n"
         for d in success_list[:10]:
-            brand, _ = detect_brand(d)
-            icon = "🔵" if brand == "superbetin" else "🟠" if brand == "betsat" else "🟢"
+            b_key = detect_brand_key(d)
+            icon = "🔵" if b_key == "superbetin" else "🟠" if b_key == "betsat" else "🟢"
             msg += f"  {icon} `{d}`\n"
         if len(success_list) > 10:
             msg += f"  ... ve {len(success_list)-10} tane daha\n"
