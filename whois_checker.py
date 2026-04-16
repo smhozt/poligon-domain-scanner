@@ -10,7 +10,7 @@ TZ_SOFIA = timezone(timedelta(hours=3))
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 
-REPORTED_FILE = "reported.json"
+REPORTED_FILES = ["reported.json", "betsat_reported.json", "turkbet_reported.json"]
 WHOIS_REPORTED_FILE = "whois_reported.json"
 
 SUSPICIOUS_KEYWORDS = [
