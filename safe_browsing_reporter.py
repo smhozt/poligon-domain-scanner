@@ -10,7 +10,7 @@ TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 SAFE_BROWSING_API_KEY = os.environ.get("SAFE_BROWSING_API_KEY", "")
 
-REPORTED_FILE = "reported.json"
+REPORTED_FILES = ["reported.json", "betsat_reported.json", "turkbet_reported.json"]
 SB_REPORTED_FILE = "safe_browsing_reported.json"
 
 SAFE_BROWSING_API = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
@@ -89,7 +89,10 @@ async def send_telegram(message):
                 print(f"Telegram hatası: {e}")
 
 async def main():
-    reported_domains = load_json(REPORTED_FILE)
+    all_domains = []
+    for f in REPORTED_FILES:
+        all_domains.extend(load_json(f))
+    reported_domains = list(set(all_domains))
     sb_done = set(load_json(SB_REPORTED_FILE))
 
     # Daha önce gönderilmemiş domainler
