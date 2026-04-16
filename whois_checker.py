@@ -165,7 +165,10 @@ async def send_telegram(message):
                 print(f"Telegram hatası: {e}")
 
 async def main():
-    reported_domains = load_json(REPORTED_FILE)
+    all_domains = []
+    for f in REPORTED_FILES:
+        all_domains.extend(load_json(f))
+    reported_domains = list(set(all_domains))
     whois_done = set(load_json(WHOIS_REPORTED_FILE))
 
     new_domains = [d for d in reported_domains if d not in whois_done]
