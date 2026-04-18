@@ -173,7 +173,11 @@ async def main():
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-PATTERN", set()))
 
-    print(f"Toplam {len(domains_to_scan)} domain taranacak...")
+    # 5. .CO TLD — superbetin[num].co (typosquat örn. superbetin1824.co)
+    print("🌐 .co TLD varyasyonları taranıyor...")
+    for num in range(1800, 2501):
+        domains_to_scan.append((f"superbetin{num}.co", "CO-TYPO", set()))
+        domains_to_scan.append((f"{num}superbetin.co", "CO-TERS", set()))
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=50)) as session:
         semaphore = asyncio.Semaphore(50)
         async def bounded_scan(d, t, w):
@@ -184,7 +188,7 @@ async def main():
     if found:
         msg = "🚨 *[ALARM] Aktif Sahte Domain!*\n"
         for item in found:
-            icon = "🎭" if item["type"] == "IDN-SAHTE" else "🔗" if item["type"] == "PREFIX-PATTERN" else "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
+            icon = "🌐" if "CO-" in item["type"] else "🎭" if item["type"] == "IDN-SAHTE" else "🔗" if item["type"] == "PREFIX-PATTERN" else "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
         save_to_google_sheets(found)
         await send_telegram(msg)
