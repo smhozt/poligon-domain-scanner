@@ -60,6 +60,15 @@ SUPERBETIN_WHITELIST = set([
     "superbetin1971.com","superbetin1972.com","superbetin1973.com","superbetin1974.com",
 ])
 
+# ESKİ DOMAİNLERİMİZİ WHITELIST'E EKLİYORUZ (SİSTEM SAHTE SANMASIN DİYE)
+for num in [724, 1240, 1268, 1560, 2369]:
+    SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
+for num in range(1300, 1411):
+    SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
+for num in range(1700, 1813):
+    SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
+
+
 # Taranacak domainler
 SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 2501)
@@ -144,13 +153,12 @@ async def main():
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
 
-    # YENİ — 2026-04-20: Düşük sayı aralıkları (superbetin0825 pattern'ı)
-    # superbetin0825 gibi domainler 1975+ aralığında değil, eklemek gerekti
+    # YENİ EKLENEN: Düşük numaralar (100 ile 1812 arası)
     for num in range(100, 1813):
         domains_to_scan.append((f"superbetin{num}.com", "DUSUK-SAYI", SUPERBETIN_WHITELIST))
         domains_to_scan.append((f"{num}superbetin.com", "TERS-DUSUK", set()))
 
-    # Tarih formatı: superbetin0825 (sıfırlı, 0100-0999)
+    # YENİ EKLENEN: Tarih Formatı ve Sıfırla Başlayanlar (0825 gibi, 0100 - 0999 arası)
     for num in range(100, 1000):
         domains_to_scan.append((f"superbetin{num:04d}.com", "TARIH-FORMAT", set()))
         domains_to_scan.append((f"superbet{num:04d}.com",   "TARIH-TYPO",   set()))
@@ -189,6 +197,7 @@ async def main():
     for num in range(1800, 2501):
         domains_to_scan.append((f"superbetin{num}.co", "CO-TYPO", set()))
         domains_to_scan.append((f"{num}superbetin.co", "CO-TERS", set()))
+        
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=50)) as session:
         semaphore = asyncio.Semaphore(50)
         async def bounded_scan(d, t, w):
