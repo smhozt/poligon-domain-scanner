@@ -144,6 +144,17 @@ async def main():
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
 
+    # YENİ — 2026-04-20: Düşük sayı aralıkları (superbetin0825 pattern'ı)
+    # superbetin0825 gibi domainler 1975+ aralığında değil, eklemek gerekti
+    for num in range(100, 1813):
+        domains_to_scan.append((f"superbetin{num}.com", "DUSUK-SAYI", SUPERBETIN_WHITELIST))
+        domains_to_scan.append((f"{num}superbetin.com", "TERS-DUSUK", set()))
+
+    # Tarih formatı: superbetin0825 (sıfırlı, 0100-0999)
+    for num in range(100, 1000):
+        domains_to_scan.append((f"superbetin{num:04d}.com", "TARIH-FORMAT", set()))
+        domains_to_scan.append((f"superbet{num:04d}.com",   "TARIH-TYPO",   set()))
+
     # TYPO-M: superbetim[num].com
     for num in SUPERBETIM_RANGE:
         domains_to_scan.append((f"superbetim{num}.com", "TYPO-M", set()))
