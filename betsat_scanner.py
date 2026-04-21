@@ -154,11 +154,7 @@ async def main():
     for num in (BETSAT_GAPS + list(BETSAT_RANGE)):
         domains_to_scan.append((f"betsat{num}.com", "YENI", BETSAT_WHITELIST))
 
-    # 2. DÜŞÜK SAYILAR / SIFIRLA BAŞLAYANLAR (100-1539)
-    for num in range(100, 1540):
-        domains_to_scan.append((f"betsat{num}.com", "DUSUK-SAYI", BETSAT_WHITELIST))
-        domains_to_scan.append((f"{num}betsat.com", "TERS-DUSUK", set()))
-
+    # YALNIZCA TARIH FORMATI KALDI (Düşük sayılar silindi)
     for num in range(100, 1000):
         domains_to_scan.append((f"betsat{num:04d}.com", "TARIH-FORMAT", set()))
 
