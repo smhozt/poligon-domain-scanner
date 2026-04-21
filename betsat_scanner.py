@@ -1,5 +1,7 @@
 import asyncio
 import aiohttp
+import socket
+import concurrent.futures
 import os
 import json
 from datetime import datetime, timezone, timedelta
@@ -8,6 +10,9 @@ import gspread
 from google.oauth2.service_account import Credentials
 
 TZ_SOFIA = timezone(timedelta(hours=3))
+
+# Native DNS için thread pool
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
@@ -106,16 +111,14 @@ def save_to_google_sheets(found_items):
     except Exception as e:
         print(f"Sheets hatasi: {e}")
 
-async def check_dns(session, domain):
+async def check_dns_native(domain):
+    """Native DNS — OS üzerinden, Google API beklemiyor"""
+    loop = asyncio.get_running_loop()
     try:
-        url = f"https://dns.google/resolve?name={domain}&type=A"
-        async with session.get(url, timeout=5) as resp:
-            if resp.status == 200:
-                data = await resp.json()
-                if data.get("Status") == 0 and data.get("Answer"):
-                    return True, data["Answer"][0].get("data", "")
-    except: pass
-    return False, ""
+        ip = await loop.run_in_executor(executor, socket.gethostbyname, domain)
+        return True, ip
+    except:
+        return False, ""
 
 async def check_http(session, domain):
     try:
@@ -127,7 +130,9 @@ async def check_http(session, domain):
 
 async def scan_domain(session, domain, dtype, whitelist, reported, found):
     if domain in whitelist or domain in reported: return
-    dns_ok, ip = await check_dns(session, domain)
+    dns_ok, ip = await check_dns_native(domain)
+    if not dns_ok:
+        return
     http_ok, code = await check_http(session, domain)
     if dns_ok or http_ok:
         found.append({
