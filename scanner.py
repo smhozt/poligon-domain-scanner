@@ -170,7 +170,7 @@ async def main():
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
 
-    # YENİ: Tarih Formatı ve Sıfırla Başlayanlar (0825 gibi, 0100 - 0999 arası)
+    # YENİ EKLENEN: Tarih Formatı ve Sıfırla Başlayanlar (0825 gibi, 0100 - 0999 arası)
     for num in range(100, 1000):
         domains_to_scan.append((f"superbetin{num:04d}.com", "TARIH-FORMAT", set()))
         domains_to_scan.append((f"superbet{num:04d}.com",   "TARIH-TYPO",   set()))
