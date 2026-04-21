@@ -154,11 +154,6 @@ async def main():
     for num in list(TURKBET_RANGE):
         domains_to_scan.append((f"{num}turkbet.com", "YENI", TURKBET_WHITELIST))
 
-    # 2. DÜŞÜK SAYILAR / SIFIRLA BAŞLAYANLAR (10 ile 699 arası)
-    for num in range(10, 700):
-        domains_to_scan.append((f"{num}turkbet.com", "DUSUK-SAYI", TURKBET_WHITELIST))
-        domains_to_scan.append((f"turkbet{num}.com", "TERS-DUSUK", set()))
-
     # Tarih formatları
     for num in range(100, 1000):
         domains_to_scan.append((f"{num:04d}turkbet.com", "TARIH-FORMAT", set()))
