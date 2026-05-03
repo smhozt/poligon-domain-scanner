@@ -69,14 +69,13 @@ SUPERBETIN_WHITELIST = set([
     "superbetin1972.com","superbetin1973.com","superbetin1974.com"
 ])
 
-# ESKİ DOMAİNLERİMİZİ WHITELIST'E EKLİYORUZ (SİSTEM SAHTE SANMASIN DİYE)
+# ESKİ DOMAİNLERİMİZİ WHITELIST'E EKLİYORUZ
 for num in [724, 1240, 1268, 1560, 2369]:
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 for num in range(1300, 1411):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 for num in range(1700, 1813):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
-
 
 # Taranacak domain aralıkları
 SUPERBETIN_GAPS = [1825, 1879, 1911]
@@ -97,7 +96,6 @@ def save_reported(reported):
     with open(REPORTED_FILE, "w") as f:
         json.dump(list(reported), f)
 
-# GOOGLE SHEETS KAYIT
 def save_to_google_sheets(found_items):
     if not GCP_CREDENTIALS or not SPREADSHEET_ID:
         return
@@ -119,7 +117,6 @@ def save_to_google_sheets(found_items):
         print(f"Sheets hatasi: {e}")
 
 async def check_dns_native(domain):
-    """Yerel DNS çözücü kullanarak ışık hızında DNS kontrolü yapar"""
     loop = asyncio.get_running_loop()
     try:
         ip = await loop.run_in_executor(executor, socket.gethostbyname, domain)
@@ -128,28 +125,27 @@ async def check_dns_native(domain):
         return False, ""
 
 async def scan_domain(session, domain, dtype, whitelist, reported, found):
-    if domain in whitelist or domain in reported: return
-    
-    # 1. Önce sadece DNS var mı diye bak (Hızlandırıcı)
+    if domain in whitelist or domain in reported:
+        return
+
     dns_ok, ip = await check_dns_native(domain)
-    
     if not dns_ok:
         return
-        
+
     http_ok, code = False, 0
     try:
-        # 2. Sadece aktif domainler için HTTP kontrolü yap
         async with session.get(f"http://{domain}", timeout=5, allow_redirects=True) as resp:
             if resp.status in [200, 301, 302, 403]:
                 http_ok = True
                 code = resp.status
-    except: pass
-    
+    except:
+        pass
+
     found.append({
-        "domain": domain, 
-        "type": dtype, 
-        "status": code if http_ok else f"DNS:{ip}", 
-        "ip": ip, 
+        "domain": domain,
+        "type": dtype,
+        "status": code if http_ok else f"DNS:{ip}",
+        "ip": ip,
         "detected_by": "HTTP" if http_ok else "DNS"
     })
     reported.add(domain)
@@ -159,72 +155,93 @@ async def send_telegram(message):
     async with aiohttp.ClientSession() as session:
         for chat_id in TELEGRAM_CHAT_IDS:
             url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-            await session.post(url, json={"chat_id": chat_id.strip(), "text": message, "parse_mode": "Markdown"})
+            await session.post(url, json={
+                "chat_id": chat_id.strip(),
+                "text": message,
+                "parse_mode": "Markdown"
+            })
 
 async def main():
     reported = load_reported()
     found = []
     domains_to_scan = []
 
-    # 1. Sayısal domainler: superbetin[num].com
+    # 1. SAYISAL DOMAİNLER: superbetin[num].com
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
 
-    # YENİ EKLENEN: Tarih Formatı ve Sıfırla Başlayanlar (0825 gibi, 0100 - 0999 arası)
+    # 2. TARİH FORMATI: superbetin0825.com gibi
     for num in range(100, 1000):
         domains_to_scan.append((f"superbetin{num:04d}.com", "TARIH-FORMAT", set()))
-        domains_to_scan.append((f"superbet{num:04d}.com",   "TARIH-TYPO",   set()))
+        domains_to_scan.append((f"superbet{num:04d}.com", "TARIH-TYPO", set()))
 
-    # TYPO-M: superbetim[num].com
+    # 3. TYPO-M: superbetim[num].com
     for num in SUPERBETIM_RANGE:
         domains_to_scan.append((f"superbetim{num}.com", "TYPO-M", set()))
 
-    # TYPO-IN: superbet[num].com (in harfi eksik)
+    # 4. TYPO-IN: superbet[num].com (in harfi eksik)
     for num in SUPERBET_TYPO_RANGE:
         domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
 
-    # 2. TERS PATTERN: [num]superbetin.com
+    # 5. TERS PATTERN 4 HANELİ: [num]superbetin.com
+    print("🔄 4 haneli ters pattern üretiliyor...")
     for num in range(1000, 2501):
         domains_to_scan.append((f"{num}superbetin.com", "TERS-PATTERN", set()))
         domains_to_scan.append((f"{num}superbetim.com", "TERS-PATTERN", set()))
         domains_to_scan.append((f"{num}superbet.com", "TERS-PATTERN", set()))
 
-    # 3. IDN SAHTE HARF: superbetín[num].com (sadece í)
+    # 6. TERS PATTERN 5 HANELİ: [num]superbetin.com
+    # 18346superbetin.com gibi — mevcut 18xx serisi 5 haneli varyantı
+    print("5️⃣ 5 haneli ters pattern üretiliyor...")
+    for num in range(10000, 25001):
+        domains_to_scan.append((f"{num}superbetin.com", "TERS-5HANE", set()))
+
+    # 7. IDN SAHTE HARF
     print("🧬 Sahte harfli (í) varyasyonlar üretiliyor...")
     for num in range(1000, 2501):
         try:
             puny = f"superbetín{num}.com".encode("idna").decode("utf-8")
             domains_to_scan.append((puny, "IDN-SAHTE", set()))
-        except: pass
+        except:
+            pass
 
-    # 4. YENİ TİRELİ ÖNEKLER (m-, tr-, www-, vip-) — m-superbetin.com vb. yakalar!
-    print("🔗 Tireli önek (m-, tr- vb.) varyasyonları üretiliyor...")
+    # 8. TİRELİ ÖNEKLER: m-, tr-, www-, vip-
+    print("🔗 Tireli önek varyasyonları üretiliyor...")
     PREFIXES = ["m-", "tr-", "www-", "vip-"]
     for num in range(1000, 2501):
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-PATTERN", set()))
 
-    # 5. .CO TLD — superbetin[num].co (typosquat örn. superbetin1824.co)
+    # 9. .CO TLD
     print("🌐 .co TLD varyasyonları taranıyor...")
     for num in range(1800, 2501):
         domains_to_scan.append((f"superbetin{num}.co", "CO-TYPO", set()))
         domains_to_scan.append((f"{num}superbetin.co", "CO-TERS", set()))
-        
+
     print(f"🚀 Toplam {len(domains_to_scan)} Superbetin domaini ışık hızında taranacak...")
 
-    # BÜYÜK HIZLANDIRMA: Limit 500 yapıldı!
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
+
         async def bounded_scan(d, t, w):
-            async with semaphore: 
+            async with semaphore:
                 await scan_domain(session, d, t, w, reported, found)
+
         await asyncio.gather(*[bounded_scan(d, t, w) for d, t, w in domains_to_scan])
 
     save_reported(reported)
+
     if found:
         msg = "🚨 *[ALARM] Aktif Sahte Domain!*\n"
         for item in found:
-            icon = "🌐" if "CO-" in item["type"] else "🎭" if item["type"] == "IDN-SAHTE" else "🔗" if item["type"] == "PREFIX-PATTERN" else "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
+            icon = (
+                "5️⃣" if item["type"] == "TERS-5HANE" else
+                "🌐" if "CO-" in item["type"] else
+                "🎭" if item["type"] == "IDN-SAHTE" else
+                "🔗" if item["type"] == "PREFIX-PATTERN" else
+                "🔄" if item["type"] == "TERS-PATTERN" else
+                "🔥"
+            )
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
         save_to_google_sheets(found)
         await send_telegram(msg)
