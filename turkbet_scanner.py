@@ -11,7 +11,6 @@ from google.oauth2.service_account import Credentials
 
 TZ_SOFIA = timezone(timedelta(hours=3))
 
-# BÜYÜK OPTİMİZASYON: Native DNS için dev iş parçacığı havuzu
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
@@ -23,14 +22,16 @@ SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 # ============================================================
 # TURKBET WHİTELİST — Bizim domainlerimiz
 # NOT: Turkbet'in domain formatı [num]turkbet.com (sayı önde!)
+# Resmi güncel adres: 722turkbet.com
 # ============================================================
 TURKBET_WHITELIST = set([
     "turkbet.com",
+    "722turkbet.com",   # ← RESMİ GÜNCEL ADRES
     "700turkbet.com", "701turkbet.com", "702turkbet.com", "703turkbet.com", "704turkbet.com",
     "705turkbet.com", "706turkbet.com", "707turkbet.com", "708turkbet.com", "709turkbet.com",
     "710turkbet.com", "711turkbet.com", "712turkbet.com", "713turkbet.com", "714turkbet.com",
     "715turkbet.com", "716turkbet.com", "717turkbet.com", "718turkbet.com", "719turkbet.com",
-    "720turkbet.com", "721turkbet.com", "722turkbet.com", "723turkbet.com", "724turkbet.com",
+    "720turkbet.com", "721turkbet.com", "723turkbet.com", "724turkbet.com",
     "725turkbet.com", "726turkbet.com", "727turkbet.com", "728turkbet.com", "729turkbet.com",
     "730turkbet.com", "731turkbet.com", "732turkbet.com", "733turkbet.com", "734turkbet.com",
     "735turkbet.com", "736turkbet.com", "737turkbet.com", "738turkbet.com", "739turkbet.com",
@@ -64,7 +65,7 @@ TURKBET_WHITELIST = set([
     "875turkbet.com", "876turkbet.com", "877turkbet.com", "878turkbet.com", "879turkbet.com",
     "880turkbet.com", "881turkbet.com", "882turkbet.com", "883turkbet.com", "884turkbet.com",
     "885turkbet.com", "886turkbet.com", "887turkbet.com", "888turkbet.com", "889turkbet.com",
-    "890turkbet.com"
+    "890turkbet.com",
 ])
 
 TURKBET_RANGE = range(891, 2001)
@@ -103,7 +104,6 @@ def save_to_google_sheets(found_items):
         print(f"Sheets hatasi: {e}")
 
 async def check_dns_native(domain):
-    """Yerel DNS çözücü kullanarak ışık hızında DNS kontrolü yapar"""
     loop = asyncio.get_running_loop()
     try:
         ip = await loop.run_in_executor(executor, socket.gethostbyname, domain)
@@ -112,28 +112,27 @@ async def check_dns_native(domain):
         return False, ""
 
 async def scan_domain(session, domain, dtype, whitelist, reported, found):
-    if domain in whitelist or domain in reported: return
-    
-    # 1. Önce sadece DNS var mı diye bak (Hızlandırıcı)
+    if domain in whitelist or domain in reported:
+        return
+
     dns_ok, ip = await check_dns_native(domain)
-    
     if not dns_ok:
         return
-        
+
     http_ok, code = False, 0
     try:
-        # 2. Sadece aktif domainler için HTTP kontrolü yap
         async with session.get(f"http://{domain}", timeout=5, allow_redirects=True) as resp:
             if resp.status in [200, 301, 302, 403]:
                 http_ok = True
                 code = resp.status
-    except: pass
-    
+    except:
+        pass
+
     found.append({
-        "domain": domain, 
-        "type": dtype, 
-        "status": code if http_ok else f"DNS:{ip}", 
-        "ip": ip, 
+        "domain": domain,
+        "type": dtype,
+        "status": code if http_ok else f"DNS:{ip}",
+        "ip": ip,
         "detected_by": "HTTP" if http_ok else "DNS"
     })
     reported.add(domain)
@@ -143,7 +142,11 @@ async def send_telegram(message):
     async with aiohttp.ClientSession() as session:
         for chat_id in TELEGRAM_CHAT_IDS:
             url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-            await session.post(url, json={"chat_id": chat_id.strip(), "text": message, "parse_mode": "Markdown"})
+            await session.post(url, json={
+                "chat_id": chat_id.strip(),
+                "text": message,
+                "parse_mode": "Markdown"
+            })
 
 async def main():
     reported = load_reported()
@@ -154,49 +157,68 @@ async def main():
     for num in list(TURKBET_RANGE):
         domains_to_scan.append((f"{num}turkbet.com", "YENI", TURKBET_WHITELIST))
 
-    # Tarih formatları
+    # 2. TARİH FORMATI
     for num in range(100, 1000):
         domains_to_scan.append((f"{num:04d}turkbet.com", "TARIH-FORMAT", set()))
         domains_to_scan.append((f"turkbet{num:04d}.com", "TARIH-TERS", set()))
 
     # 3. TYPO VARYASYONLARI
     for num in range(500, 2001):
-        domains_to_scan.append((f"turkbet{num}.com", "TYPO-TERS", set()))       # Rakam sonda
-        domains_to_scan.append((f"{num}trkbet.com", "TYPO-U-EKSIK", set()))     # 'u' harfi eksik
-        domains_to_scan.append((f"{num}turkbetm.com", "TYPO-M", set()))         # Sonda m
-        domains_to_scan.append((f"m{num}turkbet.com", "TYPO-M-ON", set()))      # Başta m
+        domains_to_scan.append((f"turkbet{num}.com", "TYPO-TERS", set()))
+        domains_to_scan.append((f"{num}trkbet.com", "TYPO-U-EKSIK", set()))
+        domains_to_scan.append((f"{num}turkbetm.com", "TYPO-M", set()))
+        domains_to_scan.append((f"m{num}turkbet.com", "TYPO-M-ON", set()))
 
-    # 4. IDN SAHTE HARF (türkbet vb.)
+    # 4. TERS PATTERN 4 HANELİ
+    print("🔄 4 haneli ters pattern üretiliyor...")
+    for num in range(500, 2001):
+        domains_to_scan.append((f"{num}turkbet.com", "TERS-PATTERN", TURKBET_WHITELIST))
+
+    # 5. TERS PATTERN 5 HANELİ
+    print("5️⃣ 5 haneli ters pattern üretiliyor...")
+    for num in range(10000, 25001):
+        domains_to_scan.append((f"{num}turkbet.com", "TERS-5HANE", set()))
+
+    # 6. IDN SAHTE HARF
     print("🧬 Sahte harfli (IDN) varyasyonlar üretiliyor...")
     for num in range(500, 2001):
         for variant in [f"{num}türkbet.com", f"{num}turkbét.com"]:
             try:
                 puny = variant.encode("idna").decode("utf-8")
                 domains_to_scan.append((puny, "IDN-SAHTE", set()))
-            except: pass
+            except:
+                pass
 
-    # 5. TİRELİ ÖNEKLER (m-, tr-, www-, vip-)
-    print("🔗 Tireli önek (m-, tr- vb.) varyasyonları üretiliyor...")
+    # 7. TİRELİ ÖNEKLER: m-, tr-, www-, vip-
+    print("🔗 Tireli önek varyasyonları üretiliyor...")
     PREFIXES = ["m-", "tr-", "www-", "vip-"]
     for num in range(500, 2001):
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}{num}turkbet.com", "PREFIX-PATTERN", set()))
             domains_to_scan.append((f"{prefix}turkbet{num}.com", "PREFIX-PATTERN-TERS", set()))
 
-    # 6. YENİ: TURKBET .CO UZANTILARI (betsat1561.co saldırısından esinlenerek)
+    # 8. .CO TLD
     print("🌐 Turkbet .co TLD varyasyonları taranıyor...")
     for num in range(500, 2001):
         domains_to_scan.append((f"{num}turkbet.co", "CO-TYPO", set()))
         domains_to_scan.append((f"turkbet{num}.co", "CO-TERS", set()))
 
-    print(f"🚀 Toplam {len(domains_to_scan)} Turkbet potansiyel domain ışık hızında taranacak...")
+    # 9. DİĞER ALT TLD'LER: .vip, .icu, .live, .net, .org
+    print("🌐 Turkbet alt TLD varyasyonları taranıyor...")
+    for num in range(500, 2001):
+        for tld in ["vip", "icu", "live", "net", "org"]:
+            domains_to_scan.append((f"{num}turkbet.{tld}", f"TURKBET-{tld.upper()}", set()))
+            domains_to_scan.append((f"turkbet{num}.{tld}", f"TURKBET-{tld.upper()}-TERS", set()))
 
-    # BÜYÜK HIZLANDIRMA: Limit 500!
+    print(f"🚀 Toplam {len(domains_to_scan)} Turkbet domain ışık hızında taranacak...")
+
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
+
         async def bounded_scan(d, t, w):
             async with semaphore:
                 await scan_domain(session, d, t, w, reported, found)
+
         await asyncio.gather(*[bounded_scan(d, t, w) for d, t, w in domains_to_scan])
 
     save_reported(reported)
@@ -204,7 +226,14 @@ async def main():
     if found:
         msg = "🚨 *[TURKBET ALARM] Aktif Sahte Domain!*\n"
         for item in found:
-            icon = "🌐" if "CO-" in item["type"] else "🎭" if item["type"] == "IDN-SAHTE" else "🔗" if item["type"] == "PREFIX-PATTERN" else "🔄" if "TERS" in item["type"] else "🔥"
+            icon = (
+                "5️⃣" if item["type"] == "TERS-5HANE" else
+                "🌐" if "CO-" in item["type"] or "TURKBET-" in item["type"] else
+                "🎭" if item["type"] == "IDN-SAHTE" else
+                "🔗" if "PREFIX" in item["type"] else
+                "🔄" if "TERS" in item["type"] else
+                "🔥"
+            )
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
         save_to_google_sheets(found)
         await send_telegram(msg)
