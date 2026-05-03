@@ -27,6 +27,8 @@ SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 TURKBET_WHITELIST = set([
     "turkbet.com",
     "722turkbet.com",   # ← RESMİ GÜNCEL ADRES
+    # --- 600-699 arası eski domainlerimiz ---
+    *[f"{num}turkbet.com" for num in range(600, 700)],
     "700turkbet.com", "701turkbet.com", "702turkbet.com", "703turkbet.com", "704turkbet.com",
     "705turkbet.com", "706turkbet.com", "707turkbet.com", "708turkbet.com", "709turkbet.com",
     "710turkbet.com", "711turkbet.com", "712turkbet.com", "713turkbet.com", "714turkbet.com",
@@ -163,7 +165,7 @@ async def main():
         domains_to_scan.append((f"turkbet{num:04d}.com", "TARIH-TERS", set()))
 
     # 3. TYPO VARYASYONLARI
-    for num in range(500, 2001):
+    for num in range(700, 2001):
         domains_to_scan.append((f"turkbet{num}.com", "TYPO-TERS", set()))
         domains_to_scan.append((f"{num}trkbet.com", "TYPO-U-EKSIK", set()))
         domains_to_scan.append((f"{num}turkbetm.com", "TYPO-M", set()))
@@ -171,7 +173,7 @@ async def main():
 
     # 4. TERS PATTERN 4 HANELİ
     print("🔄 4 haneli ters pattern üretiliyor...")
-    for num in range(500, 2001):
+    for num in range(700, 2001):
         domains_to_scan.append((f"{num}turkbet.com", "TERS-PATTERN", TURKBET_WHITELIST))
 
     # 5. TERS PATTERN 5 HANELİ
@@ -181,7 +183,7 @@ async def main():
 
     # 6. IDN SAHTE HARF
     print("🧬 Sahte harfli (IDN) varyasyonlar üretiliyor...")
-    for num in range(500, 2001):
+    for num in range(700, 2001):
         for variant in [f"{num}türkbet.com", f"{num}turkbét.com"]:
             try:
                 puny = variant.encode("idna").decode("utf-8")
@@ -192,20 +194,20 @@ async def main():
     # 7. TİRELİ ÖNEKLER: m-, tr-, www-, vip-
     print("🔗 Tireli önek varyasyonları üretiliyor...")
     PREFIXES = ["m-", "tr-", "www-", "vip-"]
-    for num in range(500, 2001):
+    for num in range(700, 2001):
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}{num}turkbet.com", "PREFIX-PATTERN", set()))
             domains_to_scan.append((f"{prefix}turkbet{num}.com", "PREFIX-PATTERN-TERS", set()))
 
     # 8. .CO TLD
     print("🌐 Turkbet .co TLD varyasyonları taranıyor...")
-    for num in range(500, 2001):
+    for num in range(700, 2001):
         domains_to_scan.append((f"{num}turkbet.co", "CO-TYPO", set()))
         domains_to_scan.append((f"turkbet{num}.co", "CO-TERS", set()))
 
     # 9. DİĞER ALT TLD'LER: .vip, .icu, .live, .net, .org
     print("🌐 Turkbet alt TLD varyasyonları taranıyor...")
-    for num in range(500, 2001):
+    for num in range(700, 2001):
         for tld in ["vip", "icu", "live", "net", "org"]:
             domains_to_scan.append((f"{num}turkbet.{tld}", f"TURKBET-{tld.upper()}", set()))
             domains_to_scan.append((f"turkbet{num}.{tld}", f"TURKBET-{tld.upper()}-TERS", set()))
