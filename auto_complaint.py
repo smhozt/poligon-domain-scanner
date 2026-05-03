@@ -14,7 +14,6 @@ TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 SMTP_USER = os.environ.get("SMTP_USER", "")
 SMTP_PASS = os.environ.get("SMTP_PASS", "")
 
-# Tüm brand'lerin reported dosyaları
 REPORTED_FILES = [
     "reported.json",
     "betsat_reported.json",
@@ -22,12 +21,11 @@ REPORTED_FILES = [
 ]
 COMPLAINT_FILE = "complaint_reported.json"
 
-# Şikayet gönderi adresleri
 NICENIC_ABUSE = "abuse@nicenic.net"
 NICENIC_SUPPORT = "support@nicenic.net"
 
 # ============================================================
-# MARKA AYARLARI (GÜNCEL ADRESLERİ BURADAN DEĞİŞTİR)
+# MARKA AYARLARI
 # ============================================================
 BRANDS = {
     "superbetin": {
@@ -50,6 +48,23 @@ BRANDS = {
     }
 }
 
+# ============================================================
+# WHİTELİST — Bizim domainlerimiz (şikayet edilmez)
+# ============================================================
+WHITELIST = set([
+    # Superbetin
+    "superbetin.com", "superbetin1828.com",
+    *[f"superbetin{n}.com" for n in [724, 1240, 1268, 1560, 2369]],
+    *[f"superbetin{n}.com" for n in range(1300, 1411)],
+    *[f"superbetin{n}.com" for n in range(1700, 1975)],
+    # Betsat
+    "betsat.com", "betsat1563.com", "betsat1567.com",
+    *[f"betsat{n}.com" for n in range(1539, 1701)],
+    # Turkbet
+    "turkbet.com", "turkbet.io", "722turkbet.com", "723turkbet.com",
+    *[f"{n}turkbet.com" for n in range(600, 891)],
+])
+
 def load_json(filename):
     try:
         with open(filename, "r") as f:
@@ -71,12 +86,20 @@ def get_root(domain):
 
 def detect_brand_key(domain):
     d = domain.lower()
-    if "betsat" in d:
+    # Betsat — besat typo da dahil
+    if "betsat" in d or "besat" in d or "bestsat" in d or "betsatm" in d:
         return "betsat"
+    # Turkbet
     elif "turkbet" in d or "turcbet" in d or "trkbet" in d:
         return "turkbet"
+    # Superbetin (default)
     else:
         return "superbetin"
+
+def is_whitelisted(domain):
+    """Domain veya root domain whitelist'te mi?"""
+    root = get_root(domain)
+    return domain in WHITELIST or root in WHITELIST
 
 def build_nicenic_email(domain, brand_key):
     brand_info = BRANDS[brand_key]
@@ -151,10 +174,20 @@ async def main():
     complaint_done = set(load_json(COMPLAINT_FILE))
 
     new_domains = []
+    skipped_whitelist = []
+
     for d in all_reported:
         root = get_root(d)
+        # Whitelist kontrolü
+        if is_whitelisted(d):
+            skipped_whitelist.append(d)
+            print(f"  🛡️ Whitelist'te, atlandı: {d}")
+            continue
         if d not in complaint_done and root not in complaint_done:
             new_domains.append(d)
+
+    if skipped_whitelist:
+        print(f"\n⚠️ {len(skipped_whitelist)} domain whitelist'te — şikayet edilmedi.")
 
     if not new_domains:
         print("Şikayet gönderilecek yeni domain yok.")
@@ -176,7 +209,7 @@ async def main():
 
         brand_key = detect_brand_key(domain)
         brand_name = BRANDS[brand_key]["name"]
-        
+
         subject, body = build_nicenic_email(root, brand_key)
 
         print(f"Şikayet gönderiliyor: {root} ({brand_name})")
@@ -216,6 +249,9 @@ async def main():
 
     if failed_list:
         msg += f"❌ *Başarısız:* {len(failed_list)} şikayet\n"
+
+    if skipped_whitelist:
+        msg += f"🛡️ *Whitelist (atlandı):* {len(skipped_whitelist)} domain\n"
 
     msg += f"\n📬 *Gönderen:* `{SMTP_USER}`\n"
     msg += f"📮 *Alıcı:* `{NICENIC_ABUSE}`\n"
