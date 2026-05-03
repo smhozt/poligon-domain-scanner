@@ -15,6 +15,33 @@ SB_REPORTED_FILE = "safe_browsing_reported.json"
 
 SAFE_BROWSING_API = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 
+# ============================================================
+# WHİTELİST — Bizim domainlerimiz (Google'a bildirilmez)
+# ============================================================
+WHITELIST = set([
+    # Superbetin
+    "superbetin.com", "superbetin1828.com",
+    *[f"superbetin{n}.com" for n in [724, 1240, 1268, 1560, 2369]],
+    *[f"superbetin{n}.com" for n in range(1300, 1411)],
+    *[f"superbetin{n}.com" for n in range(1700, 1975)],
+    # Betsat
+    "betsat.com", "betsat1563.com", "betsat1567.com",
+    *[f"betsat{n}.com" for n in range(1539, 1701)],
+    # Turkbet
+    "turkbet.com", "turkbet.io", "722turkbet.com", "723turkbet.com",
+    *[f"{n}turkbet.com" for n in range(600, 891)],
+])
+
+def get_root(domain):
+    parts = domain.split(".")
+    if len(parts) > 2:
+        return ".".join(parts[-2:])
+    return domain
+
+def is_whitelisted(domain):
+    root = get_root(domain)
+    return domain in WHITELIST or root in WHITELIST
+
 def load_json(filename):
     try:
         with open(filename, "r") as f:
@@ -28,7 +55,6 @@ def save_json(filename, data):
         json.dump(list(data), f)
 
 async def check_safe_browsing(session, urls):
-    """Google Safe Browsing API ile URL kontrol et"""
     if not SAFE_BROWSING_API_KEY:
         print("SAFE_BROWSING_API_KEY eksik!")
         return []
@@ -41,7 +67,7 @@ async def check_safe_browsing(session, urls):
         "threatInfo": {
             "threatTypes": [
                 "MALWARE",
-                "SOCIAL_ENGINEERING",  # Phishing
+                "SOCIAL_ENGINEERING",
                 "UNWANTED_SOFTWARE",
                 "POTENTIALLY_HARMFUL_APPLICATION"
             ],
@@ -65,7 +91,6 @@ async def check_safe_browsing(session, urls):
         return []
 
 async def report_to_safe_browsing(session, url):
-    """Google Safe Browsing'e phishing olarak bildir"""
     report_url = "https://safebrowsing.google.com/safebrowsing/report_phish/"
     params = {"url": f"https://{url}"}
     try:
@@ -92,11 +117,23 @@ async def main():
     all_domains = []
     for f in REPORTED_FILES:
         all_domains.extend(load_json(f))
+
     reported_domains = list(set(all_domains))
     sb_done = set(load_json(SB_REPORTED_FILE))
 
-    # Daha önce gönderilmemiş domainler
-    new_domains = [d for d in reported_domains if d not in sb_done]
+    # Whitelist ve daha önce gönderilmişleri çıkar
+    skipped_whitelist = []
+    new_domains = []
+    for d in reported_domains:
+        if is_whitelisted(d):
+            skipped_whitelist.append(d)
+            print(f"  🛡️ Whitelist'te, atlandı: {d}")
+            continue
+        if d not in sb_done:
+            new_domains.append(d)
+
+    if skipped_whitelist:
+        print(f"\n⚠️ {len(skipped_whitelist)} domain whitelist'te — Google'a bildirilmedi.")
 
     if not new_domains:
         print("Safe Browsing'e gönderilecek yeni domain yok.")
@@ -108,12 +145,11 @@ async def main():
     newly_reported = []
     failed = []
 
-    # 500'lük batch'ler halinde gönder (API limiti)
     batch_size = 500
     batches = [new_domains[i:i+batch_size] for i in range(0, len(new_domains), batch_size)]
 
     async with aiohttp.ClientSession() as session:
-        # Önce zaten flaglenmiş mi kontrol et
+        # Zaten flaglenmiş mi kontrol et
         for batch in batches:
             matches = await check_safe_browsing(session, batch)
             for match in matches:
@@ -126,7 +162,7 @@ async def main():
         not_flagged = [d for d in new_domains if d not in already_flagged]
         print(f"\n{len(not_flagged)} domain Google'a bildiriliyor...")
 
-        for domain in not_flagged[:200]:  # Max 200 per run
+        for domain in not_flagged[:200]:
             success = await report_to_safe_browsing(session, domain)
             if success:
                 newly_reported.append(domain)
@@ -137,13 +173,11 @@ async def main():
             sb_done.add(domain)
             await asyncio.sleep(0.5)
 
-        # Zaten flaglenenleri de done'a ekle
         for d in already_flagged:
             sb_done.add(d)
 
     save_json(SB_REPORTED_FILE, list(sb_done))
 
-    # Telegram raporu
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     msg = f"🛡️ *[SAFE BROWSING] Rapor* — {now}\n\n"
 
@@ -165,6 +199,9 @@ async def main():
 
     if failed:
         msg += f"❌ *Başarısız:* {len(failed)} domain\n"
+
+    if skipped_whitelist:
+        msg += f"🛡️ *Whitelist (atlandı):* {len(skipped_whitelist)} domain\n"
 
     if not already_flagged and not newly_reported and not failed:
         msg += "Gönderilecek yeni domain yok.\n"
