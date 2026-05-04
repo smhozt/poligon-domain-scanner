@@ -12,13 +12,11 @@ from google.oauth2.service_account import Credentials
 
 TZ_SOFIA = timezone(timedelta(hours=3))
 
-# BÜYÜK OPTİMİZASYON: Native DNS için dev iş parçacığı havuzu (Işık Hızı Tarama)
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 
-# Google Sheets Ayarları
 GCP_CREDENTIALS = os.environ.get("GCP_CREDENTIALS")
 SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 
@@ -69,7 +67,6 @@ SUPERBETIN_WHITELIST = set([
     "superbetin1972.com","superbetin1973.com","superbetin1974.com"
 ])
 
-# ESKİ DOMAİNLERİMİZİ WHITELIST'E EKLİYORUZ
 for num in [724, 1240, 1268, 1560, 2369]:
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 for num in range(1300, 1411):
@@ -77,11 +74,14 @@ for num in range(1300, 1411):
 for num in range(1700, 1813):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 
-# Taranacak domain aralıkları
+# ← GENİŞLETİLDİ: superbetin2829.com gibi yüksek sayıları yakalamak için
 SUPERBETIN_GAPS = [1825, 1879, 1911]
-SUPERBETIN_RANGE = range(1975, 2501)
+SUPERBETIN_RANGE = range(1975, 3001)
 SUPERBETIM_RANGE = range(1000, 2151)
 SUPERBET_TYPO_RANGE = range(1000, 2501)
+
+# Tireli resmi adres klonu için korunan numara
+SUPERBETIN_TIRELI_WHITELIST = {"superbetin-1828.com"}
 
 REPORTED_FILE = "reported.json"
 
@@ -170,7 +170,7 @@ async def main():
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
 
-    # 2. TARİH FORMATI: superbetin0825.com gibi
+    # 2. TARİH FORMATI
     for num in range(100, 1000):
         domains_to_scan.append((f"superbetin{num:04d}.com", "TARIH-FORMAT", set()))
         domains_to_scan.append((f"superbet{num:04d}.com", "TARIH-TYPO", set()))
@@ -179,19 +179,18 @@ async def main():
     for num in SUPERBETIM_RANGE:
         domains_to_scan.append((f"superbetim{num}.com", "TYPO-M", set()))
 
-    # 4. TYPO-IN: superbet[num].com (in harfi eksik)
+    # 4. TYPO-IN: superbet[num].com
     for num in SUPERBET_TYPO_RANGE:
         domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
 
-    # 5. TERS PATTERN 4 HANELİ: [num]superbetin.com
+    # 5. TERS PATTERN 4 HANELİ
     print("🔄 4 haneli ters pattern üretiliyor...")
-    for num in range(1000, 2501):
+    for num in range(1000, 3001):
         domains_to_scan.append((f"{num}superbetin.com", "TERS-PATTERN", set()))
         domains_to_scan.append((f"{num}superbetim.com", "TERS-PATTERN", set()))
         domains_to_scan.append((f"{num}superbet.com", "TERS-PATTERN", set()))
 
-    # 6. TERS PATTERN 5 HANELİ: [num]superbetin.com
-    # 18346superbetin.com gibi — mevcut 18xx serisi 5 haneli varyantı
+    # 6. TERS PATTERN 5 HANELİ: 18346superbetin.com gibi
     print("5️⃣ 5 haneli ters pattern üretiliyor...")
     for num in range(10000, 25001):
         domains_to_scan.append((f"{num}superbetin.com", "TERS-5HANE", set()))
@@ -214,9 +213,17 @@ async def main():
 
     # 9. .CO TLD
     print("🌐 .co TLD varyasyonları taranıyor...")
-    for num in range(1800, 2501):
+    for num in range(1800, 3001):
         domains_to_scan.append((f"superbetin{num}.co", "CO-TYPO", set()))
         domains_to_scan.append((f"{num}superbetin.co", "CO-TERS", set()))
+
+    # 10. YENİ: TİRELİ SAYI PATTERN — superbetin-1828.com gibi
+    # Kendi resmi adresimizi taklit eden tireli klonlar
+    print("➖ Tireli sayısal pattern üretiliyor...")
+    for num in range(1800, 3001):
+        domain = f"superbetin-{num}.com"
+        if domain not in SUPERBETIN_TIRELI_WHITELIST:
+            domains_to_scan.append((domain, "TIRELI-SAYI", set()))
 
     print(f"🚀 Toplam {len(domains_to_scan)} Superbetin domaini ışık hızında taranacak...")
 
@@ -236,6 +243,7 @@ async def main():
         for item in found:
             icon = (
                 "5️⃣" if item["type"] == "TERS-5HANE" else
+                "➖" if item["type"] == "TIRELI-SAYI" else
                 "🌐" if "CO-" in item["type"] else
                 "🎭" if item["type"] == "IDN-SAHTE" else
                 "🔗" if item["type"] == "PREFIX-PATTERN" else
