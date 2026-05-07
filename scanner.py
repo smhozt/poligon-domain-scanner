@@ -183,6 +183,11 @@ async def main():
     for num in SUPERBET_TYPO_RANGE:
         domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
 
+    # 4b. TYPO-N: superbetn[num].com — i harfi dusmus, n kalmis
+    # superbetn1830.com bu hafta yakalandi
+    for num in range(1000, 3001):
+        domains_to_scan.append((f"superbetn{num}.com", "TYPO-N-EKSIK", set()))
+
     # 5. TERS PATTERN 4 HANELİ
     print("🔄 4 haneli ters pattern üretiliyor...")
     for num in range(1000, 3001):
