@@ -17,6 +17,7 @@ TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 GCP_CREDENTIALS = os.environ.get("GCP_CREDENTIALS")
 SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 
+# BÜYÜK OPTİMİZASYON: Çoklu DNS sorguları için hızlandırıcı iş parçacığı havuzu
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
 
 # ============================================================
@@ -24,15 +25,11 @@ executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
 # ============================================================
 BETSAT_WHITELIST = set([
     "betsat.com",
-    # --- RESMİ ADRES ---
-    "betsat1563.com",
-    "betsat1567.com",   # ← RESMİ GÜNCEL ADRES — SAHTE SANMAYACAK
-    # --- Mevcut whitelist ---
     "betsat1539.com","betsat1540.com","betsat1541.com","betsat1543.com",
     "betsat1544.com","betsat1545.com","betsat1546.com","betsat1548.com",
     "betsat1549.com","betsat1550.com","betsat1551.com","betsat1553.com",
     "betsat1554.com","betsat1555.com","betsat1556.com","betsat1557.com",
-    "betsat1558.com","betsat1559.com","betsat1562.com",
+    "betsat1558.com","betsat1559.com","betsat1562.com","betsat1563.com",
     "betsat1565.com","betsat1568.com","betsat1569.com","betsat1570.com",
     "betsat1571.com","betsat1572.com","betsat1573.com","betsat1574.com",
     "betsat1575.com","betsat1576.com","betsat1577.com","betsat1578.com",
@@ -65,12 +62,11 @@ BETSAT_WHITELIST = set([
     "betsat1684.com","betsat1685.com","betsat1686.com","betsat1687.com",
     "betsat1688.com","betsat1689.com","betsat1690.com","betsat1691.com",
     "betsat1692.com","betsat1693.com","betsat1694.com","betsat1695.com",
-    "betsat1696.com","betsat1697.com","betsat1698.com","betsat1699.com",
+    "betsat1696.com","betsat1697.com","betsat1699.com",
     "betsat1700.com",
 ])
 
-# 1567 whitelist'te olduğu için GAPS'ten çıkarıldı
-BETSAT_GAPS = [1542, 1547, 1552, 1561, 1564, 1660]
+BETSAT_GAPS = [1542, 1547, 1552, 1561, 1564, 1567, 1660]
 BETSAT_RANGE = range(1701, 2501)
 
 REPORTED_FILE = "betsat_reported.json"
@@ -107,6 +103,7 @@ def save_to_google_sheets(found_items):
         print(f"Sheets hatasi: {e}")
 
 async def check_dns_native(domain):
+    """Yerel DNS çözücü kullanarak ışık hızında DNS kontrolü yapar"""
     loop = asyncio.get_running_loop()
     try:
         ip = await loop.run_in_executor(executor, socket.gethostbyname, domain)
@@ -115,27 +112,28 @@ async def check_dns_native(domain):
         return False, ""
 
 async def scan_domain(session, domain, dtype, whitelist, reported, found):
-    if domain in whitelist or domain in reported:
-        return
-
+    if domain in whitelist or domain in reported: return
+    
+    # 1. Önce sadece DNS var mı diye bak (Hızlandırıcı)
     dns_ok, ip = await check_dns_native(domain)
+    
     if not dns_ok:
         return
-
+        
     http_ok, code = False, 0
     try:
+        # 2. Sadece aktif domainler için HTTP kontrolü yap
         async with session.get(f"http://{domain}", timeout=5, allow_redirects=True) as resp:
             if resp.status in [200, 301, 302, 403]:
                 http_ok = True
                 code = resp.status
-    except:
-        pass
-
+    except: pass
+    
     found.append({
-        "domain": domain,
-        "type": dtype,
-        "status": code if http_ok else f"DNS:{ip}",
-        "ip": ip,
+        "domain": domain, 
+        "type": dtype, 
+        "status": code if http_ok else f"DNS:{ip}", 
+        "ip": ip, 
         "detected_by": "HTTP" if http_ok else "DNS"
     })
     reported.add(domain)
@@ -145,22 +143,18 @@ async def send_telegram(message):
     async with aiohttp.ClientSession() as session:
         for chat_id in TELEGRAM_CHAT_IDS:
             url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-            await session.post(url, json={
-                "chat_id": chat_id.strip(),
-                "text": message,
-                "parse_mode": "Markdown"
-            })
+            await session.post(url, json={"chat_id": chat_id.strip(), "text": message, "parse_mode": "Markdown"})
 
 async def main():
     reported = load_reported()
     found = []
     domains_to_scan = []
 
-    # 1. STANDART BETSAT SAYILARI
+    # 1. STANDART BETSAT SAYILARI (Gaps ve Gelecek Range)
     for num in (BETSAT_GAPS + list(BETSAT_RANGE)):
         domains_to_scan.append((f"betsat{num}.com", "YENI", BETSAT_WHITELIST))
 
-    # 2. TARİH FORMATI
+    # YALNIZCA TARIH FORMATI KALDI (Düşük sayılar silindi)
     for num in range(100, 1000):
         domains_to_scan.append((f"betsat{num:04d}.com", "TARIH-FORMAT", set()))
 
@@ -171,63 +165,40 @@ async def main():
         domains_to_scan.append((f"besat{num}.com", "TYPO-EKSİK-T", set()))
         domains_to_scan.append((f"{num}bestsat.com", "TYPO-S-TERS", set()))
 
-    # 4. TERS PATTERN 4 HANELİ: [num]betsat.com
-    print("🔄 4 haneli ters pattern üretiliyor...")
+    # 4. TERS PATTERN ([num]betsat.com)
     for num in range(1000, 2501):
         domains_to_scan.append((f"{num}betsat.com", "TERS-PATTERN", set()))
 
-    # 5. TERS PATTERN 5 HANELİ: [num]betsat.com
-    # 18346superbetin.com mantığıyla 5 haneli betsat varyantları
-    print("5️⃣ 5 haneli ters pattern üretiliyor...")
-    for num in range(10000, 25001):
-        domains_to_scan.append((f"{num}betsat.com", "TERS-5HANE", set()))
-
-    # 6. IDN SAHTE HARF
+    # 5. IDN SAHTE HARF (bètsat vb.)
     print("🧬 Sahte harfli (IDN) varyasyonlar üretiliyor...")
     for num in range(1000, 2501):
         for variant in [f"bètsat{num}.com", f"betsát{num}.com"]:
             try:
                 puny = variant.encode("idna").decode("utf-8")
                 domains_to_scan.append((puny, "IDN-SAHTE", set()))
-            except:
-                pass
-
-    # 7. TİRELİ ÖNEKLER: m-, tr-, www-, vip-
-    print("🔗 Tireli önek varyasyonları üretiliyor...")
+            except: pass
+            
+    # 6. YENİ TİRELİ ÖNEKLER (m-, tr-, www-, vip-) — m-betsat1396.com
+    print("🔗 Tireli önek (m-, tr- vb.) varyasyonları üretiliyor...")
     PREFIXES = ["m-", "tr-", "www-", "vip-"]
     for num in range(1000, 2501):
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}betsat{num}.com", "PREFIX-PATTERN", set()))
 
-    # 8. YENİ: m-betsat[num].com — bu hafta m-betsat1567.com yakalandı
-    # Zaten yukarıdaki PREFIX-PATTERN bloğu m- içeriyor ama
-    # whitelist kontrolü için ayrıca BETSAT_WHITELIST ile de tara
-    print("🔗 m- prefix whitelist kontrollü taranıyor...")
-    for num in range(1000, 2501):
-        domains_to_scan.append((f"m-betsat{num}.com", "M-PREFIX-WL", BETSAT_WHITELIST))
-
-    # 9. .CO TLD
+    # 7. YENİ: BETSAT .CO UZANTILARI (betsat1561.co saldırısı için özel olarak eklendi)
     print("🌐 Betsat .co TLD varyasyonları taranıyor...")
     for num in range(1000, 2501):
         domains_to_scan.append((f"betsat{num}.co", "CO-TYPO", set()))
         domains_to_scan.append((f"{num}betsat.co", "CO-TERS", set()))
 
-    # 10. DİĞER ALT TLD'LER: .vip, .icu, .live
-    print("🌐 Betsat alt TLD varyasyonları taranıyor...")
-    for num in range(1000, 2501):
-        for tld in ["vip", "icu", "live", "net", "org"]:
-            domains_to_scan.append((f"betsat{num}.{tld}", f"BETSAT-{tld.upper()}", set()))
-            domains_to_scan.append((f"{num}betsat.{tld}", f"BETSAT-{tld.upper()}-TERS", set()))
+    print(f"🚀 Toplam {len(domains_to_scan)} Betsat potansiyel domain ışık hızında taranacak...")
 
-    print(f"🚀 Toplam {len(domains_to_scan)} Betsat domain ışık hızında taranacak...")
-
+    # BÜYÜK HIZLANDIRMA: Limit 500 yapıldı!
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
-
         async def bounded_scan(d, t, w):
             async with semaphore:
                 await scan_domain(session, d, t, w, reported, found)
-
         await asyncio.gather(*[bounded_scan(d, t, w) for d, t, w in domains_to_scan])
 
     save_reported(reported)
@@ -235,14 +206,7 @@ async def main():
     if found:
         msg = "🚨 *[BETSAT ALARM] Aktif Sahte Domain!*\n"
         for item in found:
-            icon = (
-                "5️⃣" if item["type"] == "TERS-5HANE" else
-                "🌐" if "CO-" in item["type"] or "BETSAT-" in item["type"] else
-                "🎭" if item["type"] == "IDN-SAHTE" else
-                "🔗" if "PREFIX" in item["type"] else
-                "🔄" if "TERS" in item["type"] else
-                "🔥"
-            )
+            icon = "🌐" if "CO-" in item["type"] else "🎭" if item["type"] == "IDN-SAHTE" else "🔗" if item["type"] == "PREFIX-PATTERN" else "🔄" if item["type"] == "TERS-PATTERN" else "🔥"
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
         save_to_google_sheets(found)
         await send_telegram(msg)
