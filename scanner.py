@@ -74,13 +74,14 @@ for num in range(1300, 1411):
 for num in range(1700, 1813):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 
-# ← GENİŞLETİLDİ: superbetin2829.com gibi yüksek sayıları yakalamak için
 SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 3001)
+# FIX 2: 18xxx ve üzeri yüksek sayılar için ek aralık
+SUPERBETIN_HIGH_RANGE = range(3001, 20000)
+
 SUPERBETIM_RANGE = range(1000, 2151)
 SUPERBET_TYPO_RANGE = range(1000, 2501)
 
-# Tireli resmi adres klonu için korunan numara
 SUPERBETIN_TIRELI_WHITELIST = {"superbetin-1828.com"}
 
 REPORTED_FILE = "reported.json"
@@ -170,6 +171,10 @@ async def main():
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
 
+    # FIX 2: Yüksek sayılar (superbetin18306.com gibi 18xxx aralığı)
+    for num in SUPERBETIN_HIGH_RANGE:
+        domains_to_scan.append((f"superbetin{num}.com", "HIGH-NUM", SUPERBETIN_WHITELIST))
+
     # 2. TARİH FORMATI
     for num in range(100, 1000):
         domains_to_scan.append((f"superbetin{num:04d}.com", "TARIH-FORMAT", set()))
@@ -183,8 +188,7 @@ async def main():
     for num in SUPERBET_TYPO_RANGE:
         domains_to_scan.append((f"superbet{num}.com", "TYPO-IN-EKSIK", set()))
 
-    # 4b. TYPO-N: superbetn[num].com — i harfi dusmus, n kalmis
-    # superbetn1830.com bu hafta yakalandi
+    # 4b. TYPO-N: superbetn[num].com
     for num in range(1000, 3001):
         domains_to_scan.append((f"superbetn{num}.com", "TYPO-N-EKSIK", set()))
 
@@ -195,7 +199,7 @@ async def main():
         domains_to_scan.append((f"{num}superbetim.com", "TERS-PATTERN", set()))
         domains_to_scan.append((f"{num}superbet.com", "TERS-PATTERN", set()))
 
-    # 6. TERS PATTERN 5 HANELİ: 18346superbetin.com gibi
+    # 6. TERS PATTERN 5 HANELİ
     print("5️⃣ 5 haneli ters pattern üretiliyor...")
     for num in range(10000, 25001):
         domains_to_scan.append((f"{num}superbetin.com", "TERS-5HANE", set()))
@@ -212,6 +216,11 @@ async def main():
     # 8. TİRELİ ÖNEKLER: m-, tr-, www-, vip-
     print("🔗 Tireli önek varyasyonları üretiliyor...")
     PREFIXES = ["m-", "tr-", "www-", "vip-"]
+    # FIX 1: 3 haneli sayılar eklendi (m-superbetin463.com gibi)
+    for num in range(100, 1000):
+        for prefix in PREFIXES:
+            domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-SHORT", set()))
+    # Mevcut 4 haneli tarama korundu
     for num in range(1000, 2501):
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-PATTERN", set()))
@@ -222,8 +231,7 @@ async def main():
         domains_to_scan.append((f"superbetin{num}.co", "CO-TYPO", set()))
         domains_to_scan.append((f"{num}superbetin.co", "CO-TERS", set()))
 
-    # 10. YENİ: TİRELİ SAYI PATTERN — superbetin-1828.com gibi
-    # Kendi resmi adresimizi taklit eden tireli klonlar
+    # 10. TİRELİ SAYI PATTERN
     print("➖ Tireli sayısal pattern üretiliyor...")
     for num in range(1800, 3001):
         domain = f"superbetin-{num}.com"
@@ -247,6 +255,8 @@ async def main():
         msg = "🚨 *[ALARM] Aktif Sahte Domain!*\n"
         for item in found:
             icon = (
+                "🔢" if item["type"] == "HIGH-NUM" else
+                "🔗" if item["type"] == "PREFIX-SHORT" else
                 "5️⃣" if item["type"] == "TERS-5HANE" else
                 "➖" if item["type"] == "TIRELI-SAYI" else
                 "🌐" if "CO-" in item["type"] else
