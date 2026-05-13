@@ -25,25 +25,25 @@ NICENIC_ABUSE = "abuse@nicenic.net"
 NICENIC_SUPPORT = "support@nicenic.net"
 
 # ============================================================
-# MARKA AYARLARI
+# MARKA AYARLARI — GÜNCEL
 # ============================================================
 BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        "active_domain": "superbetin1831.com",
+        "active_domain": "superbetin1832.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        "active_domain": "betsat1570.com",
+        "active_domain": "betsat1573.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        "active_domain": "725turkbet.com",
+        "active_domain": "726turkbet.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk="
     }
 }
@@ -52,16 +52,17 @@ BRANDS = {
 # WHİTELİST — Bizim domainlerimiz (şikayet edilmez)
 # ============================================================
 WHITELIST = set([
-    # Superbetin
-    "superbetin.com", "superbetin1828.com",
+    # Superbetin — resmi + aktif
+    "superbetin.com", "superbetin1832.com",
     *[f"superbetin{n}.com" for n in [724, 1240, 1268, 1560, 2369]],
     *[f"superbetin{n}.com" for n in range(1300, 1411)],
     *[f"superbetin{n}.com" for n in range(1700, 1975)],
-    # Betsat
-    "betsat.com", "betsat1563.com", "betsat1567.com",
+    # Betsat — resmi + aktif
+    "betsat.com", "betsat1573.com",
     *[f"betsat{n}.com" for n in range(1539, 1701)],
-    # Turkbet
-    "turkbet.com", "turkbet.io", "722turkbet.com", "723turkbet.com",
+    # Turkbet — resmi + aktif
+    "turkbet.com", "turkbet.io", "726turkbet.com",
+    "722turkbet.com", "723turkbet.com",
     *[f"{n}turkbet.com" for n in range(600, 891)],
 ])
 
@@ -86,18 +87,14 @@ def get_root(domain):
 
 def detect_brand_key(domain):
     d = domain.lower()
-    # Betsat — besat typo da dahil
     if "betsat" in d or "besat" in d or "bestsat" in d or "betsatm" in d:
         return "betsat"
-    # Turkbet
     elif "turkbet" in d or "turcbet" in d or "trkbet" in d:
         return "turkbet"
-    # Superbetin (default)
     else:
         return "superbetin"
 
 def is_whitelisted(domain):
-    """Domain veya root domain whitelist'te mi?"""
     root = get_root(domain)
     return domain in WHITELIST or root in WHITELIST
 
@@ -178,7 +175,6 @@ async def main():
 
     for d in all_reported:
         root = get_root(d)
-        # Whitelist kontrolü
         if is_whitelisted(d):
             skipped_whitelist.append(d)
             print(f"  🛡️ Whitelist'te, atlandı: {d}")
