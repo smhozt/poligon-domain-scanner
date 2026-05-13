@@ -69,7 +69,7 @@ SUPERBETIN_WHITELIST = set([
 for num in [724, 1240, 1268, 1560, 2369]:
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 # Slack tarihçesinden: 1239'dan itibaren kullanılmış (1411-1414 dahil)
-for num in range(1239, 1415):
+for num in range(1239, 1416):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 for num in range(1700, 1813):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
