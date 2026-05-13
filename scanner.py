@@ -68,8 +68,8 @@ SUPERBETIN_WHITELIST = set([
 
 for num in [724, 1240, 1268, 1560, 2369]:
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
-# Slack tarihçesinden: 1239'dan itibaren kullanılmış
-for num in range(1239, 1411):
+# Slack tarihçesinden: 1239'dan itibaren kullanılmış (1411-1414 dahil)
+for num in range(1239, 1415):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 for num in range(1700, 1813):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
@@ -167,9 +167,9 @@ async def main():
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
 
-    # KÖR NOKTA FIX: 1361-1699 arası (Slack tarihçesi: 1360'tan 1700'e atladı)
-    for num in range(1361, 1700):
-        domains_to_scan.append((f"superbetin{num}.com", "GAP-1361-1699", SUPERBETIN_WHITELIST))
+    # KÖR NOKTA FIX: 1415-1699 arası
+    for num in range(1415, 1700):
+        domains_to_scan.append((f"superbetin{num}.com", "GAP-1415-1699", SUPERBETIN_WHITELIST))
 
     # HIGH-NUM: 18xxx ve üzeri (superbetin18306.com gibi)
     for num in SUPERBETIN_HIGH_RANGE:
