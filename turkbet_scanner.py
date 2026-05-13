@@ -22,18 +22,20 @@ SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 # ============================================================
 # TURKBET WHİTELİST — Bizim domainlerimiz
 # NOT: Turkbet'in domain formatı [num]turkbet.com (sayı önde!)
-# Resmi güncel adres: 722turkbet.com
+# Resmi güncel adres: 726turkbet.com
 # ============================================================
 TURKBET_WHITELIST = set([
     "turkbet.com",
-    "722turkbet.com",   # ← RESMİ GÜNCEL ADRES
+    "726turkbet.com",   # ← RESMİ GÜNCEL ADRES
+    # Slack tarihçesi: 488turkbet'ten itibaren kullanılmış
+    *[f"{num}turkbet.com" for num in range(488, 600)],
     # --- 600-699 arası eski domainlerimiz ---
     *[f"{num}turkbet.com" for num in range(600, 700)],
     "700turkbet.com", "701turkbet.com", "702turkbet.com", "703turkbet.com", "704turkbet.com",
     "705turkbet.com", "706turkbet.com", "707turkbet.com", "708turkbet.com", "709turkbet.com",
     "710turkbet.com", "711turkbet.com", "712turkbet.com", "713turkbet.com", "714turkbet.com",
     "715turkbet.com", "716turkbet.com", "717turkbet.com", "718turkbet.com", "719turkbet.com",
-    "720turkbet.com", "721turkbet.com", "723turkbet.com", "724turkbet.com",
+    "720turkbet.com", "721turkbet.com", "722turkbet.com", "723turkbet.com", "724turkbet.com",
     "725turkbet.com", "726turkbet.com", "727turkbet.com", "728turkbet.com", "729turkbet.com",
     "730turkbet.com", "731turkbet.com", "732turkbet.com", "733turkbet.com", "734turkbet.com",
     "735turkbet.com", "736turkbet.com", "737turkbet.com", "738turkbet.com", "739turkbet.com",
