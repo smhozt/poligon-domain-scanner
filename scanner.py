@@ -6,7 +6,6 @@ import os
 import json
 from datetime import datetime, timezone, timedelta
 
-# Google Sheets Kütüphaneleri
 import gspread
 from google.oauth2.service_account import Credentials
 
@@ -69,14 +68,14 @@ SUPERBETIN_WHITELIST = set([
 
 for num in [724, 1240, 1268, 1560, 2369]:
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
-for num in range(1300, 1411):
+# Slack tarihçesinden: 1239'dan itibaren kullanılmış
+for num in range(1239, 1411):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 for num in range(1700, 1813):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 
 SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 3001)
-# FIX 2: 18xxx ve üzeri yüksek sayılar için ek aralık
 SUPERBETIN_HIGH_RANGE = range(3001, 20000)
 
 SUPERBETIM_RANGE = range(1000, 2151)
@@ -128,11 +127,9 @@ async def check_dns_native(domain):
 async def scan_domain(session, domain, dtype, whitelist, reported, found):
     if domain in whitelist or domain in reported:
         return
-
     dns_ok, ip = await check_dns_native(domain)
     if not dns_ok:
         return
-
     http_ok, code = False, 0
     try:
         async with session.get(f"http://{domain}", timeout=5, allow_redirects=True) as resp:
@@ -141,7 +138,6 @@ async def scan_domain(session, domain, dtype, whitelist, reported, found):
                 code = resp.status
     except:
         pass
-
     found.append({
         "domain": domain,
         "type": dtype,
@@ -171,7 +167,11 @@ async def main():
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
 
-    # FIX 2: Yüksek sayılar (superbetin18306.com gibi 18xxx aralığı)
+    # KÖR NOKTA FIX: 1361-1699 arası (Slack tarihçesi: 1360'tan 1700'e atladı)
+    for num in range(1361, 1700):
+        domains_to_scan.append((f"superbetin{num}.com", "GAP-1361-1699", SUPERBETIN_WHITELIST))
+
+    # HIGH-NUM: 18xxx ve üzeri (superbetin18306.com gibi)
     for num in SUPERBETIN_HIGH_RANGE:
         domains_to_scan.append((f"superbetin{num}.com", "HIGH-NUM", SUPERBETIN_WHITELIST))
 
@@ -216,11 +216,9 @@ async def main():
     # 8. TİRELİ ÖNEKLER: m-, tr-, www-, vip-
     print("🔗 Tireli önek varyasyonları üretiliyor...")
     PREFIXES = ["m-", "tr-", "www-", "vip-"]
-    # FIX 1: 3 haneli sayılar eklendi (m-superbetin463.com gibi)
     for num in range(100, 1000):
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-SHORT", set()))
-    # Mevcut 4 haneli tarama korundu
     for num in range(1000, 2501):
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-PATTERN", set()))
@@ -255,6 +253,7 @@ async def main():
         msg = "🚨 *[ALARM] Aktif Sahte Domain!*\n"
         for item in found:
             icon = (
+                "🕳️" if item["type"] == "GAP-1411-1699" else
                 "🔢" if item["type"] == "HIGH-NUM" else
                 "🔗" if item["type"] == "PREFIX-SHORT" else
                 "5️⃣" if item["type"] == "TERS-5HANE" else
