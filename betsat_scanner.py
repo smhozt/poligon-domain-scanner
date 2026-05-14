@@ -69,6 +69,23 @@ BETSAT_WHITELIST = set([
 for num in range(1167, 1539):
     BETSAT_WHITELIST.add(f"betsat{num}.com")
 
+# SEO / Affiliate domainlerimiz (bizim)
+BETSAT_WHITELIST.update([
+    "betsatgiris1.com", "betsatturkiye.com", "betsatresmigiris.com",
+    "betsatguncelgiris2026.com", "betsatyenigiris2026.com", "betsat-bahis.site",
+    "betsatbahis.info", "betsatrs.com", "betsatdestek.com", "betsatur.com",
+    "cubetsat.com", "nobetsat.com", "betsatadres.com", "betsation.com",
+    "betsatan.com", "betsatcasino.net", "betsatyeniadresi.com",
+    "betsatgirisadresi.xyz", "betsat-giris.org", "betsatonlinecasino.com",
+    "betsat.mobi", "muhtesembetsat.com", "betsatgiris.online", "mobilbetsat.com",
+    "betsatofficial.com", "betsat.tv", "betsatguncelgirisi.com", "betsat-giris.com",
+    "betsathizligiris.com", "betsatgunceladresi.com", "betsatgirisadresim.com",
+    "betsatmobilgiris.com", "betsatamp.top", "betsatonline.com",
+    "betsatonlinegiris.com", "betsat.xyz", "betsat.pro", "betsatgiris.casino",
+    "betsatadresi.io", "betsattr.net", "betsatguncel.me", "betsat-girisim.com",
+    "betsatgirisim.co", "betsat.co", "girisbetsat.top",
+])
+
 BETSAT_GAPS = [1542, 1547, 1552, 1561, 1564, 1567, 1660]
 BETSAT_RANGE = range(1701, 2501)
 
