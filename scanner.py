@@ -66,13 +66,26 @@ SUPERBETIN_WHITELIST = set([
     "superbetin1972.com","superbetin1973.com","superbetin1974.com"
 ])
 
-for num in [724, 1240, 1268, 1560, 2369]:
+for num in [724, 1560, 2369]:
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 # Slack tarihçesinden: 1239'dan itibaren kullanılmış (1411-1414 dahil)
 for num in range(1239, 1416):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 for num in range(1700, 1813):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
+
+# SEO / Affiliate domainlerimiz (bizim)
+SUPERBETIN_WHITELIST.update([
+    "superbetingiris724.co", "superbetinegiris.com", "superbetinmobil.com",
+    "superbetingiris.mobi", "superbetinyeniadres.online", "superbetinresmi.com",
+    "superbetingiris724.org", "superbetingiris724.info", "superbetingeliyor.com",
+    "superbetingir.com", "superbetincasino.com", "superbetincanli.org",
+    "superbetingirisyap.com", "superbetinyeniadresi.net", "superbetinim.com",
+    "superbetinadresim.com", "superbetinegir.com", "superbetingirisi.co",
+    "superbetino.com", "superbetine.com", "girissuperbetin.net",
+    "724superbetinresmi.net", "superbetpicks.com", "superiorforexsignals.com",
+    "betinsuper.com",
+])
 
 SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 3001)
@@ -171,7 +184,7 @@ async def main():
     for num in range(1415, 1700):
         domains_to_scan.append((f"superbetin{num}.com", "GAP-1415-1699", SUPERBETIN_WHITELIST))
 
-    # HIGH-NUM: 18xxx ve üzeri (superbetin18306.com gibi)
+    # HIGH-NUM: 18xxx ve üzeri
     for num in SUPERBETIN_HIGH_RANGE:
         domains_to_scan.append((f"superbetin{num}.com", "HIGH-NUM", SUPERBETIN_WHITELIST))
 
@@ -253,7 +266,7 @@ async def main():
         msg = "🚨 *[ALARM] Aktif Sahte Domain!*\n"
         for item in found:
             icon = (
-                "🕳️" if item["type"] == "GAP-1411-1699" else
+                "🕳️" if item["type"] == "GAP-1415-1699" else
                 "🔢" if item["type"] == "HIGH-NUM" else
                 "🔗" if item["type"] == "PREFIX-SHORT" else
                 "5️⃣" if item["type"] == "TERS-5HANE" else
