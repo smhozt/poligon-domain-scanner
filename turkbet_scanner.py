@@ -72,6 +72,19 @@ TURKBET_WHITELIST = set([
     "890turkbet.com",
 ])
 
+# SEO / Affiliate domainlerimiz (bizim)
+TURKBET_WHITELIST.update([
+    "turkbet.cam", "soloturkbet.com", "asyaturkbet.com", "turkbetturkiye.com",
+    "turkbet2026.net", "turkbetcanli.com", "turkbet.es", "turkbet2026.com",
+    "turkbetgir.com", "turkbet.info", "turkbetborsa.com", "turkbetsitesi.com",
+    "turkbetspor.com", "turkbetbayilik.com", "turkbetik.com", "turkbetsson.com",
+    "hititturkbet.com", "turkbetyeniadres.com", "turkbet-girisi.com",
+    "turkbetgirisin.co", "turkbetadresi.me", "turkbet.cx", "turkbetyeni.site",
+    "turkbetadresim.com", "turkbettr.com", "turkbetadres.io", "turkbetguncel.com",
+    "turkbetgunceladresi.com", "turkbetgirisi.co", "turkbetgo.com", "turk-bets.com",
+    "trturkbet.com", "turkbetadresim.co", "turkbetgiris.pro", "turkgirisim.com",
+])
+
 TURKBET_RANGE = range(891, 2001)
 
 REPORTED_FILE = "turkbet_reported.json"
@@ -118,11 +131,9 @@ async def check_dns_native(domain):
 async def scan_domain(session, domain, dtype, whitelist, reported, found):
     if domain in whitelist or domain in reported:
         return
-
     dns_ok, ip = await check_dns_native(domain)
     if not dns_ok:
         return
-
     http_ok, code = False, 0
     try:
         async with session.get(f"http://{domain}", timeout=5, allow_redirects=True) as resp:
@@ -131,7 +142,6 @@ async def scan_domain(session, domain, dtype, whitelist, reported, found):
                 code = resp.status
     except:
         pass
-
     found.append({
         "domain": domain,
         "type": dtype,
