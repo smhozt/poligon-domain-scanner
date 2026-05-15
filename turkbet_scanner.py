@@ -26,7 +26,7 @@ SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 # ============================================================
 TURKBET_WHITELIST = set([
     "turkbet.com",
-    "727turkbet.com",   # ← RESMİ GÜNCEL ADRES
+    "726turkbet.com", "727turkbet.com",   # ← RESMİ GÜNCEL ADRES
     # Slack tarihçesi: 488turkbet'ten itibaren kullanılmış
     *[f"{num}turkbet.com" for num in range(488, 600)],
     # --- 600-699 arası eski domainlerimiz ---
@@ -239,7 +239,8 @@ async def main():
     save_reported(reported)
 
     if found:
-        msg = "🚨 *[TURKBET ALARM] Aktif Sahte Domain!*\n"
+        repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
+        msg = f"🚨 *[TURKBET ALARM] Aktif Sahte Domain!*\n🤖 `{repo}`\n"
         for item in found:
             icon = (
                 "5️⃣" if item["type"] == "TERS-5HANE" else
