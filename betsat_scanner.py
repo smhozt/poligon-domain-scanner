@@ -30,7 +30,7 @@ BETSAT_WHITELIST = set([
     "betsat1554.com","betsat1555.com","betsat1556.com","betsat1557.com",
     "betsat1558.com","betsat1559.com","betsat1562.com","betsat1563.com",
     "betsat1565.com","betsat1568.com","betsat1569.com","betsat1570.com",
-    "betsat1571.com","betsat1572.com","betsat1573.com","betsat1574.com",
+    "betsat1571.com","betsat1572.com","betsat1575.com","betsat1574.com",
     "betsat1575.com","betsat1576.com","betsat1577.com","betsat1578.com",
     "betsat1579.com","betsat1580.com","betsat1581.com","betsat1582.com",
     "betsat1583.com","betsat1584.com","betsat1585.com","betsat1586.com",
@@ -84,6 +84,7 @@ BETSAT_WHITELIST.update([
     "betsatonlinegiris.com", "betsat.xyz", "betsat.pro", "betsatgiris.casino",
     "betsatadresi.io", "betsattr.net", "betsatguncel.me", "betsat-girisim.com",
     "betsatgirisim.co", "betsat.co", "girisbetsat.top",
+    "yonleniyoramp.com", "googlecdnservice.net",
 ])
 
 BETSAT_GAPS = [1542, 1547, 1552, 1561, 1564, 1567, 1660]
