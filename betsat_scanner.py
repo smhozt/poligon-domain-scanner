@@ -85,6 +85,7 @@ BETSAT_WHITELIST.update([
     "betsatadresi.io", "betsattr.net", "betsatguncel.me", "betsat-girisim.com",
     "betsatgirisim.co", "betsat.co", "girisbetsat.top",
     "yonleniyoramp.com", "googlecdnservice.net",
+    "supetbetingirisadresim.vip", "turkbetgirisadresim.vip",
 ])
 
 BETSAT_GAPS = [1542, 1547, 1552, 1561, 1564, 1567, 1660]
@@ -217,7 +218,8 @@ async def main():
     save_reported(reported)
 
     if found:
-        msg = "🚨 *[BETSAT ALARM] Aktif Sahte Domain!*\n"
+        repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
+        msg = f"🚨 *[BETSAT ALARM] Aktif Sahte Domain!*\n🤖 `{repo}`\n"
         for item in found:
             icon = (
                 "🌐" if "CO-" in item["type"] else
