@@ -86,6 +86,7 @@ SUPERBETIN_WHITELIST.update([
     "724superbetinresmi.net", "superbetpicks.com", "superiorforexsignals.com",
     "betinsuper.com",
     "yonleniyoramp.com", "googlecdnservice.net",
+    "supetbetingirisadresim.vip", "turkbetgirisadresim.vip",
 ])
 
 SUPERBETIN_GAPS = [1825, 1879, 1911]
@@ -264,7 +265,8 @@ async def main():
     save_reported(reported)
 
     if found:
-        msg = "🚨 *[ALARM] Aktif Sahte Domain!*\n"
+        repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
+        msg = f"🚨 *[ALARM] Aktif Sahte Domain!*\n🤖 `{repo}`\n"
         for item in found:
             icon = (
                 "🕳️" if item["type"] == "GAP-1415-1699" else
