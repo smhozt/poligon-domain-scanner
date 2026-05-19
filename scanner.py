@@ -86,10 +86,10 @@ SUPERBETIN_WHITELIST.update([
     "724superbetinresmi.net", "superbetpicks.com", "superiorforexsignals.com",
     "betinsuper.com",
     "yonleniyoramp.com", "googlecdnservice.net",
-    "supetbetingirisadresim.vip", "turkbetgirisadresim.vip",
+    "supetbetingirisadresim.vip", "turkbetgirisadresim.vip", "betsatgirisadresim.vip",
 ])
 
-SUPERBETIN_GAPS = [1825, 1879, 1911]
+SUPERBETIN_GAPS = [1825, 1832, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 3001)
 SUPERBETIN_HIGH_RANGE = range(3001, 20000)
 
@@ -182,9 +182,9 @@ async def main():
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
 
-    # KÖR NOKTA FIX: 1415-1699 arası
-    for num in range(1415, 1700):
-        domains_to_scan.append((f"superbetin{num}.com", "GAP-1415-1699", SUPERBETIN_WHITELIST))
+    # KÖR NOKTA FIX: tüm gap aralıkları — whitelist filtreler
+    for num in range(1416, 1975):
+        domains_to_scan.append((f"superbetin{num}.com", "GAP-TARAMA", SUPERBETIN_WHITELIST))
 
     # HIGH-NUM: 18xxx ve üzeri
     for num in SUPERBETIN_HIGH_RANGE:
@@ -269,7 +269,7 @@ async def main():
         msg = f"🚨 *[ALARM] Aktif Sahte Domain!*\n🤖 `{repo}`\n"
         for item in found:
             icon = (
-                "🕳️" if item["type"] == "GAP-1415-1699" else
+                "🕳️" if item["type"] == "GAP-TARAMA" else
                 "🔢" if item["type"] == "HIGH-NUM" else
                 "🔗" if item["type"] == "PREFIX-SHORT" else
                 "5️⃣" if item["type"] == "TERS-5HANE" else
