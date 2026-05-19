@@ -28,7 +28,7 @@ SUPERBETIN_WHITELIST = set([
     "superbetin1817.com","superbetin1818.com","superbetin1819.com","superbetin1820.com",
     "superbetin1821.com","superbetin1822.com","superbetin1823.com","superbetin1824.com",
     "superbetin1826.com","superbetin1827.com","superbetin1828.com","superbetin1829.com",
-    "superbetin1830.com","superbetin1831.com","superbetin1833.com","superbetin1833.com",
+    "superbetin1830.com","superbetin1831.com","superbetin1832.com","superbetin1833.com","superbetin1833.com",
     "superbetin1834.com","superbetin1835.com","superbetin1836.com","superbetin1837.com",
     "superbetin1838.com","superbetin1839.com","superbetin1840.com","superbetin1841.com",
     "superbetin1842.com","superbetin1843.com","superbetin1844.com","superbetin1845.com",
@@ -89,7 +89,7 @@ SUPERBETIN_WHITELIST.update([
     "supetbetingirisadresim.vip", "turkbetgirisadresim.vip", "betsatgirisadresim.vip",
 ])
 
-SUPERBETIN_GAPS = [1825, 1832, 1879, 1911]
+SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 3001)
 SUPERBETIN_HIGH_RANGE = range(3001, 20000)
 
