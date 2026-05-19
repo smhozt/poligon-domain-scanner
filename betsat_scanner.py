@@ -31,7 +31,7 @@ BETSAT_WHITELIST = set([
     "betsat1558.com","betsat1559.com","betsat1562.com","betsat1563.com",
     "betsat1565.com","betsat1568.com","betsat1569.com","betsat1570.com",
     "betsat1571.com","betsat1572.com","betsat1575.com","betsat1574.com",
-    "betsat1575.com","betsat1576.com","betsat1577.com","betsat1578.com",
+    "betsat1575.com","betsat1577.com","betsat1578.com",
     "betsat1579.com","betsat1580.com","betsat1581.com","betsat1582.com",
     "betsat1583.com","betsat1584.com","betsat1585.com","betsat1586.com",
     "betsat1587.com","betsat1588.com","betsat1589.com","betsat1590.com",
@@ -88,7 +88,7 @@ BETSAT_WHITELIST.update([
     "supetbetingirisadresim.vip", "turkbetgirisadresim.vip", "betsatgirisadresim.vip",
 ])
 
-BETSAT_GAPS = [1542, 1547, 1552, 1561, 1564, 1567, 1660]
+BETSAT_GAPS = [1542, 1547, 1552, 1560, 1561, 1564, 1566, 1567, 1573, 1576, 1660, 1698]
 BETSAT_RANGE = range(1701, 2501)
 
 REPORTED_FILE = "betsat_reported.json"
