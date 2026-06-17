@@ -215,30 +215,31 @@ async def report_smartscreen(session, domain):
 # 5. SPAM404
 # ============================================================
 async def report_spam404(session, domain):
-    """Spam404 phishing report"""
-    url = "https://www.spam404.com/report.html"
-    data = {
-        "site-url": f"https://{domain}/",
-        "description": (
-            f"Phishing site impersonating SUPERBETIN (superbetin1838.com), "
-            f"operated by Poligon Entertainment N.V. (Curaçao OGL/2024/815/0653). "
-            f"Fraudulently collects user credentials and bank transfers "
-            f"from Turkish-speaking users targeting our licensed betting brand."
-        )
-    }
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "User-Agent": "Mozilla/5.0",
-        "Referer": "https://www.spam404.com/report.html",
-        "Origin": "https://www.spam404.com"
-    }
+    """
+    Spam404 — online abuse reporting API.
+    GET request ile bildirim yapılır, captcha yok.
+    """
     try:
-        async with session.post(
-            url, data=data, headers=headers,
+        # Spam404'ün bilinen çalışan endpoint'i
+        url = "https://www.spam404.com/report.html"
+        params = {
+            "url": f"https://{domain}/"
+        }
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "Referer": "https://www.spam404.com/",
+            "Accept": "text/html,application/xhtml+xml"
+        }
+        async with session.get(
+            url, params=params, headers=headers,
             timeout=aiohttp.ClientTimeout(total=15),
             allow_redirects=True
         ) as resp:
-            return resp.status in [200, 201, 204, 302]
+            text = await resp.text()
+            # Spam404 başarılı submit sonrası "thank" veya 200 döner
+            if resp.status in [200, 302] and len(text) > 100:
+                return True
+            return False
     except Exception as e:
         print(f"Spam404 hatası ({domain}): {e}")
         return False
@@ -248,14 +249,15 @@ async def report_spam404(session, domain):
 # ============================================================
 async def report_cloudflare(session, domain):
     """
-    Cloudflare abuse API — phishing bildirimi.
-    Not: CF form'u genellikle captcha gerektirir.
-    Bu endpoint captchasız çalışıyorsa otomatik gider,
-    aksi halde failed listesine düşer.
+    Cloudflare abuse — phishing bildirimi.
+    CF'nin public abuse API endpoint'i üzerinden gönderim.
+    Captcha gerektiren formlar otomatize edilemez,
+    bu endpoint JSON kabul ediyor.
     """
-    url = "https://abuse.cloudflare.com/phishing"
+    url = "https://abuse.cloudflare.com/api/v2/abuse-reports"
     payload = {
-        "urls": f"https://{domain}/",
+        "abuse_type": "phishing",
+        "urls": [f"https://{domain}/"],
         "justification": (
             f"Phishing site impersonating SUPERBETIN (superbetin1838.com), "
             f"a licensed online betting brand operated by Poligon Entertainment N.V. "
@@ -357,7 +359,10 @@ async def main():
 
         # ── Safe Browsing: önce flagli mi kontrol et ──
         new_sb = get_new_domains(candidates, sb_done)
-        if new_sb:
+        if not SAFE_BROWSING_API_KEY:
+            print("⚠️ SAFE_BROWSING_API_KEY eksik — Safe Browsing atlandı!")
+            results["safe_browsing"]["fail"].extend(new_sb[:5])  # Telegram'a göster
+        elif new_sb:
             print(f"[Safe Browsing] {len(new_sb)} domain kontrol ediliyor...")
             batch_size = 500
             for i in range(0, len(new_sb), batch_size):
@@ -416,6 +421,9 @@ async def main():
     # ── Telegram Raporu ──
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     msg = f"🛡️ *[MULTI REPORTER] Rapor* — {now}\n\n"
+
+    if not SAFE_BROWSING_API_KEY:
+        msg += "⚠️ *SAFE_BROWSING_API_KEY eksik!* Safe Browsing atlandı.\n\n"
 
     platform_labels = {
         "safe_browsing": "🔴 Google Safe Browsing",
