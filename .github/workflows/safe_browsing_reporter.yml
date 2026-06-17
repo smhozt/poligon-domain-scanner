@@ -1,4 +1,4 @@
-name: Safe Browsing Reporter
+name: Multi Platform Reporter
 
 on:
   schedule:
@@ -11,6 +11,7 @@ permissions:
 jobs:
   report:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -22,19 +23,24 @@ jobs:
       - name: Install dependencies
         run: pip install aiohttp
 
-      - name: Run Safe Browsing Reporter
+      - name: Run Multi Platform Reporter
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
           SAFE_BROWSING_API_KEY: ${{ secrets.SAFE_BROWSING_API_KEY }}
-        run: python safe_browsing_reporter.py
+        run: python multi_reporter.py
 
-      - name: Commit safe browsing state
+      - name: Commit reporter state files
         if: always()
         run: |
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "action@github.com"
-          git add safe_browsing_reported.json || true
-          git diff --staged --quiet || git commit -m "update: safe_browsing_reported.json [skip ci]"
+          git add safe_browsing_reported.json    || true
+          git add google_spam_reported.json      || true
+          git add netcraft_reported.json         || true
+          git add smartscreen_reported.json      || true
+          git add spam404_reported.json          || true
+          git add cloudflare_reported.json       || true
+          git diff --staged --quiet || git commit -m "update: multi_reporter state [skip ci]"
           git pull --rebase origin main
           git push
