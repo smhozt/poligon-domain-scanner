@@ -17,12 +17,14 @@ SAFE_BROWSING_API_KEY = os.environ.get("SAFE_BROWSING_API_KEY", "")
 REPORTED_FILES = ["reported.json", "betsat_reported.json", "turkbet_reported.json"]
 
 # Her platform için ayrı "gönderildi" dosyası
-SB_REPORTED_FILE      = "safe_browsing_reported.json"
-SPAM_REPORTED_FILE    = "google_spam_reported.json"
-NETCRAFT_REPORTED_FILE= "netcraft_reported.json"
+SB_REPORTED_FILE          = "safe_browsing_reported.json"
+SPAM_REPORTED_FILE        = "google_spam_reported.json"
+NETCRAFT_REPORTED_FILE    = "netcraft_reported.json"
 SMARTSCREEN_REPORTED_FILE = "smartscreen_reported.json"
-SPAM404_REPORTED_FILE = "spam404_reported.json"
-CF_REPORTED_FILE      = "cloudflare_reported.json"
+SPAM404_REPORTED_FILE     = "spam404_reported.json"
+# CF_REPORTED_FILE kaldırıldı — Cloudflare'in public API'si yok, sadece manuel form
+# Phishing: https://abuse.cloudflare.com/phishing
+# Trademark: https://abuse.cloudflare.com/trademark
 
 SAFE_BROWSING_API = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 
@@ -174,7 +176,6 @@ async def report_netcraft(session, domain):
             url, json=payload, headers=headers,
             timeout=aiohttp.ClientTimeout(total=15)
         ) as resp:
-            # Netcraft 200 veya 201 döner
             return resp.status in [200, 201, 204]
     except Exception as e:
         print(f"Netcraft hatası ({domain}): {e}")
@@ -220,7 +221,6 @@ async def report_spam404(session, domain):
     GET request ile bildirim yapılır, captcha yok.
     """
     try:
-        # Spam404'ün bilinen çalışan endpoint'i
         url = "https://www.spam404.com/report.html"
         params = {
             "url": f"https://{domain}/"
@@ -236,50 +236,11 @@ async def report_spam404(session, domain):
             allow_redirects=True
         ) as resp:
             text = await resp.text()
-            # Spam404 başarılı submit sonrası "thank" veya 200 döner
             if resp.status in [200, 302] and len(text) > 100:
                 return True
             return False
     except Exception as e:
         print(f"Spam404 hatası ({domain}): {e}")
-        return False
-
-# ============================================================
-# 6. CLOUDFLARE PHİSHİNG REPORT
-# ============================================================
-async def report_cloudflare(session, domain):
-    """
-    Cloudflare abuse — phishing bildirimi.
-    CF'nin public abuse API endpoint'i üzerinden gönderim.
-    Captcha gerektiren formlar otomatize edilemez,
-    bu endpoint JSON kabul ediyor.
-    """
-    url = "https://abuse.cloudflare.com/api/v2/abuse-reports"
-    payload = {
-        "abuse_type": "phishing",
-        "urls": [f"https://{domain}/"],
-        "justification": (
-            f"Phishing site impersonating SUPERBETIN (superbetin1838.com), "
-            f"a licensed online betting brand operated by Poligon Entertainment N.V. "
-            f"(Curaçao OGL/2024/815/0653). The domain {domain} fully replicates "
-            f"our brand identity and fraudulently collects user credentials "
-            f"and bank transfers from Turkish-speaking users."
-        ),
-        "email": "yardim@superbetin.com",
-        "name": "CS Operations & Technology — Poligon Entertainment N.V."
-    }
-    headers = {
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0"
-    }
-    try:
-        async with session.post(
-            url, json=payload, headers=headers,
-            timeout=aiohttp.ClientTimeout(total=15)
-        ) as resp:
-            return resp.status in [200, 201, 204]
-    except Exception as e:
-        print(f"Cloudflare hatası ({domain}): {e}")
         return False
 
 # ============================================================
@@ -308,12 +269,12 @@ async def run_platform(session, platform_name, report_func, domain, done_set, re
     """Bir domain için tek platform bildir, sonucu kaydet"""
     if domain in done_set:
         return "skipped"
-    
+
     success = await report_func(session, domain)
     status = "ok" if success else "fail"
     results[platform_name]["ok" if success else "fail"].append(domain)
     done_set.add(domain)
-    
+
     icon = "📤" if success else "❌"
     print(f"  {icon} [{platform_name}] {domain}")
     return status
@@ -330,18 +291,17 @@ async def main():
 
     # Whitelist filtresi
     whitelisted = [d for d in all_domains if is_whitelisted(d)]
-    candidates = [d for d in all_domains if not is_whitelisted(d)]
+    candidates  = [d for d in all_domains if not is_whitelisted(d)]
 
     if whitelisted:
         print(f"🛡️ {len(whitelisted)} domain whitelist'te, atlandı.")
 
     # Her platform için "daha önce gönderildi" setleri
-    sb_done      = set(load_json(SB_REPORTED_FILE))
-    spam_done    = set(load_json(SPAM_REPORTED_FILE))
-    netcraft_done= set(load_json(NETCRAFT_REPORTED_FILE))
-    ss_done      = set(load_json(SMARTSCREEN_REPORTED_FILE))
-    s404_done    = set(load_json(SPAM404_REPORTED_FILE))
-    cf_done      = set(load_json(CF_REPORTED_FILE))
+    sb_done       = set(load_json(SB_REPORTED_FILE))
+    spam_done     = set(load_json(SPAM_REPORTED_FILE))
+    netcraft_done = set(load_json(NETCRAFT_REPORTED_FILE))
+    ss_done       = set(load_json(SMARTSCREEN_REPORTED_FILE))
+    s404_done     = set(load_json(SPAM404_REPORTED_FILE))
 
     # Sonuç sayaçları
     results = {
@@ -350,7 +310,6 @@ async def main():
         "netcraft":      {"ok": [], "fail": []},
         "smartscreen":   {"ok": [], "fail": []},
         "spam404":       {"ok": [], "fail": []},
-        "cloudflare":    {"ok": [], "fail": []},
     }
 
     print(f"\n🚀 {len(candidates)} domain işlenecek...\n")
@@ -361,7 +320,7 @@ async def main():
         new_sb = get_new_domains(candidates, sb_done)
         if not SAFE_BROWSING_API_KEY:
             print("⚠️ SAFE_BROWSING_API_KEY eksik — Safe Browsing atlandı!")
-            results["safe_browsing"]["fail"].extend(new_sb[:5])  # Telegram'a göster
+            results["safe_browsing"]["fail"].extend(new_sb[:5])
         elif new_sb:
             print(f"[Safe Browsing] {len(new_sb)} domain kontrol ediliyor...")
             batch_size = 500
@@ -388,11 +347,10 @@ async def main():
 
         # ── Diğer platformlar ──
         platforms = [
-            ("google_spam",  report_google_spam,  spam_done,     SPAM_REPORTED_FILE),
-            ("netcraft",     report_netcraft,      netcraft_done, NETCRAFT_REPORTED_FILE),
-            ("smartscreen",  report_smartscreen,   ss_done,       SMARTSCREEN_REPORTED_FILE),
-            ("spam404",      report_spam404,       s404_done,     SPAM404_REPORTED_FILE),
-            ("cloudflare",   report_cloudflare,    cf_done,       CF_REPORTED_FILE),
+            ("google_spam", report_google_spam, spam_done,     SPAM_REPORTED_FILE),
+            ("netcraft",    report_netcraft,    netcraft_done, NETCRAFT_REPORTED_FILE),
+            ("smartscreen", report_smartscreen, ss_done,       SMARTSCREEN_REPORTED_FILE),
+            ("spam404",     report_spam404,     s404_done,     SPAM404_REPORTED_FILE),
         ]
 
         for platform_name, report_func, done_set, _ in platforms:
@@ -411,12 +369,11 @@ async def main():
                 await asyncio.sleep(0.3)
 
     # ── Tüm setleri kaydet ──
-    save_json(SB_REPORTED_FILE,       list(sb_done))
-    save_json(SPAM_REPORTED_FILE,     list(spam_done))
-    save_json(NETCRAFT_REPORTED_FILE, list(netcraft_done))
+    save_json(SB_REPORTED_FILE,          list(sb_done))
+    save_json(SPAM_REPORTED_FILE,        list(spam_done))
+    save_json(NETCRAFT_REPORTED_FILE,    list(netcraft_done))
     save_json(SMARTSCREEN_REPORTED_FILE, list(ss_done))
-    save_json(SPAM404_REPORTED_FILE,  list(s404_done))
-    save_json(CF_REPORTED_FILE,       list(cf_done))
+    save_json(SPAM404_REPORTED_FILE,     list(s404_done))
 
     # ── Telegram Raporu ──
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
@@ -431,7 +388,6 @@ async def main():
         "netcraft":      "🌐 Netcraft",
         "smartscreen":   "🪟 SmartScreen",
         "spam404":       "🚫 Spam404",
-        "cloudflare":    "🟠 Cloudflare",
     }
 
     for key, label in platform_labels.items():
@@ -462,7 +418,7 @@ async def main():
     if whitelisted:
         msg += f"🛡️ *Whitelist (atlandı):* {len(whitelisted)} domain\n\n"
 
-    total_ok = sum(len(results[k]["ok"]) for k in results)
+    total_ok   = sum(len(results[k]["ok"])   for k in results)
     total_fail = sum(len(results[k]["fail"]) for k in results)
     msg += f"📊 *Toplam:* {total_ok} başarılı / {total_fail} başarısız"
 
