@@ -1,35 +1,27 @@
 name: Multi Platform Reporter
-
 on:
   schedule:
     - cron: '0 */6 * * *'  # 6 saatte bir
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   report:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: pip install aiohttp
-
       - name: Run Multi Platform Reporter
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
           SAFE_BROWSING_API_KEY: ${{ secrets.SAFE_BROWSING_API_KEY }}
         run: python multi_reporter.py
-
       - name: Commit reporter state files
         if: always()
         run: |
@@ -40,7 +32,6 @@ jobs:
           git add netcraft_reported.json         || true
           git add smartscreen_reported.json      || true
           git add spam404_reported.json          || true
-          git add cloudflare_reported.json       || true
           git diff --staged --quiet || git commit -m "update: multi_reporter state [skip ci]"
           git pull --rebase origin main
           git push
