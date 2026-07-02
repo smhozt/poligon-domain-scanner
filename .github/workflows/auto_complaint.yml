@@ -1,7 +1,8 @@
 name: Auto Complaint
 on:
   schedule:
-    - cron: '0 9 * * *'  # Her gün 09:00 Sofia saati
+    - cron: '0 9 * * *'   # Gün içi çalışma
+    - cron: '0 21 * * *'  # Akşam çalışma (~12 saat sonra)
   workflow_dispatch:
 permissions:
   contents: write
