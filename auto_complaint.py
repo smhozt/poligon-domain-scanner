@@ -41,17 +41,17 @@ MANUAL_HOST_OVERRIDE_FILE = "manual_host_overrides.json"
 BRANDS = {
     "superbetin": {
         "name": "Superbetin",
-        "active_domains": ["superbetin.com", "superbetin1841.com", "superbetin2052.com", "superbetin2053.com"],
+        "active_domains": ["superbetin.com", "superbetin2053.com"],
         "signature_email": "yardim@superbetin.com",
     },
     "betsat": {
         "name": "Betsat",
-        "active_domains": ["betsat.com", "betsat1596.com", "betsat1597.com"],
+        "active_domains": ["betsat.com", "betsat1597.com"],
         "signature_email": "support@betsat.com",
     },
     "turkbet": {
         "name": "Turkbet",
-        "active_domains": ["turkbet.io", "742turkbet.com", "744turkbet.com"],
+        "active_domains": ["turkbet.io", "744turkbet.com"],
         "signature_email": "support@turkbet.co",
         "signature_footer": (
             "Turkbet, Curaçao yasalarına göre kurulmuş olan Poligon Entertainment N.V. "
