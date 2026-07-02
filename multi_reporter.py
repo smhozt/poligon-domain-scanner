@@ -29,22 +29,32 @@ SPAM404_REPORTED_FILE     = "spam404_reported.json"
 SAFE_BROWSING_API = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 
 # ============================================================
-# WHİTELİST
+# MARKA AYARLARI — GÜNCEL (02 Temmuz 2026 itibarıyla)
 # ============================================================
-WHITELIST = set([
-    # Superbetin
-    "superbetin.com", "superbetin1838.com", "superbetin1828.com",
-    *[f"superbetin{n}.com" for n in [724, 1240, 1268, 1560, 2369]],
-    *[f"superbetin{n}.com" for n in range(1300, 1411)],
-    *[f"superbetin{n}.com" for n in range(1700, 1975)],
-    # Betsat
-    "betsat.com", "betsat1587.com", "betsat1563.com", "betsat1567.com",
-    *[f"betsat{n}.com" for n in range(1539, 1701)],
-    # Turkbet
-    "turkbet.com", "turkbet.io", "738turkbet.com",
-    "722turkbet.com", "723turkbet.com",
-    *[f"{n}turkbet.com" for n in range(600, 891)],
-])
+# NOT: Bu, host_auto_complaint.py / nicenic_complaint.py ile AYNI kaynak
+# yapısı. Yeni bir resmi domain eklendiğinde/çıkarıldığında sadece burayı
+# güncellemek yeterli — WHITELIST otomatik türüyor, elle range YAZILMAZ.
+# Geniş numara aralıkları (range(1539,1701) gibi) fraud domainleri
+# (ör. betsat1594.com) yanlışlıkla koruma altına alabiliyor — bu yüzden
+# artık sadece gerçek, tek tek doğrulanmış resmi domainler kullanılıyor.
+BRANDS = {
+    "superbetin": {
+        "name": "Superbetin",
+        "active_domains": ["superbetin.com", "superbetin2053.com"],
+    },
+    "betsat": {
+        "name": "Betsat",
+        "active_domains": ["betsat.com", "betsat1597.com"],
+    },
+    "turkbet": {
+        "name": "Turkbet",
+        "active_domains": ["turkbet.io", "744turkbet.com"],
+    },
+}
+
+WHITELIST = set()
+for _brand in BRANDS.values():
+    WHITELIST.update(_brand["active_domains"])
 
 # ============================================================
 # YARDIMCI FONKSİYONLAR
@@ -124,7 +134,7 @@ async def report_google_spam(session, domain):
         "url": f"https://{domain}/",
         "ts": "1",          # spam type: deceptive page
         "comments": (
-            f"Phishing site impersonating SUPERBETIN (superbetin1838.com), "
+            f"Phishing site impersonating SUPERBETIN (superbetin.com), "
             f"licensed betting brand operated by Poligon Entertainment N.V. "
             f"(Curaçao OGL/2024/815/0653). Domain {domain} fraudulently "
             f"collects user credentials and/or bank transfers from "
@@ -159,7 +169,7 @@ async def report_netcraft(session, domain):
             {
                 "url": f"https://{domain}/",
                 "reason": (
-                    f"Phishing site impersonating SUPERBETIN (superbetin1838.com), "
+                    f"Phishing site impersonating SUPERBETIN (superbetin.com), "
                     f"operated by Poligon Entertainment N.V. "
                     f"(Curaçao OGL/2024/815/0653). "
                     f"Fraudulently collects credentials and payments from Turkish users."
@@ -191,7 +201,7 @@ async def report_smartscreen(session, domain):
         "url": f"https://{domain}/",
         "typeOfThreat": "Phishing",
         "comments": (
-            f"Phishing site impersonating SUPERBETIN (superbetin1838.com), "
+            f"Phishing site impersonating SUPERBETIN (superbetin.com), "
             f"licensed betting brand by Poligon Entertainment N.V. "
             f"(Curaçao OGL/2024/815/0653). Fraudulently collects user "
             f"credentials and bank transfers from Turkish-speaking users."
