@@ -7,6 +7,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timezone, timedelta
 
+try:
+    import dns.resolver
+except ImportError:
+    raise SystemExit("dnspython gerekli: pip install dnspython --break-system-packages")
+
 TZ_SOFIA = timezone(timedelta(hours=3))
 
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
@@ -19,67 +24,134 @@ REPORTED_FILES = [
     "betsat_reported.json",
     "turkbet_reported.json",
 ]
-COMPLAINT_FILE = "complaint_reported.json"
+# NiceNIC scriptinden AYRI bir complaint-done dosyası — aynı domain hem
+# registrar (NiceNIC) hem host seviyesinde şikayet edilebilir, bunlar
+# birbirini engellemez.
+COMPLAINT_FILE = "host_complaint_reported.json"
+UNKNOWN_CLUSTER_FILE = "unknown_clusters.json"
 
-NICENIC_ABUSE = "abuse@nicenic.net"
-NICENIC_SUPPORT = "support@nicenic.net"
+# İsteğe bağlı: Cloudflare raporundan host'u zaten elle öğrendiğimiz ama
+# NS lookup'a güvenmek istemediğimiz domainler için manuel override.
+# Format: {"domain.com": "host_key"}
+MANUAL_HOST_OVERRIDE_FILE = "manual_host_overrides.json"
 
 # ============================================================
-# MARKA AYARLARI — GÜNCEL
+# MARKA AYARLARI — GÜNCEL (02 Temmuz 2026 itibarıyla)
 # ============================================================
 BRANDS = {
     "superbetin": {
         "name": "Superbetin",
-        "fixed_domain": "superbetin.com",
-        "active_domain": "superbetin1834.com",
-        "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
+        "active_domains": ["superbetin.com", "superbetin1841.com", "superbetin2052.com", "superbetin2053.com"],
+        "signature_email": "yardim@superbetin.com",
     },
     "betsat": {
         "name": "Betsat",
-        "fixed_domain": "betsat.com",
-        "active_domain": "betsat1578.com",
-        "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
+        "active_domains": ["betsat.com", "betsat1596.com", "betsat1597.com"],
+        "signature_email": "support@betsat.com",
     },
     "turkbet": {
         "name": "Turkbet",
-        "fixed_domain": "turkbet.io",
-        "active_domain": "730turkbet.com",
-        "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk="
-    }
+        "active_domains": ["turkbet.io", "742turkbet.com", "744turkbet.com"],
+        "signature_email": "support@turkbet.co",
+        "signature_footer": (
+            "Turkbet, Curaçao yasalarına göre kurulmuş olan Poligon Entertainment N.V. "
+            "tarafından işletilmektedir. 132517 şirket numarasıyla kayıtlı olan bu şirket, "
+            "Curaçao Oyun Otoritesi tarafından verilen OGL/2024/815/0653 numaralı lisans "
+            "kapsamında şans oyunları sunma yetkisine sahiptir ve bu faaliyetlerini Şans "
+            "Oyunları Ulusal Yönetmeliği (LOK) doğrultusunda yürütmektedir."
+        ),
+    },
+}
+
+WHITELIST = set()
+for _brand in BRANDS.values():
+    WHITELIST.update(_brand["active_domains"])
+
+# ============================================================
+# HOSTLAR — abuse adresleri
+# ============================================================
+HOSTS = {
+    "netiface":      {"name": "Netiface LLC",             "abuse": ["abuse@abusehandler.net", "abuse@vpsdedicated.net"]},
+    "omegatech":     {"name": "Omegatech LTD",             "abuse": ["abuse@pitline.net", "abuse@omegatech.sc"]},
+    "advin":         {"name": "Advin Services LLC",        "abuse": ["anush@advinservers.com"]},
+    "swissnet":      {"name": "SwissNet LLC",               "abuse": ["abuse@swissnetwork.io"]},
+    "prq":           {"name": "PRQ VPN Network SE",         "abuse": ["abuse@dcs.net"]},
+    "fatcat":        {"name": "FATCAT-AS / scrhost.com",    "abuse": ["info@scrhost.com"]},
+    "vpsdatacenter": {"name": "VPS Datacenter Ltd",          "abuse": ["abuse@private-data-center.com"]},
 }
 
 # ============================================================
-# WHİTELİST — Bizim domainlerimiz (şikayet edilmez)
+# CLUSTER HARİTASI — NS etiket çifti (frozenset, sırasız) -> host_key
 # ============================================================
-WHITELIST = set([
-    # Superbetin — resmi + aktif
-    "superbetin.com", "superbetin1832.com",
-    *[f"superbetin{n}.com" for n in [724, 1240, 1268, 1560, 2369]],
-    *[f"superbetin{n}.com" for n in range(1300, 1411)],
-    *[f"superbetin{n}.com" for n in range(1700, 1975)],
-    # Betsat — resmi + aktif
-    "betsat.com", "betsat1573.com",
-    *[f"betsat{n}.com" for n in range(1539, 1701)],
-    # Turkbet — resmi + aktif
-    "turkbet.com", "turkbet.io", "726turkbet.com",
-    "722turkbet.com", "723turkbet.com",
-    *[f"{n}turkbet.com" for n in range(600, 891)],
-])
+# Yeni bir cluster Cloudflare raporuyla teyit edildikçe buraya eklenir.
+# Bilinmeyen cluster'lar OTOMATİK GÖNDERİLMEZ — unknown_clusters.json'a
+# loglanır, Telegram'a bildirilir, elle CF raporuyla host tespiti bekler.
+CLUSTER_MAP = {
+    frozenset({"drew", "leia"}):        "netiface",
+    frozenset({"carol", "mustafa"}):    "netiface",
+    frozenset({"keaton", "shaz"}):      "netiface",
+    frozenset({"venus", "carmelo"}):    "netiface",
+    frozenset({"justin", "sierra"}):    "netiface",
+    frozenset({"conrad", "leia"}):      "netiface",
+    frozenset({"candy", "edward"}):     "netiface",
+    frozenset({"buck", "phoenix"}):     "netiface",
+    frozenset({"princess", "rory"}):    "netiface",
+    frozenset({"charles", "novalee"}):  "netiface",
+
+    frozenset({"syeef", "tina"}):       "omegatech",
+    frozenset({"isla", "nolan"}):       "omegatech",
+    frozenset({"aisha", "langston"}):   "omegatech",
+    frozenset({"archer", "melissa"}):   "omegatech",
+    frozenset({"dane", "alice"}):       "omegatech",
+
+    frozenset({"ruben", "ariella"}):    "advin",
+
+    frozenset({"penny", "tanner"}):     "swissnet",
+    frozenset({"elliot", "marlowe"}):   "swissnet",
+    frozenset({"ainsley", "lamar"}):    "swissnet",
+    frozenset({"lee", "aida"}):         "swissnet",
+
+    frozenset({"decker", "liberty"}):   "prq",
+    frozenset({"paris", "porter"}):     "prq",
+
+    frozenset({"gail", "lennox"}):      "fatcat",
+    frozenset({"candy", "nico"}):       "fatcat",
+
+    frozenset({"ophelia", "theo"}):     "vpsdatacenter",
+    frozenset({"garrett", "indie"}):    "vpsdatacenter",
+    frozenset({"kipp", "penny"}):       "vpsdatacenter",
+}
+# Bilinen ama host'u HALEN tespit edilmemiş cluster'lar (bilgi amaçlı,
+# eşleşme yapılmaz — sadece log mesajında "known-unresolved" diye ayırmak için):
+KNOWN_UNRESOLVED_CLUSTERS = {
+    frozenset({"lovisa", "max"}),
+    frozenset({"ainsley", "everton"}),
+}
 
 def load_json(filename):
     try:
         with open(filename, "r") as f:
             data = json.load(f)
             return data if isinstance(data, list) else list(data)
-    except:
+    except Exception:
         return []
+
+def load_json_dict(filename):
+    try:
+        with open(filename, "r") as f:
+            return json.load(f)
+    except Exception:
+        return {}
 
 def save_json(filename, data):
     with open(filename, "w") as f:
         json.dump(list(data), f)
 
+def save_json_dict(filename, data):
+    with open(filename, "w") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
 def get_root(domain):
-    """Subdomain varsa root domain'i döndür: tr.foo.vip → foo.vip"""
     parts = domain.split(".")
     if len(parts) > 2:
         return ".".join(parts[-2:])
@@ -91,43 +163,81 @@ def detect_brand_key(domain):
         return "betsat"
     elif "turkbet" in d or "turcbet" in d or "trkbet" in d:
         return "turkbet"
-    else:
-        return "superbetin"
+    return "superbetin"
 
 def is_whitelisted(domain):
     root = get_root(domain)
     return domain in WHITELIST or root in WHITELIST
 
-def build_nicenic_email(domain, brand_key):
-    brand_info = BRANDS[brand_key]
-    brand_name = brand_info["name"]
-    fixed_domain = brand_info["fixed_domain"]
-    active_domain = brand_info["active_domain"]
-    license_url = brand_info["license_url"]
+# ============================================================
+# NS CLUSTER TESPİTİ
+# ============================================================
+def get_ns_labels(domain):
+    """Domainin NS kayıtlarındaki ilk etiketleri döndürür (drew.ns.cloudflare.com -> 'drew')"""
+    try:
+        answers = dns.resolver.resolve(domain, "NS", lifetime=8)
+        labels = set()
+        for r in answers:
+            host = str(r.target).rstrip(".").lower()
+            label = host.split(".")[0]
+            labels.add(label)
+        return labels
+    except Exception as e:
+        print(f"    ⚠️ NS lookup başarısız ({domain}): {e}")
+        return None
 
-    subject = f"URGENT: Phishing Domain - {domain} - Immediate ClientHold Required"
-    body = f"""Dear NiceNIC Abuse Team,
+def match_cluster(ns_labels):
+    """NS etiketlerini bilinen cluster çiftleriyle eşleştirir."""
+    if not ns_labels:
+        return None, None
+    for pair, host_key in CLUSTER_MAP.items():
+        if pair.issubset(ns_labels):
+            return pair, host_key
+    for pair in KNOWN_UNRESOLVED_CLUSTERS:
+        if pair.issubset(ns_labels):
+            return pair, None  # bilinen ama host'u belirsiz cluster
+    return None, None
 
-We are reporting a fraudulent domain registered through your services:
+def resolve_host_for_domain(domain, manual_overrides):
+    """Manuel override varsa onu kullan, yoksa NS lookup ile cluster tespiti yap."""
+    if domain in manual_overrides:
+        host_key = manual_overrides[domain]
+        return "manual-override", host_key
+    root = get_root(domain)
+    ns_labels = get_ns_labels(root)
+    return match_cluster(ns_labels)
 
-Domain: {domain}
+# ============================================================
+# MAİL İÇERİĞİ
+# ============================================================
+def build_host_email(domain, host_key, brand_key, cluster_pair):
+    host = HOSTS[host_key]
+    brand = BRANDS[brand_key]
+    active_domains_str = " / ".join(brand["active_domains"])
+    cluster_label = "/".join(sorted(cluster_pair)) if cluster_pair else "unspecified"
 
-This domain is an active phishing site cloning our licensed brand ({brand_name}), designed to steal user credentials and collect fraudulent bank transfers from Turkish users.
+    subject = f"URGENT: Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted ({cluster_label})"
 
-This is part of an ongoing serial fraud operation using your platform. Multiple domains from the same registrant cluster have already been placed on ClientHold by NiceNIC based on our previous reports.
+    signature_block = f"CS Operations & Technology\nPoligon Entertainment N.V.\n{brand['signature_email']}"
+    if "signature_footer" in brand:
+        signature_block += f"\n\n{brand['signature_footer']}"
 
-We are a licensed operator: {fixed_domain} is operated by Poligon Entertainment N.V., licensed by the Curaçao Gaming Authority under license OGL/2024/815/0653 (Company Number 132517). Status: Active.
-License verification: {license_url}
+    body = f"""Dear {host['name']} Abuse Team,
 
-Our official domains: {fixed_domain} / {active_domain}
+We are writing on behalf of Poligon Entertainment N.V., the licensed
+operator of {brand['name']} (official: {active_domains_str}), under
+Curaçao Gaming Authority license OGL/2024/815/0653.
 
-We urgently request:
-1. Immediate ClientHold suspension of {domain}
-2. Investigation of all domains registered by the same registrant account
+The domain {domain}, hosted on your infrastructure via the {cluster_label}
+nameserver cluster, is operating an active phishing site impersonating
+our licensed brand, using cloned graphics, trademarked layouts, and fake
+login/payment forms to deceive consumers.
 
-Best regards,
-{brand_name} Security Team
-security@{fixed_domain.replace('.io', '.com')}
+This domain is part of a known recurring fraud pattern on your
+infrastructure. We formally request immediate suspension of this domain.
+
+Sincerely,
+{signature_block}
 """
     return subject, body
 
@@ -169,92 +279,112 @@ async def main():
         all_reported.extend(load_json(f))
 
     complaint_done = set(load_json(COMPLAINT_FILE))
+    manual_overrides = load_json_dict(MANUAL_HOST_OVERRIDE_FILE)
+    unknown_clusters = load_json_dict(UNKNOWN_CLUSTER_FILE)
 
-    new_domains = []
-    skipped_whitelist = []
-
+    candidates = []
     for d in all_reported:
         root = get_root(d)
         if is_whitelisted(d):
-            skipped_whitelist.append(d)
-            print(f"  🛡️ Whitelist'te, atlandı: {d}")
             continue
         if d not in complaint_done and root not in complaint_done:
-            new_domains.append(d)
+            candidates.append(d)
 
-    if skipped_whitelist:
-        print(f"\n⚠️ {len(skipped_whitelist)} domain whitelist'te — şikayet edilmedi.")
-
-    if not new_domains:
-        print("Şikayet gönderilecek yeni domain yok.")
+    if not candidates:
+        print("Host şikayeti gönderilecek yeni domain yok.")
         return
 
-    print(f"{len(new_domains)} domain için şikayet gönderilecek...")
+    print(f"{len(candidates)} domain için host tespiti yapılacak...")
 
     success_list = []
     failed_list = []
+    unresolved_list = []
+    unknown_list = []
     sent_roots = set()
 
-    for domain in new_domains[:20]:
+    for domain in candidates[:20]:
         root = get_root(domain)
-
         if root in sent_roots:
-            print(f"  ⏭️ Atlandı (duplicate root): {root}")
             complaint_done.add(domain)
             continue
 
+        print(f"NS kontrol ediliyor: {root}")
+        cluster_pair, host_key = resolve_host_for_domain(root, manual_overrides)
+
+        if host_key is None:
+            if cluster_pair:
+                cluster_label = "/".join(sorted(cluster_pair))
+                print(f"  ❓ Bilinen ama host'u belirsiz cluster: {cluster_label}")
+                unknown_clusters[root] = {
+                    "cluster": cluster_label,
+                    "status": "known-unresolved",
+                    "detected_at": datetime.now(TZ_SOFIA).isoformat(),
+                }
+            else:
+                print(f"  ❓ Tanınmayan cluster / NS lookup başarısız")
+                unknown_clusters[root] = {
+                    "cluster": None,
+                    "status": "unrecognized",
+                    "detected_at": datetime.now(TZ_SOFIA).isoformat(),
+                }
+            unresolved_list.append(root)
+            unknown_list.append(root)
+            await asyncio.sleep(2)
+            continue
+
         brand_key = detect_brand_key(domain)
-        brand_name = BRANDS[brand_key]["name"]
+        subject, body = build_host_email(root, host_key, brand_key, cluster_pair)
+        host = HOSTS[host_key]
 
-        subject, body = build_nicenic_email(root, brand_key)
-
-        print(f"Şikayet gönderiliyor: {root} ({brand_name})")
+        print(f"  ✉️  {host['name']} adresine gönderiliyor: {root}")
         success = send_email(
-            [NICENIC_ABUSE, NICENIC_SUPPORT],
+            host["abuse"],
             subject,
             body,
-            from_name=f"{brand_name} Security Team"
+            from_name=f"{BRANDS[brand_key]['name']} Security Team"
         )
 
         if success:
-            success_list.append(domain)
+            success_list.append((root, host["name"]))
             complaint_done.add(domain)
             complaint_done.add(root)
             sent_roots.add(root)
-            print(f"  ✅ Gönderildi: {root}")
+            unknown_clusters.pop(root, None)  # artık çözüldü, listeden çıkar
+            print(f"    ✅ Gönderildi")
         else:
-            failed_list.append(domain)
-            print(f"  ❌ Başarısız: {root}")
+            failed_list.append(root)
+            print(f"    ❌ Başarısız")
 
         await asyncio.sleep(5)
 
     save_json(COMPLAINT_FILE, list(complaint_done))
+    save_json_dict(UNKNOWN_CLUSTER_FILE, unknown_clusters)
 
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
-    msg = f"📧 *[OTO-ŞİKAYET] NICENIC Mail Raporu* — {now}\n\n"
+    msg = f"📧 *[OTO-ŞİKAYET] Host Bazlı Mail Raporu* — {now}\n\n"
 
     if success_list:
         msg += f"✅ *Gönderilen:* {len(success_list)} şikayet\n"
-        for d in success_list[:10]:
-            b_key = detect_brand_key(d)
-            icon = "🔵" if b_key == "superbetin" else "🟠" if b_key == "betsat" else "🟢"
-            msg += f"  {icon} `{d}`\n"
+        for d, hostname in success_list[:10]:
+            msg += f"  🔹 `{d}` → {hostname}\n"
         if len(success_list) > 10:
             msg += f"  ... ve {len(success_list)-10} tane daha\n"
         msg += "\n"
 
     if failed_list:
-        msg += f"❌ *Başarısız:* {len(failed_list)} şikayet\n"
+        msg += f"❌ *Mail gönderim hatası:* {len(failed_list)} domain\n\n"
 
-    if skipped_whitelist:
-        msg += f"🛡️ *Whitelist (atlandı):* {len(skipped_whitelist)} domain\n"
+    if unknown_list:
+        msg += f"❓ *Cluster tespit edilemedi (elle CF raporu gerekiyor):* {len(unknown_list)} domain\n"
+        for d in unknown_list[:10]:
+            msg += f"  ⚠️ `{d}`\n"
+        if len(unknown_list) > 10:
+            msg += f"  ... ve {len(unknown_list)-10} tane daha\n"
 
-    msg += f"\n📬 *Gönderen:* `{SMTP_USER}`\n"
-    msg += f"📮 *Alıcı:* `{NICENIC_ABUSE}`\n"
-    msg += f"📮 *Alıcı:* `{NICENIC_SUPPORT}`"
+    msg += f"\n📬 *Gönderen:* `{SMTP_USER}`"
 
     await send_telegram(msg)
-    print(f"\n✅ Tamamlandı! {len(success_list)} mail gönderildi.")
+    print(f"\n✅ Tamamlandı! {len(success_list)} mail gönderildi, {len(unknown_list)} domain elle incelemeye düştü.")
 
 if __name__ == "__main__":
     asyncio.run(main())
