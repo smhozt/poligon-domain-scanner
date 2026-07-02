@@ -128,6 +128,9 @@ KNOWN_UNRESOLVED_CLUSTERS = {
     frozenset({"ainsley", "everton"}),
 }
 
+# NXDOMAIN (artık kayıtlı olmayan) domainler için sentinel değer
+DEAD_DOMAIN = "__dead__"
+
 def load_json(filename):
     try:
         with open(filename, "r") as f:
@@ -182,6 +185,9 @@ def get_ns_labels(domain):
             label = host.split(".")[0]
             labels.add(label)
         return labels
+    except dns.resolver.NXDOMAIN:
+        # Domain artık hiç kayıtlı değil — ölü, tekrar tekrar denemeye gerek yok
+        return "NXDOMAIN"
     except Exception as e:
         print(f"    ⚠️ NS lookup başarısız ({domain}): {e}")
         return None
@@ -205,6 +211,8 @@ def resolve_host_for_domain(domain, manual_overrides):
         return None, host_key  # cluster_pair None -> build_host_email "manually confirmed" yazar
     root = get_root(domain)
     ns_labels = get_ns_labels(root)
+    if ns_labels == "NXDOMAIN":
+        return None, DEAD_DOMAIN
     return match_cluster(ns_labels)
 
 # ============================================================
@@ -300,6 +308,7 @@ async def main():
     failed_list = []
     unresolved_list = []
     unknown_list = []
+    dead_list = []
     sent_roots = set()
 
     for domain in candidates[:20]:
@@ -310,6 +319,15 @@ async def main():
 
         print(f"NS kontrol ediliyor: {root}")
         cluster_pair, host_key = resolve_host_for_domain(root, manual_overrides)
+
+        if host_key == DEAD_DOMAIN:
+            print(f"  💀 NXDOMAIN — domain artık kayıtlı değil, bir daha kontrol edilmeyecek")
+            complaint_done.add(domain)
+            complaint_done.add(root)
+            unknown_clusters.pop(root, None)
+            dead_list.append(root)
+            await asyncio.sleep(1)
+            continue
 
         if host_key is None:
             if cluster_pair:
@@ -380,11 +398,15 @@ async def main():
             msg += f"  ⚠️ `{d}`\n"
         if len(unknown_list) > 10:
             msg += f"  ... ve {len(unknown_list)-10} tane daha\n"
+        msg += "\n"
+
+    if dead_list:
+        msg += f"💀 *Artık kayıtlı değil (NXDOMAIN, atlandı):* {len(dead_list)} domain\n"
 
     msg += f"\n📬 *Gönderen:* `{SMTP_USER}`"
 
     await send_telegram(msg)
-    print(f"\n✅ Tamamlandı! {len(success_list)} mail gönderildi, {len(unknown_list)} domain elle incelemeye düştü.")
+    print(f"\n✅ Tamamlandı! {len(success_list)} mail gönderildi, {len(unknown_list)} domain elle incelemeye düştü, {len(dead_list)} ölü domain atlandı.")
 
 if __name__ == "__main__":
     asyncio.run(main())
