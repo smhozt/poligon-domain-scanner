@@ -202,7 +202,7 @@ def resolve_host_for_domain(domain, manual_overrides):
     """Manuel override varsa onu kullan, yoksa NS lookup ile cluster tespiti yap."""
     if domain in manual_overrides:
         host_key = manual_overrides[domain]
-        return "manual-override", host_key
+        return None, host_key  # cluster_pair None -> build_host_email "manually confirmed" yazar
     root = get_root(domain)
     ns_labels = get_ns_labels(root)
     return match_cluster(ns_labels)
@@ -214,7 +214,7 @@ def build_host_email(domain, host_key, brand_key, cluster_pair):
     host = HOSTS[host_key]
     brand = BRANDS[brand_key]
     active_domains_str = " / ".join(brand["active_domains"])
-    cluster_label = "/".join(sorted(cluster_pair)) if cluster_pair else "unspecified"
+    cluster_label = "/".join(sorted(cluster_pair)) if cluster_pair else "manually confirmed hosting"
 
     subject = f"URGENT: Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted ({cluster_label})"
 
