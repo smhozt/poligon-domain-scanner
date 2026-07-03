@@ -40,11 +40,11 @@ SAFE_BROWSING_API = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 BRANDS = {
     "superbetin": {
         "name": "Superbetin",
-        "active_domains": ["superbetin.com", "superbetin2076.com"],
+        "active_domains": ["superbetin.com", "superbetin2077.com"],
     },
     "betsat": {
         "name": "Betsat",
-        "active_domains": ["betsat.com", "betsat1598.com"],
+        "active_domains": ["betsat.com", "betsat1599.com"],
     },
     "turkbet": {
         "name": "Turkbet",
