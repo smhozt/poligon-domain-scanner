@@ -41,7 +41,7 @@ MANUAL_HOST_OVERRIDE_FILE = "manual_host_overrides.json"
 BRANDS = {
     "superbetin": {
         "name": "Superbetin",
-        "active_domains": ["superbetin.com", "superbetin2054.com"],
+        "active_domains": ["superbetin.com", "superbetin2076.com"],
         "signature_email": "yardim@superbetin.com",
     },
     "betsat": {
