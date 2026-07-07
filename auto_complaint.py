@@ -46,12 +46,12 @@ BRANDS = {
     },
     "betsat": {
         "name": "Betsat",
-        "active_domains": ["betsat.com", "betsat1599.com"],
+        "active_domains": ["betsat.com", "betsat1600.com"],
         "signature_email": "support@betsat.com",
     },
     "turkbet": {
         "name": "Turkbet",
-        "active_domains": ["turkbet.io", "744turkbet.com"],
+        "active_domains": ["turkbet.io", "745turkbet.com"],
         "signature_email": "support@turkbet.co",
         "signature_footer": (
             "Turkbet, Curaçao yasalarına göre kurulmuş olan Poligon Entertainment N.V. "
