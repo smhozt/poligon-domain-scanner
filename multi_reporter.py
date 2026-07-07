@@ -44,11 +44,11 @@ BRANDS = {
     },
     "betsat": {
         "name": "Betsat",
-        "active_domains": ["betsat.com", "betsat1599.com"],
+        "active_domains": ["betsat.com", "betsat1600.com"],
     },
     "turkbet": {
         "name": "Turkbet",
-        "active_domains": ["turkbet.io", "744turkbet.com"],
+        "active_domains": ["turkbet.io", "745turkbet.com"],
     },
 }
 
