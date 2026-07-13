@@ -32,7 +32,7 @@
   "superbet1102.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-12T12:37:28.947228+03:00"
+    "detected_at": "2026-07-13T13:11:15.095401+03:00"
   },
   "m-superbetin1832.com": {
     "cluster": null,
@@ -94,11 +94,6 @@
     "status": "unrecognized",
     "detected_at": "2026-07-12T15:20:15.126853+03:00"
   },
-  "superbetin2165.com": {
-    "cluster": null,
-    "status": "unrecognized",
-    "detected_at": "2026-07-07T10:50:47.057895+03:00"
-  },
   "superbet1118.com": {
     "cluster": null,
     "status": "unrecognized",
@@ -107,12 +102,12 @@
   "superbetin2134.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-07T15:36:22.133725+03:00"
+    "detected_at": "2026-07-13T13:11:08.983072+03:00"
   },
   "superbet1101.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-11T00:26:45.252651+03:00"
+    "detected_at": "2026-07-13T13:10:57.697592+03:00"
   },
   "superbetin8300.com": {
     "cluster": null,
@@ -127,7 +122,7 @@
   "superbetn1831.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-13T00:20:18.469682+03:00"
+    "detected_at": "2026-07-13T13:11:13.083822+03:00"
   },
   "superbet1128.com": {
     "cluster": null,
@@ -137,12 +132,12 @@
   "superbetin2095.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-13T00:19:51.958714+03:00"
+    "detected_at": "2026-07-13T13:11:17.129327+03:00"
   },
   "17910superbetin.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-13T00:20:02.156421+03:00"
+    "detected_at": "2026-07-13T13:10:55.688155+03:00"
   },
   "superbet1131.com": {
     "cluster": null,
@@ -152,7 +147,7 @@
   "superbetin1697.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-08T12:51:59.692991+03:00"
+    "detected_at": "2026-07-13T13:10:51.585767+03:00"
   },
   "superbet1100.com": {
     "cluster": null,
@@ -192,7 +187,7 @@
   "superbetin177.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-10T00:33:16.795656+03:00"
+    "detected_at": "2026-07-13T13:11:02.950264+03:00"
   },
   "superbet1114.com": {
     "cluster": null,
@@ -222,7 +217,7 @@
   "superbet1106.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-12T12:37:06.073215+03:00"
+    "detected_at": "2026-07-13T13:11:21.172874+03:00"
   },
   "tr-superbetin1750.com": {
     "cluster": null,
@@ -232,7 +227,7 @@
   "superbet1144.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-12T15:19:49.735068+03:00"
+    "detected_at": "2026-07-13T13:10:59.780047+03:00"
   },
   "superbet1138.com": {
     "cluster": null,
@@ -289,11 +284,6 @@
     "status": "unrecognized",
     "detected_at": "2026-07-06T13:39:03.234699+03:00"
   },
-  "m-superbetin1835.com": {
-    "cluster": null,
-    "status": "unrecognized",
-    "detected_at": "2026-07-08T12:52:18.496217+03:00"
-  },
   "superbetin18039.com": {
     "cluster": "ainsley/everton",
     "status": "known-unresolved",
@@ -307,17 +297,17 @@
   "superbet1111.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-12T12:37:24.511468+03:00"
+    "detected_at": "2026-07-13T13:10:49.499111+03:00"
   },
   "superbetin2190.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-07T15:36:51.825481+03:00"
+    "detected_at": "2026-07-13T13:11:19.163943+03:00"
   },
   "superbet1150.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-11T00:26:59.493155+03:00"
+    "detected_at": "2026-07-13T13:10:53.668932+03:00"
   },
   "superbet1121.com": {
     "cluster": null,
@@ -387,7 +377,7 @@
   "superbet1136.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-12T15:19:53.772711+03:00"
+    "detected_at": "2026-07-13T13:11:24.263735+03:00"
   },
   "superbetin2122.com": {
     "cluster": null,
@@ -407,7 +397,7 @@
   "superbet1123.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-13T00:19:56.026146+03:00"
+    "detected_at": "2026-07-13T13:11:04.962251+03:00"
   },
   "superbetin2031.com": {
     "cluster": null,
@@ -487,7 +477,7 @@
   "superbet1149.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-13T00:20:20.532620+03:00"
+    "detected_at": "2026-07-13T13:11:10.996316+03:00"
   },
   "superbetin2177.com": {
     "cluster": null,
@@ -502,6 +492,6 @@
   "superbet1141.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-07-12T12:37:20.373700+03:00"
+    "detected_at": "2026-07-13T13:11:06.971691+03:00"
   }
 }
