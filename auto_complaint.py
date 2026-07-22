@@ -13,7 +13,6 @@ except ImportError:
     raise SystemExit("dnspython gerekli: pip install dnspython --break-system-packages")
 
 TZ_SOFIA = timezone(timedelta(hours=3))
-
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 SMTP_USER = os.environ.get("SMTP_USER", "")
@@ -24,6 +23,7 @@ REPORTED_FILES = [
     "betsat_reported.json",
     "turkbet_reported.json",
 ]
+
 # NiceNIC scriptinden AYRI bir complaint-done dosyası — aynı domain hem
 # registrar (NiceNIC) hem host seviyesinde şikayet edilebilir, bunlar
 # birbirini engellemez.
@@ -62,7 +62,6 @@ BRANDS = {
         ),
     },
 }
-
 WHITELIST = set()
 for _brand in BRANDS.values():
     WHITELIST.update(_brand["active_domains"])
@@ -97,30 +96,25 @@ CLUSTER_MAP = {
     frozenset({"buck", "phoenix"}):     "netiface",
     frozenset({"princess", "rory"}):    "netiface",
     frozenset({"charles", "novalee"}):  "netiface",
-
     frozenset({"syeef", "tina"}):       "omegatech",
     frozenset({"isla", "nolan"}):       "omegatech",
     frozenset({"aisha", "langston"}):   "omegatech",
     frozenset({"archer", "melissa"}):   "omegatech",
     frozenset({"dane", "alice"}):       "omegatech",
-
     frozenset({"ruben", "ariella"}):    "advin",
-
     frozenset({"penny", "tanner"}):     "swissnet",
     frozenset({"elliot", "marlowe"}):   "swissnet",
     frozenset({"ainsley", "lamar"}):    "swissnet",
     frozenset({"lee", "aida"}):         "swissnet",
-
     frozenset({"decker", "liberty"}):   "prq",
     frozenset({"paris", "porter"}):     "prq",
-
     frozenset({"gail", "lennox"}):      "fatcat",
     frozenset({"candy", "nico"}):       "fatcat",
-
     frozenset({"ophelia", "theo"}):     "vpsdatacenter",
     frozenset({"garrett", "indie"}):    "vpsdatacenter",
     frozenset({"kipp", "penny"}):       "vpsdatacenter",
 }
+
 # Bilinen ama host'u HALEN tespit edilmemiş cluster'lar (bilgi amaçlı,
 # eşleşme yapılmaz — sadece log mesajında "known-unresolved" diye ayırmak için):
 KNOWN_UNRESOLVED_CLUSTERS = {
@@ -131,6 +125,75 @@ KNOWN_UNRESOLVED_CLUSTERS = {
 # NXDOMAIN (artık kayıtlı olmayan) domainler için sentinel değer
 DEAD_DOMAIN = "__dead__"
 
+# ============================================================
+# YAYGIN PHISHING PATH / SUBDOMAIN KEŞFİ (v2 — 22 Tem 2026)
+# Host şikayetlerini somut kanıt (gerçek çalışan URL listesi) ile
+# göndermek için, tespit edilen domain'in bilinen fraud path'lerinde
+# ve subdomain'lerinde canlı yanıt olup olmadığı kontrol edilir.
+# Sadece gerçekten yanıt veren (200/301/302/403) URL'ler mail
+# içeriğine eklenir — var olmayan path'ler listelenmez.
+# ============================================================
+COMMON_PHISHING_PATHS = [
+    "/",
+    "/login.php",
+    "/spor/",
+    "/spor/?mobile=1",
+    "/casino/",
+    "/canli-bahis/",
+    "/modules/payments/deposit/",
+    "/modules/payments/deposit/?payment_type=105",
+    "/modules/payments/deposit/?payment_type=109",
+    "/modules/payments/deposit/?payment_type=117",
+    "/payment/view/havale.php",
+    "/payment/view/bitcoin.php",
+    "/payment/bank/nethavale/",
+    "/payment/bank/otomonay/",
+    "/payment/crypto/kriptopay/",
+    "/paraylan/",
+]
+
+# Yaygın deposit/gateway subdomain'leri — kök sayfası + kendi deposit
+# path'leri kontrol edilir (yatirim.domain.cam/havale/ gibi)
+COMMON_PHISHING_SUBDOMAINS = ["m", "tr", "www", "yatirim", "payment", "odeme", "cryptopay"]
+SUBDOMAIN_DEPOSIT_PATHS = ["/", "/havale/", "/crypto/", "/login.php"]
+
+URL_CHECK_TIMEOUT = aiohttp.ClientTimeout(total=4)
+URL_CHECK_CONCURRENCY = 30
+
+
+async def _check_url(session, semaphore, url):
+    async with semaphore:
+        try:
+            async with session.get(url, timeout=URL_CHECK_TIMEOUT, allow_redirects=True, ssl=False) as resp:
+                if resp.status in (200, 301, 302, 403):
+                    return url
+        except Exception:
+            pass
+    return None
+
+
+async def discover_phishing_urls(session, root_domain, max_results=12):
+    """Kök domain + bilinen subdomain/path kombinasyonlarını canlı test
+    eder, gerçekten yanıt veren URL'leri döndürür. Bu liste host abuse
+    mailine 'Reported URLs' bölümü olarak eklenir."""
+    urls_to_check = []
+    for path in COMMON_PHISHING_PATHS:
+        urls_to_check.append(f"https://{root_domain}{path}")
+    for sub in COMMON_PHISHING_SUBDOMAINS:
+        for dpath in SUBDOMAIN_DEPOSIT_PATHS:
+            urls_to_check.append(f"https://{sub}.{root_domain}{dpath}")
+
+    semaphore = asyncio.Semaphore(URL_CHECK_CONCURRENCY)
+    tasks = [_check_url(session, semaphore, u) for u in urls_to_check]
+    results = await asyncio.gather(*tasks, return_exceptions=False)
+    found = [u for u in results if u]
+
+    # "/" ile biten kök path'leri çıkarıp, daha spesifik olanları önce
+    # göster (spesifik fraud path'leri daha güçlü kanıt niteliğinde)
+    found.sort(key=lambda u: (u.rstrip("/").endswith(root_domain.rstrip("/")), len(u)))
+    return found[:max_results]
+
+
 def load_json(filename):
     try:
         with open(filename, "r") as f:
@@ -139,6 +202,7 @@ def load_json(filename):
     except Exception:
         return []
 
+
 def load_json_dict(filename):
     try:
         with open(filename, "r") as f:
@@ -146,19 +210,23 @@ def load_json_dict(filename):
     except Exception:
         return {}
 
+
 def save_json(filename, data):
     with open(filename, "w") as f:
         json.dump(list(data), f)
 
+
 def save_json_dict(filename, data):
     with open(filename, "w") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+
 
 def get_root(domain):
     parts = domain.split(".")
     if len(parts) > 2:
         return ".".join(parts[-2:])
     return domain
+
 
 def detect_brand_key(domain):
     d = domain.lower()
@@ -168,9 +236,11 @@ def detect_brand_key(domain):
         return "turkbet"
     return "superbetin"
 
+
 def is_whitelisted(domain):
     root = get_root(domain)
     return domain in WHITELIST or root in WHITELIST
+
 
 # ============================================================
 # NS CLUSTER TESPİTİ
@@ -192,6 +262,7 @@ def get_ns_labels(domain):
         print(f"    ⚠️ NS lookup başarısız ({domain}): {e}")
         return None
 
+
 def match_cluster(ns_labels):
     """NS etiketlerini bilinen cluster çiftleriyle eşleştirir."""
     if not ns_labels:
@@ -204,6 +275,7 @@ def match_cluster(ns_labels):
             return pair, None  # bilinen ama host'u belirsiz cluster
     return None, None
 
+
 def resolve_host_for_domain(domain, manual_overrides):
     """Manuel override varsa onu kullan, yoksa NS lookup ile cluster tespiti yap."""
     if domain in manual_overrides:
@@ -215,20 +287,25 @@ def resolve_host_for_domain(domain, manual_overrides):
         return None, DEAD_DOMAIN
     return match_cluster(ns_labels)
 
+
 # ============================================================
 # MAİL İÇERİĞİ
 # ============================================================
-def build_host_email(domain, host_key, brand_key, cluster_pair):
+def build_host_email(domain, host_key, brand_key, cluster_pair, found_urls=None):
     host = HOSTS[host_key]
     brand = BRANDS[brand_key]
     active_domains_str = " / ".join(brand["active_domains"])
     cluster_label = "/".join(sorted(cluster_pair)) if cluster_pair else "manually confirmed hosting"
-
     subject = f"URGENT: Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted ({cluster_label})"
-
     signature_block = f"CS Operations & Technology\nPoligon Entertainment N.V.\n{brand['signature_email']}"
     if "signature_footer" in brand:
         signature_block += f"\n\n{brand['signature_footer']}"
+
+    if found_urls:
+        urls_block = "\n".join(f"- {u}" for u in found_urls)
+        reported_urls_section = f"\nReported URLs (live-verified at time of report):\n{urls_block}\n"
+    else:
+        reported_urls_section = ""
 
     body = f"""Dear {host['name']} Abuse Team,
 
@@ -240,7 +317,7 @@ The domain {domain}, hosted on your infrastructure via the {cluster_label}
 nameserver cluster, is operating an active phishing site impersonating
 our licensed brand, using cloned graphics, trademarked layouts, and fake
 login/payment forms to deceive consumers.
-
+{reported_urls_section}
 This domain is part of a known recurring fraud pattern on your
 infrastructure. We formally request immediate suspension of this domain.
 
@@ -248,6 +325,7 @@ Sincerely,
 {signature_block}
 """
     return subject, body
+
 
 def send_email(to_addresses, subject, body, from_name="Security Team"):
     if not SMTP_USER or not SMTP_PASS:
@@ -267,6 +345,7 @@ def send_email(to_addresses, subject, body, from_name="Security Team"):
         print(f"Mail gönderme hatası: {e}")
         return False
 
+
 async def send_telegram(message):
     async with aiohttp.ClientSession() as session:
         for chat_id in TELEGRAM_CHAT_IDS:
@@ -280,6 +359,7 @@ async def send_telegram(message):
                 })
             except Exception as e:
                 print(f"Telegram hatası: {e}")
+
 
 async def main():
     all_reported = []
@@ -311,87 +391,92 @@ async def main():
     dead_list = []
     sent_roots = set()
 
-    for domain in candidates[:20]:
-        root = get_root(domain)
-        if root in sent_roots:
-            complaint_done.add(domain)
-            continue
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=50)) as http_session:
+        for domain in candidates[:20]:
+            root = get_root(domain)
+            if root in sent_roots:
+                complaint_done.add(domain)
+                continue
 
-        print(f"NS kontrol ediliyor: {root}")
-        cluster_pair, host_key = resolve_host_for_domain(root, manual_overrides)
+            print(f"NS kontrol ediliyor: {root}")
+            cluster_pair, host_key = resolve_host_for_domain(root, manual_overrides)
 
-        if host_key == DEAD_DOMAIN:
-            print(f"  💀 NXDOMAIN — domain artık kayıtlı değil, bir daha kontrol edilmeyecek")
-            complaint_done.add(domain)
-            complaint_done.add(root)
-            unknown_clusters.pop(root, None)
-            dead_list.append(root)
-            await asyncio.sleep(1)
-            continue
+            if host_key == DEAD_DOMAIN:
+                print(f"  💀 NXDOMAIN — domain artık kayıtlı değil, bir daha kontrol edilmeyecek")
+                complaint_done.add(domain)
+                complaint_done.add(root)
+                unknown_clusters.pop(root, None)
+                dead_list.append(root)
+                await asyncio.sleep(1)
+                continue
 
-        if host_key is None:
-            if cluster_pair:
-                cluster_label = "/".join(sorted(cluster_pair))
-                print(f"  ❓ Bilinen ama host'u belirsiz cluster: {cluster_label}")
-                unknown_clusters[root] = {
-                    "cluster": cluster_label,
-                    "status": "known-unresolved",
-                    "detected_at": datetime.now(TZ_SOFIA).isoformat(),
-                }
+            if host_key is None:
+                if cluster_pair:
+                    cluster_label = "/".join(sorted(cluster_pair))
+                    print(f"  ❓ Bilinen ama host'u belirsiz cluster: {cluster_label}")
+                    unknown_clusters[root] = {
+                        "cluster": cluster_label,
+                        "status": "known-unresolved",
+                        "detected_at": datetime.now(TZ_SOFIA).isoformat(),
+                    }
+                else:
+                    print(f"  ❓ Tanınmayan cluster / NS lookup başarısız")
+                    unknown_clusters[root] = {
+                        "cluster": None,
+                        "status": "unrecognized",
+                        "detected_at": datetime.now(TZ_SOFIA).isoformat(),
+                    }
+                unresolved_list.append(root)
+                unknown_list.append(root)
+                await asyncio.sleep(2)
+                continue
+
+            brand_key = detect_brand_key(domain)
+
+            print(f"  🔎 Bilinen fraud path/subdomain kombinasyonları test ediliyor...")
+            found_urls = await discover_phishing_urls(http_session, root)
+            if found_urls:
+                print(f"    📎 {len(found_urls)} canlı URL bulundu, mail'e eklenecek")
             else:
-                print(f"  ❓ Tanınmayan cluster / NS lookup başarısız")
-                unknown_clusters[root] = {
-                    "cluster": None,
-                    "status": "unrecognized",
-                    "detected_at": datetime.now(TZ_SOFIA).isoformat(),
-                }
-            unresolved_list.append(root)
-            unknown_list.append(root)
-            await asyncio.sleep(2)
-            continue
+                print(f"    (canlı path/subdomain bulunamadı — genel şablonla gönderiliyor)")
 
-        brand_key = detect_brand_key(domain)
-        subject, body = build_host_email(root, host_key, brand_key, cluster_pair)
-        host = HOSTS[host_key]
+            subject, body = build_host_email(root, host_key, brand_key, cluster_pair, found_urls)
+            host = HOSTS[host_key]
+            print(f"  ✉️  {host['name']} adresine gönderiliyor: {root}")
+            success = send_email(
+                host["abuse"],
+                subject,
+                body,
+                from_name=f"{BRANDS[brand_key]['name']} Security Team"
+            )
+            if success:
+                success_list.append((root, host["name"], len(found_urls)))
+                complaint_done.add(domain)
+                complaint_done.add(root)
+                sent_roots.add(root)
+                unknown_clusters.pop(root, None)  # artık çözüldü, listeden çıkar
+                print(f"    ✅ Gönderildi")
+            else:
+                failed_list.append(root)
+                print(f"    ❌ Başarısız")
 
-        print(f"  ✉️  {host['name']} adresine gönderiliyor: {root}")
-        success = send_email(
-            host["abuse"],
-            subject,
-            body,
-            from_name=f"{BRANDS[brand_key]['name']} Security Team"
-        )
-
-        if success:
-            success_list.append((root, host["name"]))
-            complaint_done.add(domain)
-            complaint_done.add(root)
-            sent_roots.add(root)
-            unknown_clusters.pop(root, None)  # artık çözüldü, listeden çıkar
-            print(f"    ✅ Gönderildi")
-        else:
-            failed_list.append(root)
-            print(f"    ❌ Başarısız")
-
-        await asyncio.sleep(5)
+            await asyncio.sleep(5)
 
     save_json(COMPLAINT_FILE, list(complaint_done))
     save_json_dict(UNKNOWN_CLUSTER_FILE, unknown_clusters)
 
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     msg = f"📧 *[OTO-ŞİKAYET] Host Bazlı Mail Raporu* — {now}\n\n"
-
     if success_list:
         msg += f"✅ *Gönderilen:* {len(success_list)} şikayet\n"
-        for d, hostname in success_list[:10]:
-            msg += f"  🔹 `{d}` → {hostname}\n"
+        for d, hostname, url_count in success_list[:10]:
+            evidence_note = f" ({url_count} URL kanıtı)" if url_count else ""
+            msg += f"  🔹 `{d}` → {hostname}{evidence_note}\n"
         if len(success_list) > 10:
             msg += f"  ... ve {len(success_list)-10} tane daha\n"
         msg += "\n"
-
     if failed_list:
         msg += f"❌ *Mail gönderim hatası:* {len(failed_list)} domain\n\n"
-
     if unknown_list:
         msg += f"❓ *Cluster tespit edilemedi (elle CF raporu gerekiyor):* {len(unknown_list)} domain\n"
         for d in unknown_list[:10]:
@@ -399,14 +484,13 @@ async def main():
         if len(unknown_list) > 10:
             msg += f"  ... ve {len(unknown_list)-10} tane daha\n"
         msg += "\n"
-
     if dead_list:
         msg += f"💀 *Artık kayıtlı değil (NXDOMAIN, atlandı):* {len(dead_list)} domain\n"
-
     msg += f"\n📬 *Gönderen:* `{SMTP_USER}`"
 
     await send_telegram(msg)
     print(f"\n✅ Tamamlandı! {len(success_list)} mail gönderildi, {len(unknown_list)} domain elle incelemeye düştü, {len(dead_list)} ölü domain atlandı.")
+
 
 if __name__ == "__main__":
     asyncio.run(main())
