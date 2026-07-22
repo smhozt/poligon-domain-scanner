@@ -273,10 +273,16 @@ async def main():
     print("📷 Superbetin .cam TLD-swap varyasyonları taranıyor...")
     for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
         domains_to_scan.append((f"superbetin{num}.cam", "CAM-TLD-SWAP", set()))
-    # Resmi aktif numara (2077) için deposit-subdomain kontrolü
+    # Resmi aktif numara (2077) için hem ANA domain (zaten
+    # SUPERBETIN_RANGE 1975-3001 içinde olduğu için üstteki
+    # döngüyle de taranıyor, burada tutarlılık/güvence için
+    # açıkça tekrar ekleniyor — resmi numara ileride değişirse
+    # aralık dışına düşme riskine karşı) hem deposit-subdomain
+    # kontrolü:
     CAM_DEPOSIT_CHECK_NUMBERS = [2077]
     CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
     for onum in CAM_DEPOSIT_CHECK_NUMBERS:
+        domains_to_scan.append((f"superbetin{onum}.cam", "CAM-TLD-SWAP", set()))
         for sub in CAM_DEPOSIT_SUBS:
             domains_to_scan.append((f"{sub}.superbetin{onum}.cam", "CAM-TLD-SWAP-DEPOSIT-SUB", set()))
 
@@ -297,7 +303,11 @@ async def main():
     repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
 
     if found:
-        msg = f"🚨 *[ALARM] Aktif Sahte Domain!*\n🤖 `{repo}`\n"
+        msg = (
+            f"🚨 *[ALARM] Aktif Sahte Domain!*\n"
+            f"🤖 `{repo}`\n"
+            f"Taranan: `{len(domains_to_scan):,}` domain — Bulunan: `{len(found)}`\n"
+        )
         for item in found:
             icon = (
                 "📷" if "CAM-TLD-SWAP" in item["type"] else
