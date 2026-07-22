@@ -112,6 +112,7 @@ HOSTS = {
     "pfcloud":         {"name": "Pfcloud UG (abusehandler.net)",         "abuse": ["abuse@abusehandler.net"]},
     "pfcloud_io":      {"name": "Pfcloud UG (pfcloud.io)",               "abuse": ["abuse@pfcloud.io"]},
     "sahinnetwork":    {"name": "Bursabil Teknoloji A.Ş.",               "abuse": ["abuse@sahinnetwork.com"]},
+    "frantech":        {"name": "FranTech Solutions (PONYNET)",          "abuse": ["admin@frantech.ca"]},
 }
 
 CLUSTER_MAP = {
@@ -180,6 +181,7 @@ CLUSTER_MAP = {
     frozenset({"candy", "edward"}):     "pfcloud",
     frozenset({"huxley", "kami"}):      "pfcloud_io",
     frozenset({"bonnie", "fred"}):      "sahinnetwork",
+    frozenset({"katja", "tosana"}):     "frantech",
 }
 
 DEAD_DOMAIN = "__dead__"
