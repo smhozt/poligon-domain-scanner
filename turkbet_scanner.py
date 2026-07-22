@@ -221,13 +221,16 @@ async def main():
             domains_to_scan.append((f"turkbet{num}.{tld}", f"TURKBET-{tld.upper()}-TERS", set()))
 
     # 10. .CAM DEPOSIT-SUBDOMAIN KONTROLÜ (v2 — 22 Tem 2026)
-    # Resmi aktif numara (749) için yatirim/tr/m/payment/odeme
-    # subdomain'leri özel olarak kontrol ediliyor — betsat1605.cam
-    # fraud'unda görülen "yatirim.betsat1605.cam/havale/" deseni.
+    # Resmi aktif numara (749) için ANA domain (zaten yukarıdaki
+    # alt-TLD döngüsünde 700-2001 aralığında olduğu için taranıyor,
+    # burada tutarlılık/güvence için açıkça tekrar ekleniyor) ve
+    # yatirim/tr/m/payment/odeme subdomain'leri kontrol ediliyor —
+    # betsat1605.cam fraud'unda görülen "yatirim.betsat1605.cam/havale/" deseni.
     print("📷 Turkbet .cam deposit-subdomain kontrolü üretiliyor...")
     CAM_DEPOSIT_CHECK_NUMBERS = [749]
     CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
     for onum in CAM_DEPOSIT_CHECK_NUMBERS:
+        domains_to_scan.append((f"{onum}turkbet.cam", "CAM-TLD-SWAP", set()))
         for sub in CAM_DEPOSIT_SUBS:
             domains_to_scan.append((f"{sub}.{onum}turkbet.cam", "CAM-TLD-SWAP-DEPOSIT-SUB", set()))
 
@@ -248,7 +251,11 @@ async def main():
     repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
 
     if found:
-        msg = f"🚨 *[TURKBET ALARM] Aktif Sahte Domain!*\n🤖 `{repo}`\n"
+        msg = (
+            f"🚨 *[TURKBET ALARM] Aktif Sahte Domain!*\n"
+            f"🤖 `{repo}`\n"
+            f"Taranan: `{len(domains_to_scan):,}` domain — Bulunan: `{len(found)}`\n"
+        )
         for item in found:
             icon = (
                 "📷" if "CAM" in item["type"] else
