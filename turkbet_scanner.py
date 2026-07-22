@@ -5,24 +5,20 @@ import concurrent.futures
 import os
 import json
 from datetime import datetime, timezone, timedelta
-
 import gspread
 from google.oauth2.service_account import Credentials
 
 TZ_SOFIA = timezone(timedelta(hours=3))
-
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
-
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
-
 GCP_CREDENTIALS = os.environ.get("GCP_CREDENTIALS")
 SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 
 # ============================================================
 # TURKBET WHİTELİST — Bizim domainlerimiz
 # NOT: Turkbet'in domain formatı [num]turkbet.com (sayı önde!)
-# Resmi güncel adres: 738turkbet.com
+# Resmi güncel adres: 749turkbet.com
 # ============================================================
 TURKBET_WHITELIST = set([
     "turkbet.com",
@@ -69,7 +65,6 @@ TURKBET_WHITELIST = set([
     "885turkbet.com", "886turkbet.com", "887turkbet.com", "888turkbet.com", "889turkbet.com",
     "890turkbet.com",
 ])
-
 TURKBET_WHITELIST.update([
     "turkbet.cam", "soloturkbet.com", "asyaturkbet.com", "turkbetturkiye.com",
     "turkbet2026.net", "turkbetcanli.com", "turkbet.es", "turkbet2026.com",
@@ -85,7 +80,6 @@ TURKBET_WHITELIST.update([
 ])
 
 TURKBET_RANGE = range(891, 2001)
-
 REPORTED_FILE = "turkbet_reported.json"
 
 def load_reported():
@@ -217,11 +211,25 @@ async def main():
         domains_to_scan.append((f"turkbet{num}.co", "CO-TERS", set()))
 
     # 9. DİĞER ALT TLD'LER
+    # v2 — 22 Tem 2026: "cam" eklendi. betsat1605.cam ve
+    # (öngörülen) superbetin2077.cam ile aynı fraud deseni —
+    # resmi domain birebir, sadece TLD değişiyor.
     print("🌐 Turkbet alt TLD varyasyonları taranıyor...")
     for num in range(700, 2001):
-        for tld in ["vip", "icu", "live", "net", "org"]:
+        for tld in ["vip", "icu", "live", "net", "org", "cam"]:
             domains_to_scan.append((f"{num}turkbet.{tld}", f"TURKBET-{tld.upper()}", set()))
             domains_to_scan.append((f"turkbet{num}.{tld}", f"TURKBET-{tld.upper()}-TERS", set()))
+
+    # 10. .CAM DEPOSIT-SUBDOMAIN KONTROLÜ (v2 — 22 Tem 2026)
+    # Resmi aktif numara (749) için yatirim/tr/m/payment/odeme
+    # subdomain'leri özel olarak kontrol ediliyor — betsat1605.cam
+    # fraud'unda görülen "yatirim.betsat1605.cam/havale/" deseni.
+    print("📷 Turkbet .cam deposit-subdomain kontrolü üretiliyor...")
+    CAM_DEPOSIT_CHECK_NUMBERS = [749]
+    CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
+    for onum in CAM_DEPOSIT_CHECK_NUMBERS:
+        for sub in CAM_DEPOSIT_SUBS:
+            domains_to_scan.append((f"{sub}.{onum}turkbet.cam", "CAM-TLD-SWAP-DEPOSIT-SUB", set()))
 
     print(f"🚀 Toplam {len(domains_to_scan)} Turkbet domain taranacak...")
 
@@ -243,6 +251,7 @@ async def main():
         msg = f"🚨 *[TURKBET ALARM] Aktif Sahte Domain!*\n🤖 `{repo}`\n"
         for item in found:
             icon = (
+                "📷" if "CAM" in item["type"] else
                 "5️⃣" if item["type"] == "TERS-5HANE" else
                 "🌐" if "CO-" in item["type"] or "TURKBET-" in item["type"] else
                 "🎭" if item["type"] == "IDN-SAHTE" else
