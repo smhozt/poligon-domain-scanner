@@ -1,0 +1,69 @@
+name: Manuel Şikayet Paneli
+
+on:
+  workflow_dispatch:
+    inputs:
+      domains:
+        description: 'Şikayet edilecek domain(ler) — virgülle veya alt alta'
+        required: true
+        type: string
+      brand:
+        description: 'Marka'
+        required: true
+        type: choice
+        options:
+          - auto
+          - superbetin
+          - betsat
+          - turkbet
+        default: auto
+      targets:
+        description: 'Hedefler (virgülle): nicenic,host,custom_email,netcraft,safebrowsing,googlespam,smartscreen,spam404 veya "all"'
+        required: true
+        type: string
+        default: all
+      custom_email:
+        description: 'Özel e-posta adresi (targets içinde custom_email varsa kullanılır, virgülle birden fazla adres)'
+        required: false
+        type: string
+      reporter_email:
+        description: 'Bu şikayette "biz" olarak görünecek e-posta (Netcraft formu + Reply-To). Boşsa markanın kendi maili kullanılır.'
+        required: false
+        type: string
+      active_override:
+        description: 'Güncel resmi site adresi override (virgülle, opsiyonel — kod güncellenmeden anlık düzeltme için)'
+        required: false
+        type: string
+      notes:
+        description: 'Ek not (rapor metnine eklenir, opsiyonel)'
+        required: false
+        type: string
+
+jobs:
+  dispatch-complaint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Bağımlılıkları kur
+        run: pip install aiohttp dnspython --break-system-packages
+
+      - name: Şikayetleri gönder
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SAFE_BROWSING_API_KEY: ${{ secrets.SAFE_BROWSING_API_KEY }}
+          INPUT_DOMAINS: ${{ github.event.inputs.domains }}
+          INPUT_BRAND: ${{ github.event.inputs.brand }}
+          INPUT_TARGETS: ${{ github.event.inputs.targets }}
+          INPUT_CUSTOM_EMAIL: ${{ github.event.inputs.custom_email }}
+          INPUT_REPORTER_EMAIL: ${{ github.event.inputs.reporter_email }}
+          INPUT_ACTIVE_OVERRIDE: ${{ github.event.inputs.active_override }}
+          INPUT_NOTES: ${{ github.event.inputs.notes }}
+        run: python manual_complaint.py
