@@ -9,12 +9,10 @@ import gspread
 from google.oauth2.service_account import Credentials
 
 TZ_SOFIA = timezone(timedelta(hours=3))
-
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 GCP_CREDENTIALS = os.environ.get("GCP_CREDENTIALS")
 SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
-
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
 
 # ============================================================
@@ -64,6 +62,7 @@ BETSAT_WHITELIST = set([
 ])
 for num in range(1167, 1539):
     BETSAT_WHITELIST.add(f"betsat{num}.com")
+
 BETSAT_WHITELIST.update([
     "betsatgiris1.com", "betsatturkiye.com", "betsatresmigiris.com",
     "betsatguncelgiris2026.com", "betsatyenigiris2026.com", "betsat-bahis.site",
@@ -81,11 +80,11 @@ BETSAT_WHITELIST.update([
     "yonleniyoramp.com", "googlecdnservice.net",
     "supetbetingirisadresim.vip", "turkbetgirisadresim.vip", "betsatgirisadresim.vip",
 ])
+
 BETSAT_GAPS = [1542, 1547, 1552, 1560, 1561, 1564, 1566, 1572, 1574, 1576, 1592, 1594, 1627, 1649, 1659, 1660, 1671, 1676, 1679, 1689, 1694, 1699, 1703]
 BETSAT_RANGE = range(1710, 5501)
 
 REPORTED_FILE = "betsat_reported.json"
-
 
 def load_reported():
     try:
@@ -94,11 +93,9 @@ def load_reported():
     except:
         return set()
 
-
 def save_reported(reported):
     with open(REPORTED_FILE, "w") as f:
         json.dump(list(reported), f)
-
 
 def save_to_google_sheets(found_items):
     if not GCP_CREDENTIALS or not SPREADSHEET_ID:
@@ -120,7 +117,6 @@ def save_to_google_sheets(found_items):
     except Exception as e:
         print(f"Sheets hatasi: {e}")
 
-
 async def check_dns_native(domain):
     loop = asyncio.get_running_loop()
     try:
@@ -128,7 +124,6 @@ async def check_dns_native(domain):
         return True, ip
     except:
         return False, ""
-
 
 async def scan_domain(session, domain, dtype, whitelist, reported, found):
     if domain in whitelist or domain in reported:
@@ -154,13 +149,11 @@ async def scan_domain(session, domain, dtype, whitelist, reported, found):
     reported.add(domain)
     print(f"[FOUND] {domain} ({ip})")
 
-
 async def send_telegram(message):
     async with aiohttp.ClientSession() as session:
         for chat_id in TELEGRAM_CHAT_IDS:
             url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
             await session.post(url, json={"chat_id": chat_id.strip(), "text": message, "parse_mode": "Markdown"})
-
 
 # ============================================================
 # ÇİFT HARF TYPOSQUAT ÜRETİCİ — "betsatt" (çift t) gibi domainleri
@@ -176,7 +169,6 @@ def generate_double_letter_variants(word):
         if doubled != word:
             variants.append(doubled)
     return list(dict.fromkeys(variants))  # sırayı koru, tekrarları at
-
 
 async def main():
     reported = load_reported()
@@ -218,7 +210,23 @@ async def main():
         domains_to_scan.append((f"betsat{num}.co", "CO-TYPO", set()))
         domains_to_scan.append((f"{num}betsat.co", "CO-TERS", set()))
 
-    # ── YENİ: Çift harf typosquat (betsatt gibi) ──────────────
+    # ── YENİ (v2 — 22 Tem 2026): .cam TLD-swap taraması ───────
+    # betsat1605.cam gibi — sayı doğru/resmi, TLD farklı. Fraud
+    # ağı bugün bunu birebir kopyaladı ve ayrıca "yatirim"
+    # (deposit) subdomain'i altında bank/crypto sayfaları açtı:
+    # yatirim.betsat1605.cam/havale/, yatirim.betsat1605.cam/crypto/
+    print("📷 Betsat .cam TLD-swap varyasyonları taranıyor...")
+    for num in (BETSAT_GAPS + list(BETSAT_RANGE)):
+        domains_to_scan.append((f"betsat{num}.cam", "CAM-TLD-SWAP", set()))
+
+    # Aktif/bilinen resmi numaralar için deposit-subdomain kontrolü
+    CAM_DEPOSIT_CHECK_NUMBERS = [1605, 1580]
+    CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
+    for onum in CAM_DEPOSIT_CHECK_NUMBERS:
+        for sub in CAM_DEPOSIT_SUBS:
+            domains_to_scan.append((f"{sub}.betsat{onum}.cam", "CAM-TLD-SWAP-DEPOSIT-SUB", set()))
+
+    # ── Çift harf typosquat (betsatt gibi) ─────────────────────
     print("🔤 Çift harf typosquat (betsatt gibi) varyasyonları üretiliyor...")
     double_letter_words = generate_double_letter_variants("betsat")
     print(f"    Üretilen kalıplar: {', '.join(double_letter_words)}")
@@ -243,10 +251,12 @@ async def main():
 
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
+
     if found:
         msg = f"🚨 *[BETSAT ALARM] Aktif Sahte Domain!*\n🤖 `{repo}`\n"
         for item in found:
             icon = (
+                "📷" if "CAM-TLD-SWAP" in item["type"] else
                 "🌐" if "CO-" in item["type"] else
                 "🎭" if item["type"] == "IDN-SAHTE" else
                 "🔗" if item["type"] == "PREFIX-PATTERN" else
@@ -266,7 +276,6 @@ async def main():
         )
         await send_telegram(msg)
         print("Temiz.")
-
 
 if __name__ == "__main__":
     asyncio.run(main())
