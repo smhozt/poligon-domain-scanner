@@ -53,14 +53,14 @@ BRANDS = {
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        "active_domains": ["betsat.com", "betsat1606.com"],
+        "active_domains": ["betsat.com", "betsat1605.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        "active_domains": ["turkbet.io", "750turkbet.com"],
+        "active_domains": ["turkbet.io", "749turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
@@ -96,58 +96,90 @@ if INPUT_ACTIVE_OVERRIDE:
 # ile aynı kaynak)
 # ============================================================
 HOSTS = {
-    "netiface":      {"name": "Netiface LLC",             "abuse": ["abuse@abusehandler.net", "abuse@vpsdedicated.net"]},
-    "omegatech":     {"name": "Omegatech LTD",             "abuse": ["abuse@pitline.net", "abuse@omegatech.sc"]},
-    "advin":         {"name": "Advin Services LLC",        "abuse": ["anush@advinservers.com"]},
-    "swissnet":      {"name": "SwissNet LLC",               "abuse": ["abuse@swissnetwork.io"]},
-    "prq":           {"name": "PRQ VPN Network SE",         "abuse": ["abuse@dcs.net"]},
-    "fatcat":        {"name": "FATCAT-AS / scrhost.com",    "abuse": ["info@scrhost.com"]},
-    "vpsdatacenter": {"name": "VPS Datacenter Ltd",          "abuse": ["abuse@private-data-center.com"]},
-    "colocatel":     {"name": "ColocaTel Inc.",              "abuse": ["abuse@colocatel.com"]},
-    "evoxt":         {"name": "Evoxt Sdn. Bhd.",             "abuse": ["abuse@evoxt.com"]},
-    "cloudzy":       {"name": "RouterHosting/Cloudzy",       "abuse": ["abuse-reports@cloudzy.com"]},
-    "play2go":       {"name": "PLAY2GO INTERNATIONAL LIMITED", "abuse": ["abuse@play2go.cloud"]},
-    "namecheap":     {"name": "Namecheap, Inc.",             "abuse": ["abuse@namecheaphosting.com"]},
-    "pfcloud":       {"name": "Pfcloud UG",                  "abuse": ["abuse@abusehandler.net"]},
+    "netiface":        {"name": "Netiface LLC / VPS Dedicated LLC",     "abuse": ["abuse@abusehandler.net", "abuse@vpsdedicated.net"]},
+    "omegatech":       {"name": "Omegatech LTD",                        "abuse": ["abuse@pitline.net", "abuse@omegatech.sc"]},
+    "advin":           {"name": "Advin Services LLC",                   "abuse": ["anush@advinservers.com"]},
+    "swissnet":        {"name": "SwissNet LLC",                          "abuse": ["abuse@swissnetwork.io"]},
+    "prq":             {"name": "PRQ VPN Network SE",                    "abuse": ["abuse@dcs.net"]},
+    "fatcat_scrhost":  {"name": "FATCAT-AS / scrhost.com",               "abuse": ["info@scrhost.com"]},
+    "fatcat_epikhost": {"name": "FATCAT NETWORK S.A.",                   "abuse": ["abuse@epikhost.org"]},
+    "vpsdatacenter":   {"name": "VPS Datacenter Ltd (private-data-center.com)", "abuse": ["abuse@private-data-center.com"]},
+    "colocatel":       {"name": "ColocaTel Inc.",                        "abuse": ["abuse@colocatel.com"]},
+    "evoxt":           {"name": "Evoxt Sdn. Bhd.",                       "abuse": ["abuse@evoxt.com"]},
+    "cloudzy":         {"name": "RouterHosting/Cloudzy",                 "abuse": ["abuse-reports@cloudzy.com"]},
+    "play2go":         {"name": "PLAY2GO INTERNATIONAL LIMITED",         "abuse": ["abuse@play2go.cloud"]},
+    "namecheap":       {"name": "Namecheap, Inc.",                       "abuse": ["abuse@namecheaphosting.com"]},
+    "pfcloud":         {"name": "Pfcloud UG (abusehandler.net)",         "abuse": ["abuse@abusehandler.net"]},
+    "pfcloud_io":      {"name": "Pfcloud UG (pfcloud.io)",               "abuse": ["abuse@pfcloud.io"]},
+    "sahinnetwork":    {"name": "Bursabil Teknoloji A.Ş.",               "abuse": ["abuse@sahinnetwork.com"]},
 }
 
 CLUSTER_MAP = {
+    # ── Netiface LLC / VPS Dedicated LLC (abusehandler.net ailesi) ──
     frozenset({"drew", "leia"}):        "netiface",
     frozenset({"carol", "mustafa"}):    "netiface",
     frozenset({"conrad", "leia"}):      "netiface",
-    frozenset({"candy", "edward"}):     "pfcloud",
     frozenset({"remy", "stella"}):      "netiface",
+    frozenset({"keaton", "shaz"}):      "netiface",
+    frozenset({"venus", "carmelo"}):    "netiface",
+    frozenset({"justin", "sierra"}):    "netiface",
+    frozenset({"buck", "phoenix"}):     "netiface",
+    frozenset({"princess", "rory"}):    "netiface",
+    frozenset({"charles", "novalee"}):  "netiface",
+    frozenset({"benedict", "ophelia"}): "netiface",
+    frozenset({"georgia", "kobe"}):     "netiface",
+    frozenset({"devin", "nucum"}):      "netiface",
+    frozenset({"brady", "harmony"}):    "netiface",   # DÜZELTİLDİ (önceden yanlışlıkla vpsdatacenter'dı)
+    frozenset({"colin", "nena"}):       "netiface",   # DÜZELTİLDİ (önceden yanlışlıkla vpsdatacenter'dı)
+
+    # ── Omegatech LTD ──
+    frozenset({"syeef", "tina"}):       "omegatech",
     frozenset({"isla", "nolan"}):       "omegatech",
     frozenset({"aisha", "langston"}):   "omegatech",
     frozenset({"archer", "melissa"}):   "omegatech",
     frozenset({"dane", "alice"}):       "omegatech",
     frozenset({"aleena", "tony"}):      "omegatech",
     frozenset({"luciane", "oswald"}):   "omegatech",
+
+    # ── Advin Services LLC ──
     frozenset({"ruben", "ariella"}):    "advin",
-    frozenset({"lee", "aida"}):         "swissnet",
+    frozenset({"raegan", "gabe"}):      "advin",
+
+    # ── SwissNet LLC ──
+    frozenset({"penny", "tanner"}):     "swissnet",
+    frozenset({"elliot", "marlowe"}):   "swissnet",
     frozenset({"ainsley", "lamar"}):    "swissnet",
-    frozenset({"gail", "lennox"}):      "fatcat",
-    frozenset({"candy", "nico"}):       "fatcat",
-    frozenset({"robin", "ram"}):        "fatcat",
+    frozenset({"lee", "aida"}):         "swissnet",
+
+    # ── PRQ VPN Network SE ──
+    frozenset({"decker", "liberty"}):   "prq",
+    frozenset({"paris", "porter"}):     "prq",
+
+    # ── FATCAT ailesi (DİKKAT: iki farklı abuse adresi var) ──
+    frozenset({"gail", "lennox"}):      "fatcat_scrhost",
+    frozenset({"candy", "nico"}):       "fatcat_scrhost",
+    frozenset({"robin", "ram"}):        "fatcat_scrhost",
+    frozenset({"alice", "seamus"}):     "fatcat_epikhost",
+
+    # ── VPS Datacenter Ltd GB (private-data-center.com) ──
     frozenset({"ophelia", "theo"}):     "vpsdatacenter",
     frozenset({"garrett", "indie"}):    "vpsdatacenter",
     frozenset({"kipp", "penny"}):       "vpsdatacenter",
     frozenset({"eve", "sean"}):         "vpsdatacenter",
     frozenset({"jewel", "vin"}):        "vpsdatacenter",
-    frozenset({"benedict", "ophelia"}): "netiface",
-    frozenset({"georgia", "kobe"}):     "netiface",
-    frozenset({"devin", "nucum"}):      "netiface",
-    frozenset({"bonnie", "fred"}):      "netiface",
+    frozenset({"achiel", "nicole"}):    "vpsdatacenter",
+    frozenset({"andronicus", "emely"}): "vpsdatacenter",
+
+    # ── Diğer host'lar ──
     frozenset({"opal", "ricardo"}):     "evoxt",
     frozenset({"aron", "javier"}):      "colocatel",
+    frozenset({"bowen", "rosemary"}):   "colocatel",
     frozenset({"paityn", "titan"}):     "cloudzy",
     frozenset({"gannon", "nancy"}):     "play2go",
     frozenset({"brenda", "leif"}):      "namecheap",
-    frozenset({"brady", "harmony"}):    "vpsdatacenter",
-    frozenset({"colin", "nena"}):       "vpsdatacenter",
-    frozenset({"achiel", "nicole"}):    "vpsdatacenter",
-    frozenset({"bowen", "rosemary"}):   "colocatel",
-    frozenset({"andronicus", "emely"}): "vpsdatacenter",
+    frozenset({"candy", "edward"}):     "pfcloud",
+    frozenset({"huxley", "kami"}):      "pfcloud_io",
+    frozenset({"bonnie", "fred"}):      "sahinnetwork",
 }
 
 DEAD_DOMAIN = "__dead__"
