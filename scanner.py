@@ -10,7 +10,6 @@ from google.oauth2.service_account import Credentials
 
 TZ_SOFIA = timezone(timedelta(hours=3))
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
-
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 GCP_CREDENTIALS = os.environ.get("GCP_CREDENTIALS")
@@ -97,7 +96,6 @@ SUPERBETIN_WHITELIST.update([
     "superbetin2144.com", "superbetin2145.com", "superbetin2146.com", "superbetin2147.com",
     "superbetin2148.com", "superbetin2150.com",
 ])
-
 SUPERBETIN_WHITELIST.update([
     "superbetingiris724.co", "superbetinegiris.com", "superbetinmobil.com",
     "superbetingiris.mobi", "superbetinyeniadres.online", "superbetinresmi.com",
@@ -111,6 +109,7 @@ SUPERBETIN_WHITELIST.update([
     "yonleniyoramp.com", "googlecdnservice.net",
     "supetbetingirisadresim.vip", "turkbetgirisadresim.vip", "betsatgirisadresim.vip",
 ])
+
 SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 3001)
 SUPERBETIN_HIGH_RANGE = range(3001, 30000)
@@ -119,7 +118,6 @@ SUPERBETIN_TIRELI_WHITELIST = {"superbetin-1828.com"}
 
 REPORTED_FILE = "reported.json"
 
-
 def load_reported():
     try:
         with open(REPORTED_FILE, "r") as f:
@@ -127,11 +125,9 @@ def load_reported():
     except:
         return set()
 
-
 def save_reported(reported):
     with open(REPORTED_FILE, "w") as f:
         json.dump(list(reported), f)
-
 
 def save_to_google_sheets(found_items):
     if not GCP_CREDENTIALS or not SPREADSHEET_ID:
@@ -153,7 +149,6 @@ def save_to_google_sheets(found_items):
     except Exception as e:
         print(f"Sheets hatasi: {e}")
 
-
 async def check_dns_native(domain):
     loop = asyncio.get_running_loop()
     try:
@@ -161,7 +156,6 @@ async def check_dns_native(domain):
         return True, ip
     except:
         return False, ""
-
 
 async def scan_domain(session, domain, dtype, whitelist, reported, found):
     if domain in whitelist or domain in reported:
@@ -187,7 +181,6 @@ async def scan_domain(session, domain, dtype, whitelist, reported, found):
     reported.add(domain)
     print(f"[FOUND] {domain} ({ip})")
 
-
 async def send_telegram(message):
     async with aiohttp.ClientSession() as session:
         for chat_id in TELEGRAM_CHAT_IDS:
@@ -197,7 +190,6 @@ async def send_telegram(message):
                 "text": message,
                 "parse_mode": "Markdown"
             })
-
 
 async def main():
     reported = load_reported()
@@ -272,6 +264,22 @@ async def main():
     for num in range(1000, 3001):
         domains_to_scan.append((f"superbetsin{num}.com", "SUPERBETSIN-4H", set()))
 
+    # 12. .CAM TLD-SWAP (v2 — 22 Tem 2026)
+    # superbetin2077.cam gibi — sayı doğru/resmi, TLD farklı. Bugün
+    # betsat1605.cam'de gördüğümüz aynı fraud deseni superbetin
+    # tarafında da beklenir. GAPS+RANGE (ana aktif aralık) taranıyor;
+    # HIGH_RANGE'i .cam'e de açmak taramayı gereksiz büyütür çünkü
+    # 5 haneli numaralar zaten .com HIGH-NUM ile yakalanıyor.
+    print("📷 Superbetin .cam TLD-swap varyasyonları taranıyor...")
+    for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
+        domains_to_scan.append((f"superbetin{num}.cam", "CAM-TLD-SWAP", set()))
+    # Resmi aktif numara (2077) için deposit-subdomain kontrolü
+    CAM_DEPOSIT_CHECK_NUMBERS = [2077]
+    CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
+    for onum in CAM_DEPOSIT_CHECK_NUMBERS:
+        for sub in CAM_DEPOSIT_SUBS:
+            domains_to_scan.append((f"{sub}.superbetin{onum}.cam", "CAM-TLD-SWAP-DEPOSIT-SUB", set()))
+
     print(f"🚀 Toplam {len(domains_to_scan)} domain taranacak...")
 
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
@@ -287,10 +295,12 @@ async def main():
 
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
+
     if found:
         msg = f"🚨 *[ALARM] Aktif Sahte Domain!*\n🤖 `{repo}`\n"
         for item in found:
             icon = (
+                "📷" if "CAM-TLD-SWAP" in item["type"] else
                 "3️⃣" if item["type"] == "3HANE-TARAMA" else
                 "🕳️" if item["type"] == "GAP-TARAMA" else
                 "🔢" if item["type"] == "HIGH-NUM" else
@@ -316,7 +326,6 @@ async def main():
         )
         await send_telegram(msg)
         print("Temiz.")
-
 
 if __name__ == "__main__":
     asyncio.run(main())
