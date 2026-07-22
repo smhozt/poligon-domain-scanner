@@ -9,7 +9,6 @@ from datetime import datetime, timezone, timedelta
 # AYARLAR
 # ============================================================
 TZ_SOFIA = timezone(timedelta(hours=3))
-
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 SAFE_BROWSING_API_KEY = os.environ.get("SAFE_BROWSING_API_KEY", "")
@@ -39,19 +38,21 @@ SAFE_BROWSING_API = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 # artık sadece gerçek, tek tek doğrulanmış resmi domainler kullanılıyor.
 BRANDS = {
     "superbetin": {
-        "name": "Superbetin",
+        "name": "SUPERBETIN",
+        "official_site": "superbetin.com",
         "active_domains": ["superbetin.com", "superbetin2077.com"],
     },
     "betsat": {
-        "name": "Betsat",
+        "name": "BETSAT",
+        "official_site": "betsat.com",
         "active_domains": ["betsat.com", "betsat1605.com"],
     },
     "turkbet": {
-        "name": "Turkbet",
+        "name": "TURKBET",
+        "official_site": "turkbet.io",
         "active_domains": ["turkbet.io", "745turkbet.com"],
     },
 }
-
 WHITELIST = set()
 for _brand in BRANDS.values():
     WHITELIST.update(_brand["active_domains"])
@@ -81,6 +82,96 @@ def save_json(filename, data):
 def get_new_domains(all_domains, done_set):
     return [d for d in all_domains if not is_whitelisted(d) and d not in done_set]
 
+def detect_brand_key(domain):
+    """BUG FIX (22 Tem 2026): Öncesinde tüm platform raporlarında marka
+    hardcoded 'SUPERBETIN' yazıyordu — betsat/turkbet domainleri bile
+    yanlış markayla bildiriliyordu. Artık domain string'inden marka
+    tespit edilip doğru marka adı/resmi site kullanılıyor."""
+    d = domain.lower()
+    if "betsat" in d or "besat" in d or "bestsat" in d:
+        return "betsat"
+    elif "turkbet" in d or "turcbet" in d or "trkbet" in d:
+        return "turkbet"
+    return "superbetin"
+
+def brand_reason_text(domain, brand_key):
+    brand = BRANDS[brand_key]
+    return (
+        f"Phishing site impersonating {brand['name']} ({brand['official_site']}), "
+        f"licensed betting brand operated by Poligon Entertainment N.V. "
+        f"(Curaçao OGL/2024/815/0653). Domain {domain} fraudulently "
+        f"collects user credentials and/or bank transfers from "
+        f"Turkish-speaking users."
+    )
+
+# ============================================================
+# YAYGIN PHISHING PATH / SUBDOMAIN KEŞFİ (v2 — 22 Tem 2026)
+# host_auto_complaint_v2.py ile aynı mantık: domain'in bilinen fraud
+# path/subdomain kombinasyonlarında canlı yanıt olup olmadığı
+# kontrol edilir, gerçekten yanıt veren URL'ler kanıt olarak
+# platform raporlarına eklenir (sadece kök domain yerine).
+# ============================================================
+COMMON_PHISHING_PATHS = [
+    "/",
+    "/login.php",
+    "/spor/",
+    "/spor/?mobile=1",
+    "/casino/",
+    "/canli-bahis/",
+    "/modules/payments/deposit/",
+    "/modules/payments/deposit/?payment_type=105",
+    "/modules/payments/deposit/?payment_type=109",
+    "/modules/payments/deposit/?payment_type=117",
+    "/payment/view/havale.php",
+    "/payment/view/bitcoin.php",
+    "/payment/bank/nethavale/",
+    "/payment/bank/otomonay/",
+    "/payment/crypto/kriptopay/",
+    "/paraylan/",
+]
+COMMON_PHISHING_SUBDOMAINS = ["m", "tr", "www", "yatirim", "payment", "odeme", "cryptopay"]
+SUBDOMAIN_DEPOSIT_PATHS = ["/", "/havale/", "/crypto/", "/login.php"]
+
+URL_CHECK_TIMEOUT = aiohttp.ClientTimeout(total=4)
+URL_CHECK_CONCURRENCY = 30
+
+# Domain başına keşfedilen URL'leri önbelleğe alır — aynı domain birden
+# fazla platform döngüsünde tekrar taranmasın diye (performans).
+_url_cache = {}
+
+async def _check_url(session, semaphore, url):
+    async with semaphore:
+        try:
+            async with session.get(url, timeout=URL_CHECK_TIMEOUT, allow_redirects=True, ssl=False) as resp:
+                if resp.status in (200, 301, 302, 403):
+                    return url
+        except Exception:
+            pass
+    return None
+
+async def discover_phishing_urls(session, root_domain, max_results=8):
+    urls_to_check = []
+    for path in COMMON_PHISHING_PATHS:
+        urls_to_check.append(f"https://{root_domain}{path}")
+    for sub in COMMON_PHISHING_SUBDOMAINS:
+        for dpath in SUBDOMAIN_DEPOSIT_PATHS:
+            urls_to_check.append(f"https://{sub}.{root_domain}{dpath}")
+
+    semaphore = asyncio.Semaphore(URL_CHECK_CONCURRENCY)
+    tasks = [_check_url(session, semaphore, u) for u in urls_to_check]
+    results = await asyncio.gather(*tasks, return_exceptions=False)
+    found = [u for u in results if u]
+    found.sort(key=lambda u: (u.rstrip("/").endswith(root_domain.rstrip("/")), len(u)))
+    return found[:max_results]
+
+async def get_found_urls(session, domain):
+    root = get_root(domain)
+    if root in _url_cache:
+        return _url_cache[root]
+    urls = await discover_phishing_urls(session, root)
+    _url_cache[root] = urls
+    return urls
+
 # ============================================================
 # 1. GOOGLE SAFE BROWSING — Kontrol + Bildir
 # ============================================================
@@ -108,12 +199,16 @@ async def check_safe_browsing(session, urls):
         print(f"Safe Browsing API hatası: {e}")
     return []
 
-async def report_safe_browsing(session, domain):
-    """Google Safe Browsing phishing bildir"""
+async def report_safe_browsing(session, domain, found_urls=None, brand_key=None):
+    """Google Safe Browsing phishing bildir. En spesifik kanıt URL'i
+    (ör. /login.php) varsa onu, yoksa kök domain'i bildirir."""
+    target = found_urls[0] if found_urls else f"https://{domain}"
+    if not target.startswith("http"):
+        target = f"https://{target}"
     try:
         async with session.get(
             "https://safebrowsing.google.com/safebrowsing/report_phish/",
-            params={"url": f"https://{domain}"},
+            params={"url": target},
             timeout=aiohttp.ClientTimeout(total=10)
         ) as resp:
             return resp.status in [200, 204, 302]
@@ -123,23 +218,23 @@ async def report_safe_browsing(session, domain):
 # ============================================================
 # 2. GOOGLE SPAM REPORT
 # ============================================================
-async def report_google_spam(session, domain):
+async def report_google_spam(session, domain, found_urls=None, brand_key=None):
     """
     Google Search Console spam bildir.
     POST ile form submission — captcha gerektirmiyor.
     """
+    brand_key = brand_key or detect_brand_key(domain)
+    comments = brand_reason_text(domain, brand_key)
+    if found_urls:
+        urls_list = "\n".join(found_urls)
+        comments += f"\n\nVerified live evidence URLs:\n{urls_list}"
+
     url = "https://www.google.com/webmasters/tools/spamreportform"
     data = {
         "hl": "en",
         "url": f"https://{domain}/",
         "ts": "1",          # spam type: deceptive page
-        "comments": (
-            f"Phishing site impersonating SUPERBETIN (superbetin.com), "
-            f"licensed betting brand operated by Poligon Entertainment N.V. "
-            f"(Curaçao OGL/2024/815/0653). Domain {domain} fraudulently "
-            f"collects user credentials and/or bank transfers from "
-            f"Turkish-speaking users."
-        )
+        "comments": comments,
     }
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
@@ -160,22 +255,20 @@ async def report_google_spam(session, domain):
 # ============================================================
 # 3. NETCRAFT
 # ============================================================
-async def report_netcraft(session, domain):
-    """Netcraft phishing report API"""
+async def report_netcraft(session, domain, found_urls=None, brand_key=None):
+    """Netcraft phishing report API — birden fazla kanıt URL'i tek
+    raporda gönderilebiliyor, bulunan tüm URL'ler eklenir."""
+    brand_key = brand_key or detect_brand_key(domain)
+    reason = brand_reason_text(domain, brand_key)
+
+    urls_payload = [{"url": f"https://{domain}/", "reason": reason}]
+    if found_urls:
+        urls_payload = [{"url": u, "reason": reason} for u in found_urls]
+
     url = "https://report.netcraft.com/api/v3/report/urls"
     payload = {
         "email": "yardim@superbetin.com",
-        "urls": [
-            {
-                "url": f"https://{domain}/",
-                "reason": (
-                    f"Phishing site impersonating SUPERBETIN (superbetin.com), "
-                    f"operated by Poligon Entertainment N.V. "
-                    f"(Curaçao OGL/2024/815/0653). "
-                    f"Fraudulently collects credentials and payments from Turkish users."
-                )
-            }
-        ]
+        "urls": urls_payload,
     }
     headers = {
         "Content-Type": "application/json",
@@ -194,18 +287,21 @@ async def report_netcraft(session, domain):
 # ============================================================
 # 4. MICROSOFT SMARTSCREEN
 # ============================================================
-async def report_smartscreen(session, domain):
+async def report_smartscreen(session, domain, found_urls=None, brand_key=None):
     """Microsoft SmartScreen unsafe site report"""
+    brand_key = brand_key or detect_brand_key(domain)
+    comments = brand_reason_text(domain, brand_key)
+    if found_urls:
+        urls_list = "\n".join(found_urls)
+        comments += f"\n\nVerified live evidence URLs:\n{urls_list}"
+
+    target = found_urls[0] if found_urls else f"https://{domain}/"
+
     url = "https://www.microsoft.com/en-us/wdsi/support/report-unsafe-site-guest"
     payload = {
-        "url": f"https://{domain}/",
+        "url": target,
         "typeOfThreat": "Phishing",
-        "comments": (
-            f"Phishing site impersonating SUPERBETIN (superbetin.com), "
-            f"licensed betting brand by Poligon Entertainment N.V. "
-            f"(Curaçao OGL/2024/815/0653). Fraudulently collects user "
-            f"credentials and bank transfers from Turkish-speaking users."
-        )
+        "comments": comments,
     }
     headers = {
         "Content-Type": "application/json",
@@ -225,16 +321,16 @@ async def report_smartscreen(session, domain):
 # ============================================================
 # 5. SPAM404
 # ============================================================
-async def report_spam404(session, domain):
+async def report_spam404(session, domain, found_urls=None, brand_key=None):
     """
     Spam404 — online abuse reporting API.
-    GET request ile bildirim yapılır, captcha yok.
+    GET request ile bildirim yapılır, captcha yok. En spesifik kanıt
+    URL'i (varsa) bildirilir.
     """
+    target = found_urls[0] if found_urls else f"https://{domain}/"
     try:
         url = "https://www.spam404.com/report.html"
-        params = {
-            "url": f"https://{domain}/"
-        }
+        params = {"url": target}
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             "Referer": "https://www.spam404.com/",
@@ -276,17 +372,22 @@ async def send_telegram(message):
 # PLATFORM RUNNER — Tek domain için tüm platformları çalıştır
 # ============================================================
 async def run_platform(session, platform_name, report_func, domain, done_set, results):
-    """Bir domain için tek platform bildir, sonucu kaydet"""
+    """Bir domain için tek platform bildir, sonucu kaydet.
+    Önce (önbellekli) kanıt URL'leri ve marka tespit edilir, sonra
+    report_func'a iletilir."""
     if domain in done_set:
         return "skipped"
 
-    success = await report_func(session, domain)
+    brand_key = detect_brand_key(domain)
+    found_urls = await get_found_urls(session, domain)
+
+    success = await report_func(session, domain, found_urls, brand_key)
     status = "ok" if success else "fail"
     results[platform_name]["ok" if success else "fail"].append(domain)
     done_set.add(domain)
-
     icon = "📤" if success else "❌"
-    print(f"  {icon} [{platform_name}] {domain}")
+    evidence_note = f" [{len(found_urls)} kanıt URL]" if found_urls else ""
+    print(f"  {icon} [{platform_name}] {domain}{evidence_note}")
     return status
 
 # ============================================================
@@ -302,7 +403,6 @@ async def main():
     # Whitelist filtresi
     whitelisted = [d for d in all_domains if is_whitelisted(d)]
     candidates  = [d for d in all_domains if not is_whitelisted(d)]
-
     if whitelisted:
         print(f"🛡️ {len(whitelisted)} domain whitelist'te, atlandı.")
 
@@ -325,7 +425,6 @@ async def main():
     print(f"\n🚀 {len(candidates)} domain işlenecek...\n")
 
     async with aiohttp.ClientSession() as session:
-
         # ── Safe Browsing: önce flagli mi kontrol et ──
         new_sb = get_new_domains(candidates, sb_done)
         if not SAFE_BROWSING_API_KEY:
@@ -362,13 +461,11 @@ async def main():
             ("smartscreen", report_smartscreen, ss_done,       SMARTSCREEN_REPORTED_FILE),
             ("spam404",     report_spam404,     s404_done,     SPAM404_REPORTED_FILE),
         ]
-
         for platform_name, report_func, done_set, _ in platforms:
             new_for_platform = get_new_domains(candidates, done_set)
             if not new_for_platform:
                 print(f"[{platform_name}] Yeni domain yok, atlandı.")
                 continue
-
             print(f"\n[{platform_name}] {len(new_for_platform)} domain bildiriliyor...")
             for domain in new_for_platform[:200]:
                 await run_platform(
@@ -406,10 +503,8 @@ async def main():
         fail_count = len(r["fail"])
         flagged    = len(r.get("already_flagged", []))
         total      = ok_count + fail_count + flagged
-
         if total == 0:
             continue
-
         msg += f"{label}:\n"
         if flagged:
             msg += f"  ✅ Zaten flagli: {flagged}\n"
@@ -438,7 +533,6 @@ async def main():
     for key, label in platform_labels.items():
         r = results[key]
         print(f"  {label}: ✅{len(r['ok'])} ❌{len(r['fail'])}")
-
 
 if __name__ == "__main__":
     asyncio.run(main())
