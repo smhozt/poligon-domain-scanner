@@ -51,7 +51,7 @@ BRANDS = {
     },
     "turkbet": {
         "name": "Turkbet",
-        "active_domains": ["turkbet.io", "745turkbet.com"],
+        "active_domains": ["turkbet.io", "749turkbet.com"],
         "signature_email": "support@turkbet.co",
         "signature_footer": (
             "Turkbet, Curaçao yasalarına göre kurulmuş olan Poligon Entertainment N.V. "
