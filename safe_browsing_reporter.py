@@ -26,7 +26,7 @@ BRANDS = {
         "active_domains": ["betsat.com", "betsat1606.com"],
     },
     "turkbet": {
-        "active_domains": ["turkbet.io", "749turkbet.com"],
+        "active_domains": ["turkbet.io", "750turkbet.com"],
     },
 }
 
