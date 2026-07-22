@@ -219,10 +219,16 @@ async def main():
     for num in (BETSAT_GAPS + list(BETSAT_RANGE)):
         domains_to_scan.append((f"betsat{num}.cam", "CAM-TLD-SWAP", set()))
 
-    # Aktif/bilinen resmi numaralar için deposit-subdomain kontrolü
+    # Aktif/bilinen resmi numaralar için hem ANA domain hem de
+    # deposit-subdomain kontrolü.
+    # BUG FIX (22 Tem 2026): 1605 ve 1580, BETSAT_GAPS/BETSAT_RANGE
+    # içinde YOK — bu yüzden yukarıdaki GAPS+RANGE .cam döngüsü
+    # "betsat1605.cam" ana domainini hiç eklemiyordu, sadece
+    # subdomain'ler taranıyordu. Ana domain artık açıkça ekleniyor.
     CAM_DEPOSIT_CHECK_NUMBERS = [1605, 1580]
     CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
     for onum in CAM_DEPOSIT_CHECK_NUMBERS:
+        domains_to_scan.append((f"betsat{onum}.cam", "CAM-TLD-SWAP", set()))
         for sub in CAM_DEPOSIT_SUBS:
             domains_to_scan.append((f"{sub}.betsat{onum}.cam", "CAM-TLD-SWAP-DEPOSIT-SUB", set()))
 
@@ -253,7 +259,11 @@ async def main():
     repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
 
     if found:
-        msg = f"🚨 *[BETSAT ALARM] Aktif Sahte Domain!*\n🤖 `{repo}`\n"
+        msg = (
+            f"🚨 *[BETSAT ALARM] Aktif Sahte Domain!*\n"
+            f"🤖 `{repo}`\n"
+            f"Taranan: `{len(domains_to_scan):,}` domain — Bulunan: `{len(found)}`\n"
+        )
         for item in found:
             icon = (
                 "📷" if "CAM-TLD-SWAP" in item["type"] else
