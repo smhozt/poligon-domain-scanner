@@ -46,7 +46,7 @@ BRANDS = {
     },
     "betsat": {
         "name": "Betsat",
-        "active_domains": ["betsat.com", "betsat1605.com"],
+        "active_domains": ["betsat.com", "betsat1606.com"],
         "signature_email": "support@betsat.com",
     },
     "turkbet": {
