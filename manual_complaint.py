@@ -3,6 +3,7 @@ import aiohttp
 import os
 import json
 import socket
+import time
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -195,15 +196,20 @@ CLUSTER_MAP = {
 
 DEAD_DOMAIN = "__dead__"
 
-def get_ns_labels(domain):
-    try:
-        answers = dns.resolver.resolve(domain, "NS", lifetime=8)
-        return {str(r.target).rstrip(".").lower().split(".")[0] for r in answers}
-    except dns.resolver.NXDOMAIN:
-        return "NXDOMAIN"
-    except Exception as e:
-        print(f"    ⚠️ NS lookup başarısız ({domain}): {e}")
-        return None
+def get_ns_labels(domain, retries=2):
+    last_err = None
+    for attempt in range(retries):
+        try:
+            answers = dns.resolver.resolve(domain, "NS", lifetime=8)
+            return {str(r.target).rstrip(".").lower().split(".")[0] for r in answers}
+        except dns.resolver.NXDOMAIN:
+            return "NXDOMAIN"
+        except Exception as e:
+            last_err = e
+            if attempt < retries - 1:
+                time.sleep(1.5)
+    print(f"    ⚠️ NS lookup başarısız ({domain}), {retries} deneme sonrası: {type(last_err).__name__}: {last_err}")
+    return None
 
 def match_cluster(ns_labels):
     if not ns_labels:
@@ -214,10 +220,18 @@ def match_cluster(ns_labels):
     return None, None
 
 def resolve_host(domain):
+    """Dönüş: (cluster_pair, host_key, observed_ns_labels). observed_ns_labels
+    her zaman (eşleşse de eşleşmese de) gerçek DNS sorgusundan gözlemlenen ham
+    NS etiketlerini döndürür — böylece "cluster tespit edilemedi" durumunda bile
+    domain'in GERÇEKTE hangi NS'lere sahip olduğunu görüp, bunun yeni bir
+    cluster mı yoksa bilinen bir cluster'ın (örn. DNS'in geçici hata vermesi ya
+    da domain NS'ini gerçekten değiştirmiş olması) sonucu mu olduğunu ayırt
+    edebiliriz."""
     ns_labels = get_ns_labels(domain)
     if ns_labels == "NXDOMAIN":
-        return None, DEAD_DOMAIN
-    return match_cluster(ns_labels)
+        return None, DEAD_DOMAIN, None
+    cluster_pair, host_key = match_cluster(ns_labels)
+    return cluster_pair, host_key, ns_labels
 
 # ============================================================
 # REGISTRAR TESPİTİ (RDAP öncelikli, WHOIS yedekli) — v3, 23 Tem 2026
@@ -769,15 +783,25 @@ async def main():
                     _record("nicenic", "NiceNIC", ok, f"Registrar teyitli ({registrar_info['source']})")
 
             if "host" in targets:
-                cluster_pair, host_key = resolve_host(domain)
+                cluster_pair, host_key, observed_ns = resolve_host(domain)
                 if host_key == DEAD_DOMAIN:
                     host_info = {"status": "dead"}
                     print("  💀 Domain artık kayıtlı değil (NXDOMAIN)")
                     _record("host", "Host (NXDOMAIN)", None, "Domain artık kayıtlı değil")
                 elif host_key is None:
-                    host_info = {"status": "unknown_cluster", "cluster": "/".join(sorted(cluster_pair)) if cluster_pair else None}
-                    print("  ❓ Host tespit edilemedi — manuel inceleme gerekiyor")
-                    _record("host", "Host (cluster tespit edilemedi)", None, host_info.get("cluster"))
+                    observed_str = ", ".join(sorted(observed_ns)) if observed_ns else None
+                    host_info = {
+                        "status": "unknown_cluster",
+                        "cluster": "/".join(sorted(cluster_pair)) if cluster_pair else None,
+                        "observed_ns": sorted(observed_ns) if observed_ns else None,
+                    }
+                    if observed_str:
+                        print(f"  ❓ Host tespit edilemedi — gözlemlenen NS: {observed_str} (haritada yok VEYA DNS geçici hata vermiş olabilir)")
+                        detail = f"Gözlemlenen NS: {observed_str}"
+                    else:
+                        print("  ❓ Host tespit edilemedi — DNS sorgusu başarısız oldu (NS hiç okunamadı)")
+                        detail = "DNS sorgusu başarısız oldu, NS hiç okunamadı — muhtemelen geçici ağ hatası"
+                    _record("host", "Host (cluster tespit edilemedi)", None, detail)
                 else:
                     ok = send_host_complaint(domain, brand_key, found_urls, host_key, cluster_pair)
                     host_info = {
