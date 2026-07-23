@@ -39,9 +39,9 @@ MANUAL_HOST_OVERRIDE_FILE = "manual_host_overrides.json"
 # MARKA AYARLARI — GÜNCEL (02 Temmuz 2026 itibarıyla)
 # ============================================================
 BRANDS = {
-    "superbetin": {
-        "name": "Superbetin",
-        "active_domains": ["superbetin.com", "superbetin2077.com"],
+    "": {
+        "name": "",
+        "active_domains": ["superbetin.com", "superbetin2082.com"],
         "signature_email": "yardim@superbetin.com",
     },
     "betsat": {
