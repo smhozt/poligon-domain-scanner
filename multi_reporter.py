@@ -50,7 +50,7 @@ BRANDS = {
     "turkbet": {
         "name": "TURKBET",
         "official_site": "turkbet.io",
-        "active_domains": ["turkbet.io", "750turkbet.com"],
+        "active_domains": ["turkbet.io", "751turkbet.com"],
     },
 }
 WHITELIST = set()
