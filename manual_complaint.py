@@ -664,6 +664,20 @@ async def main():
 
     domains = [d.strip() for d in INPUT_DOMAINS.replace("\n", ",").split(",") if d.strip()]
     domains = [get_root(d) for d in domains]
+    # DEDUP (23 Tem 2026 bug fix): Aynı domain'in farklı URL varyantları
+    # (tr.x.com, yatirim.x.com/havale/, x.com/login.php gibi) hepsi aynı
+    # kök domaine indirgeniyor ama önceden tekilleştirilmiyordu — bu
+    # yüzden aynı domain NiceNIC/host'a birden fazla kez gönderiliyor,
+    # her seferinde ayrı bir ticket açılıyordu (superbetin2082.cam'de
+    # görüldüğü gibi 5 ayrı NiceNIC ticket'ı). Artık sırayı koruyarak
+    # tekilleştiriliyor.
+    seen_domains = set()
+    unique_domains = []
+    for d in domains:
+        if d not in seen_domains:
+            seen_domains.add(d)
+            unique_domains.append(d)
+    domains = unique_domains
 
     requested_targets = set(INPUT_TARGETS.split(","))
     # compromise_notice bilinçli olarak "all" kısayoluna DAHİL EDİLMEZ —
