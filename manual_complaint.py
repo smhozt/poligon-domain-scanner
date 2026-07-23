@@ -119,6 +119,7 @@ HOSTS = {
     "pfcloud_io":      {"name": "Pfcloud UG (pfcloud.io)",               "abuse": ["abuse@pfcloud.io"]},
     "sahinnetwork":    {"name": "Bursabil Teknoloji A.Ş.",               "abuse": ["abuse@sahinnetwork.com"]},
     "frantech":        {"name": "FranTech Solutions (PONYNET)",          "abuse": ["admin@frantech.ca"]},
+    "synlinq":         {"name": "SYNLINQ (Oliver Horscht)",              "abuse": ["abuse@ghostnet.de"]},
 }
 
 CLUSTER_MAP = {
@@ -192,6 +193,7 @@ CLUSTER_MAP = {
     frozenset({"adi", "langston"}):     "vpsdatacenter",
     frozenset({"kurt", "leah"}):        "colocatel",
     frozenset({"donovan", "melinda"}):  "omegatech",
+    frozenset({"aiden", "naya"}):       "synlinq",
 }
 
 DEAD_DOMAIN = "__dead__"
@@ -279,11 +281,25 @@ def _whois_fallback_registrar(domain):
     if not server:
         print(f"    ⚠️ WHOIS: IANA yanıtında '{tld}' için whois sunucusu bulunamadı ({domain})")
         return None
-    try:
-        resp = _whois_raw_query(server, domain, timeout=6)
-    except Exception as e:
-        print(f"    ⚠️ WHOIS: {server} sorgusu başarısız ({domain}): {type(e).__name__}: {e}")
+
+    # Verisign'in .com/.net WHOIS sunucusu, bulut/CI IP aralıklarından gelen
+    # otomatik sorguları agresif şekilde rate-limit'lemesiyle bilinir — bu
+    # muhtemelen .com domainlerinde gözlemlenen toplu WHOIS başarısızlığının
+    # sebebi. Bu adımda kısa backoff ile 2 deneme yapılıyor.
+    resp = None
+    last_err = None
+    for attempt in range(2):
+        try:
+            resp = _whois_raw_query(server, domain, timeout=6)
+            break
+        except Exception as e:
+            last_err = e
+            if attempt == 0:
+                time.sleep(3)
+    if resp is None:
+        print(f"    ⚠️ WHOIS: {server} sorgusu başarısız ({domain}), 2 deneme sonrası: {type(last_err).__name__}: {last_err}")
         return None
+
     for line in resp.splitlines():
         low = line.lower()
         if low.startswith("registrar:") or "registrar organization" in low or "sponsoring registrar:" in low:
@@ -577,9 +593,13 @@ async def report_netcraft(session, domain, brand_key, found_urls):
             headers={"Content-Type": "application/json", "User-Agent": "Mozilla/5.0"},
             timeout=aiohttp.ClientTimeout(total=15),
         ) as resp:
-            return resp.status in (200, 201, 204)
+            if resp.status in (200, 201, 204):
+                return True
+            body_snippet = (await resp.text())[:200]
+            print(f"    ⚠️ Netcraft HTTP {resp.status} ({domain}) — yanıt: {body_snippet}")
+            return False
     except Exception as e:
-        print(f"Netcraft hatası: {e}")
+        print(f"    ⚠️ Netcraft hatası ({domain}): {type(e).__name__}: {e}")
         return False
 
 async def report_safe_browsing(session, domain, found_urls):
