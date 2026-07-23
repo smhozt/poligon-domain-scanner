@@ -40,7 +40,7 @@ BRANDS = {
     "superbetin": {
         "name": "SUPERBETIN",
         "official_site": "superbetin.com",
-        "active_domains": ["superbetin.com", "superbetin2077.com"],
+        "active_domains": ["superbetin.com", "superbetin2082.com"],
     },
     "betsat": {
         "name": "BETSAT",
