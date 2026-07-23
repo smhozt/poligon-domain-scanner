@@ -23,7 +23,7 @@ BRANDS = {
         "active_domains": ["superbetin.com", "superbetin2082.com"],
     },
     "betsat": {
-        "active_domains": ["betsat.com", "betsat1606.com"],
+        "active_domains": ["betsat.com", "betsat1607.com"],
     },
     "turkbet": {
         "active_domains": ["turkbet.io", "750turkbet.com"],
@@ -34,7 +34,7 @@ BRANDS = {
 # WHİTELİST — otomatik türetilir (elle range YOK)
 # ============================================================
 # ÖNEMLİ: Fraud domainler resmi numaralara kasıtlı olarak çok yakın
-# seçiliyor (ör. betsat1594.com — resmi betsat1606.com'a yakın,
+# seçiliyor (ör. betsat1594.com — resmi betsat1607.com'a yakın,
 # superbetin1974.com gibi bir fraud domain de eskiden range(1700,1975)
 # içine düşüp yanlışlıkla korunuyordu). Geniş numara aralıkları
 # (range(1539, 1701) gibi) bu yüzden KULLANILMAZ — bir fraud domain
