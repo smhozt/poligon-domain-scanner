@@ -46,7 +46,7 @@ BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        "active_domains": ["superbetin.com", "superbetin2077.com"],
+        "active_domains": ["superbetin.com", "superbetin2082.com"],
         "signature_email": "yardim@superbetin.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
@@ -182,6 +182,10 @@ CLUSTER_MAP = {
     frozenset({"huxley", "kami"}):      "pfcloud_io",
     frozenset({"bonnie", "fred"}):      "sahinnetwork",
     frozenset({"katja", "tosana"}):     "frantech",
+    frozenset({"ernest", "oaklyn"}):    "netiface",
+    frozenset({"adi", "langston"}):     "vpsdatacenter",
+    frozenset({"kurt", "leah"}):        "colocatel",
+    frozenset({"donovan", "melinda"}):  "omegatech",
 }
 
 DEAD_DOMAIN = "__dead__"
