@@ -18,7 +18,7 @@ on:
           - turkbet
         default: auto
       targets:
-        description: 'Hedefler (virgülle): nicenic,host,custom_email,netcraft,safebrowsing,googlespam,smartscreen,spam404 veya "all"'
+        description: 'Hedefler (virgülle): nicenic,host,custom_email,netcraft,safebrowsing,googlespam,smartscreen,spam404 veya "all". compromise_notice ayrı yazılmalı, "all" içine dahil değil (hacklenmiş 3. taraf site bildirimi için).'
         required: true
         type: string
         default: all
