@@ -387,6 +387,37 @@ Sincerely,
         f"{brand['name']} Security Team", reply_to=reporter_email_for(brand_key)
     )
 
+
+def send_compromise_notice(domain, brand_key):
+    """Hacklenmiş/ele geçirilmiş meşru üçüncü taraf siteler için — bunlar
+    dolandırıcılık şüphelisi DEĞİL, kendileri de mağdur. Marka ihlali
+    suçlaması yerine nazik bir güvenlik uyarısı gönderilir, suspension
+    talebi YAPILMAZ. Alıcı adresi INPUT_CUSTOM_EMAIL'den alınır (site
+    sahibinin kendi iletişim adresi, host/registrar abuse kutusu değil)."""
+    brand = BRANDS[brand_key]
+    recipients = [e.strip() for e in INPUT_CUSTOM_EMAIL.split(",") if e.strip()]
+    if not recipients:
+        return False
+    subject = f"Security Notice — Your Website ({domain}) Appears to Be Compromised and Redirecting to Phishing Content"
+    body = f"""Dear Site Owner,
+
+We are writing on behalf of Poligon Entertainment N.V., operator of the licensed platform {brand['name']} (official site: {' / '.join(brand['active_domains'])}), under Curaçao Gaming Authority license OGL/2024/815/0653.
+
+We wanted to alert you, as a courtesy, that your website ({domain}) appears to have been compromised and is currently being used — likely without your knowledge — as part of a phishing operation impersonating our brand.
+
+We observed that visitors arriving at your domain via Google organic search referrals were being redirected to a credential-harvesting page impersonating {brand['name']}. This type of attack typically works by injecting malicious redirect code into a compromised website's files or CMS, exploiting the site's existing search engine trust to funnel victims toward fraudulent content — your business itself is not the target; your website's reputation is simply being abused as a delivery mechanism.
+{notes_block()}
+We recommend you check your website for unrecognized or recently modified files, unfamiliar plugins/scripts/admin accounts, and any unexpected redirect rules or injected JavaScript.
+
+We are not asking anything of you regarding our brand — this is purely a security courtesy notice, as your own customers and search visibility may also be at risk from this compromise. Please feel free to reach out if you'd like further technical details we observed.
+
+Kind regards,
+CS Operations & Technology
+Poligon Entertainment N.V.
+{brand['signature_email']}
+"""
+    return send_email(recipients, subject, body, "Security Team", reply_to=reporter_email_for(brand_key))
+
 # ============================================================
 # HEDEF: PLATFORM RAPORLARI (Netcraft / Safe Browsing / Google Spam / SmartScreen / Spam404)
 # ============================================================
@@ -533,8 +564,18 @@ async def main():
     domains = [get_root(d) for d in domains]
 
     requested_targets = set(INPUT_TARGETS.split(","))
+    # compromise_notice bilinçli olarak "all" kısayoluna DAHİL EDİLMEZ —
+    # bu, gerçek dolandırıcılık domain'leri için değil, hacklenmiş/ele
+    # geçirilmiş meşru 3. taraf siteler için özel bir senaryo. "all"
+    # seçilirse bile bu hedef sadece açıkça targets listesine yazılırsa
+    # çalışır, yanlışlıkla gerçek bir fraud domain sahibine "üzgünüz
+    # sitenizi hackleyen biri var" gibi çelişkili bir mesaj gitmesin diye.
     all_targets = {"nicenic", "host", "netcraft", "safebrowsing", "googlespam", "smartscreen", "spam404", "custom_email"}
-    targets = all_targets if "all" in requested_targets else (requested_targets & all_targets)
+    explicit_targets = {"compromise_notice"}
+    if "all" in requested_targets:
+        targets = all_targets | (requested_targets & explicit_targets)
+    else:
+        targets = requested_targets & (all_targets | explicit_targets)
 
     print(f"🎯 {len(domains)} domain, hedefler: {', '.join(sorted(targets))}")
 
@@ -578,6 +619,14 @@ async def main():
                     print(f"  {'✅' if ok else '❌'} Özel mail")
                 else:
                     print("  ⚠️ custom_email hedefi seçildi ama e-posta adresi verilmedi, atlandı")
+
+            if "compromise_notice" in targets:
+                if INPUT_CUSTOM_EMAIL:
+                    ok = send_compromise_notice(domain, brand_key)
+                    domain_results.append((f"Hacklenmiş Site Bildirimi ({INPUT_CUSTOM_EMAIL})", ok))
+                    print(f"  {'✅' if ok else '❌'} Hacklenmiş site bildirimi")
+                else:
+                    print("  ⚠️ compromise_notice hedefi seçildi ama e-posta adresi verilmedi, atlandı")
 
             if "netcraft" in targets:
                 ok = await report_netcraft(session, domain, brand_key, found_urls)
