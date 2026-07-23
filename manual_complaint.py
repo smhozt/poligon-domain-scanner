@@ -251,23 +251,43 @@ def _whois_raw_query(server, query, timeout=6):
 def _whois_fallback_registrar(domain):
     """IANA üzerinden TLD'nin gerçek WHOIS sunucusunu bulup domaini
     orada sorgular. RDAP başarısız olursa devreye girer."""
+    tld = domain.rsplit(".", 1)[-1]
     try:
-        tld = domain.rsplit(".", 1)[-1]
         iana_resp = _whois_raw_query("whois.iana.org", tld, timeout=6)
-        server = None
-        for line in iana_resp.splitlines():
-            if line.lower().startswith("whois:"):
-                server = line.split(":", 1)[1].strip()
-                break
-        if not server:
-            return None
-        resp = _whois_raw_query(server, domain, timeout=6)
-        for line in resp.splitlines():
-            low = line.lower()
-            if low.startswith("registrar:") or "registrar organization" in low or "sponsoring registrar:" in low:
-                return line.split(":", 1)[1].strip()
     except Exception as e:
-        print(f"    ⚠️ WHOIS fallback başarısız ({domain}): {e}")
+        print(f"    ⚠️ WHOIS: IANA sorgusu başarısız ({domain}, tld={tld}): {type(e).__name__}: {e}")
+        return None
+    server = None
+    for line in iana_resp.splitlines():
+        if line.lower().startswith("whois:"):
+            server = line.split(":", 1)[1].strip()
+            break
+    if not server:
+        print(f"    ⚠️ WHOIS: IANA yanıtında '{tld}' için whois sunucusu bulunamadı ({domain})")
+        return None
+    try:
+        resp = _whois_raw_query(server, domain, timeout=6)
+    except Exception as e:
+        print(f"    ⚠️ WHOIS: {server} sorgusu başarısız ({domain}): {type(e).__name__}: {e}")
+        return None
+    for line in resp.splitlines():
+        low = line.lower()
+        if low.startswith("registrar:") or "registrar organization" in low or "sponsoring registrar:" in low:
+            return line.split(":", 1)[1].strip()
+    print(f"    ⚠️ WHOIS: {server} yanıtında 'Registrar:' alanı bulunamadı ({domain}) — yanıt: {resp[:150]!r}")
+    return None
+
+def _find_registrar_entity(entities):
+    """RDAP yanıtlarında 'registrar' rolündeki entity bazen üst
+    seviyede değil, başka bir entity'nin İÇİNDE (nested) oluyor —
+    bu, 23 Tem 2026'daki toplu tespit başarısızlığının muhtemel
+    sebebiydi. Artık iç içe entity'lere de bakılıyor (recursive)."""
+    for entity in entities or []:
+        if "registrar" in entity.get("roles", []):
+            return entity
+        nested = _find_registrar_entity(entity.get("entities"))
+        if nested:
+            return nested
     return None
 
 async def _rdap_registrar(session, domain):
@@ -280,23 +300,27 @@ async def _rdap_registrar(session, domain):
             allow_redirects=True,
         ) as resp:
             if resp.status != 200:
+                body_snippet = (await resp.text())[:150]
+                print(f"    ⚠️ RDAP HTTP {resp.status} ({domain}) — yanıt: {body_snippet}")
                 return None
             data = await resp.json(content_type=None)
-            for entity in data.get("entities", []):
-                if "registrar" in entity.get("roles", []):
-                    name, email = None, None
-                    vcard = entity.get("vcardArray")
-                    if vcard and len(vcard) > 1:
-                        for item in vcard[1]:
-                            if item[0] == "fn":
-                                name = item[3]
-                            if item[0] == "email":
-                                email = item[3]
-                    if not name:
-                        name = entity.get("handle")
-                    return {"name": name, "email": email}
+            entity = _find_registrar_entity(data.get("entities"))
+            if not entity:
+                print(f"    ⚠️ RDAP 200 döndü ama 'registrar' rolünde entity bulunamadı ({domain})")
+                return None
+            name, email = None, None
+            vcard = entity.get("vcardArray")
+            if vcard and len(vcard) > 1:
+                for item in vcard[1]:
+                    if item[0] == "fn":
+                        name = item[3]
+                    if item[0] == "email":
+                        email = item[3]
+            if not name:
+                name = entity.get("handle")
+            return {"name": name, "email": email}
     except Exception as e:
-        print(f"    ⚠️ RDAP sorgusu başarısız ({domain}): {e}")
+        print(f"    ⚠️ RDAP sorgusu başarısız ({domain}): {type(e).__name__}: {e}")
     return None
 
 async def detect_registrar(session, domain):
