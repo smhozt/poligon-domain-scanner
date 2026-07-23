@@ -252,8 +252,6 @@ def resolve_host(domain):
 # (IANA üzerinden iki adımlı sorgu) düşülüyor. İkisi de başarısız
 # olursa "tespit edilemedi" olarak işaretlenir, ASLA sessizce yanlış
 # registrar'a gönderilmez.
-NICENIC_NAME_HINTS = ["nicenic"]
-
 def _whois_raw_query(server, query, timeout=6):
     with socket.create_connection((server, 43), timeout=timeout) as s:
         s.sendall((query + "\r\n").encode())
@@ -311,8 +309,7 @@ def _whois_fallback_registrar(domain):
 def _find_registrar_entity(entities):
     """RDAP yanıtlarında 'registrar' rolündeki entity bazen üst
     seviyede değil, başka bir entity'nin İÇİNDE (nested) oluyor —
-    bu, 23 Tem 2026'daki toplu tespit başarısızlığının muhtemel
-    sebebiydi. Artık iç içe entity'lere de bakılıyor (recursive)."""
+    iç içe entity'lere de bakılıyor (recursive)."""
     for entity in entities or []:
         if "registrar" in entity.get("roles", []):
             return entity
@@ -321,25 +318,43 @@ def _find_registrar_entity(entities):
             return nested
     return None
 
+def _rdap_endpoints_for(domain):
+    """Tek bir bootstrap redirector'a (rdap.org) güvenmek yerine birkaç
+    endpoint sırayla denenir — 23 Tem 2026'da rdap.org tek başına
+    domainlerin tamamında başarısız olmuştu. .com/.net için Verisign'in
+    kendi RDAP sunucusuna DOĞRUDAN gitmek, bootstrap yönlendirmesinden
+    daha güvenilir çıktı (mevcut whois_alert.py script'inde de böyle)."""
+    tld = domain.rsplit(".", 1)[-1].lower()
+    urls = [f"https://rdap.org/domain/{domain}"]
+    if tld in ("com", "net"):
+        urls.insert(0, f"https://rdap.verisign.com/{tld}/v1/domain/{domain}")
+    urls.append(f"https://rdap.nic.vip/domain/{domain}")
+    return urls
+
 async def _rdap_registrar(session, domain):
-    """rdap.org bootstrap redirector üzerinden RDAP sorgusu — doğru
-    RDAP sunucusuna otomatik yönlendirir, JSON döner."""
-    try:
-        async with session.get(
-            f"https://rdap.org/domain/{domain}",
-            timeout=aiohttp.ClientTimeout(total=8),
-            allow_redirects=True,
-        ) as resp:
-            if resp.status != 200:
-                body_snippet = (await resp.text())[:150]
-                print(f"    ⚠️ RDAP HTTP {resp.status} ({domain}) — yanıt: {body_snippet}")
-                return None
-            data = await resp.json(content_type=None)
-            entity = _find_registrar_entity(data.get("entities"))
-            if not entity:
-                print(f"    ⚠️ RDAP 200 döndü ama 'registrar' rolünde entity bulunamadı ({domain})")
-                return None
-            name, email = None, None
+    """Birden fazla RDAP endpoint'ini sırayla dener, ilk başarılı JSON
+    yanıtını kullanır. NiceNIC tespiti, hassas entity/vcard ayrıştırması
+    yerine ham JSON metninde 'nicenic' arayarak yapılır — yapısal
+    farklılıklara (nested entity, farklı vcard sırası vb.) karşı çok
+    daha dayanıklı bir yöntem."""
+    for url in _rdap_endpoints_for(domain):
+        try:
+            async with session.get(
+                url, timeout=aiohttp.ClientTimeout(total=8), allow_redirects=True,
+            ) as resp:
+                if resp.status != 200:
+                    continue
+                data = await resp.json(content_type=None)
+        except Exception as e:
+            print(f"    ⚠️ RDAP {url} başarısız ({domain}): {type(e).__name__}: {e}")
+            continue
+
+        raw = json.dumps(data).lower()
+        is_nicenic = "nicenic" in raw
+
+        name, email = None, None
+        entity = _find_registrar_entity(data.get("entities"))
+        if entity:
             vcard = entity.get("vcardArray")
             if vcard and len(vcard) > 1:
                 for item in vcard[1]:
@@ -349,9 +364,17 @@ async def _rdap_registrar(session, domain):
                         email = item[3]
             if not name:
                 name = entity.get("handle")
-            return {"name": name, "email": email}
-    except Exception as e:
-        print(f"    ⚠️ RDAP sorgusu başarısız ({domain}): {type(e).__name__}: {e}")
+        if not name and is_nicenic:
+            name = "NICENIC INTERNATIONAL GROUP CO., LIMITED"
+        if not name:
+            # Registrar entity'si düzgün ayrıştırılamadı ama 200 döndü —
+            # yine de "tespit edilemedi" yerine ham metinde bir isim
+            # arayışını (nicenic dışında) burada bırakmıyoruz, sonraki
+            # endpoint'e/WHOIS'e devrediyoruz.
+            print(f"    ⚠️ RDAP {url} 200 döndü ama registrar adı çıkarılamadı ({domain})")
+            continue
+
+        return {"name": name, "email": email, "is_nicenic": is_nicenic}
     return None
 
 async def detect_registrar(session, domain):
@@ -360,13 +383,11 @@ async def detect_registrar(session, domain):
     bu durumda çağıran kod NiceNIC'e göndermemeli, "tespit edilemedi" demeli."""
     rdap = await _rdap_registrar(session, domain)
     if rdap and rdap.get("name"):
-        name = rdap["name"]
-        is_nicenic = any(h in name.lower() for h in NICENIC_NAME_HINTS)
-        return {"name": name, "email": rdap.get("email"), "source": "rdap", "is_nicenic": is_nicenic}
+        return {"name": rdap["name"], "email": rdap.get("email"), "source": "rdap", "is_nicenic": rdap["is_nicenic"]}
 
     whois_name = await asyncio.get_running_loop().run_in_executor(None, _whois_fallback_registrar, domain)
     if whois_name:
-        is_nicenic = any(h in whois_name.lower() for h in NICENIC_NAME_HINTS)
+        is_nicenic = "nicenic" in whois_name.lower()
         return {"name": whois_name, "email": None, "source": "whois", "is_nicenic": is_nicenic}
 
     return {"name": None, "email": None, "source": None, "is_nicenic": False}
