@@ -2,6 +2,7 @@ import asyncio
 import aiohttp
 import os
 import json
+import socket
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -33,6 +34,10 @@ INPUT_NOTES          = os.environ.get("INPUT_NOTES", "").strip()
 # Reply-To başlığını belirler. Boş bırakılırsa markanın kendi
 # signature_email'i kullanılır (mevcut davranış).
 INPUT_REPORTER_EMAIL = os.environ.get("INPUT_REPORTER_EMAIL", "").strip()
+# Panelin bu çalıştırmayı benzersiz tanıyabilmesi için — sonuç JSON'u
+# dispatch-results/{INPUT_REQUEST_ID}.json olarak yazılır, panel bunu
+# GitHub Contents API üzerinden polling ile bulur.
+INPUT_REQUEST_ID = os.environ.get("INPUT_REQUEST_ID", "").strip()
 
 # Bu manuel tetiklemenin de otomatik taramalarla çakışmaması için aynı
 # "reported" dosyalarına eklenir (varsa) — böylece batch script'ler bu
@@ -213,6 +218,103 @@ def resolve_host(domain):
     if ns_labels == "NXDOMAIN":
         return None, DEAD_DOMAIN
     return match_cluster(ns_labels)
+
+# ============================================================
+# REGISTRAR TESPİTİ (RDAP öncelikli, WHOIS yedekli) — v3, 23 Tem 2026
+# ============================================================
+# "nicenic" hedefi seçildiğinde, panel artık körlemesine NiceNIC'e
+# göndermiyor — gerçek registrar'ı tespit edip, gerçekten NiceNIC ise
+# devam ediyor, değilse doğru bilgiyi (registrar adı + varsa abuse
+# maili) sonuçlara yazıp NiceNIC'e göndermeyi ATLIYOR. Bu, bugün
+# odemeonay.com'da elle yaptığımız "WHOIS'a bak, doğru registrar'ı
+# bul" işini otomatikleştiriyor.
+#
+# RDAP tüm gTLD'lerde (.com, .net, .icu, .vip, .top, .cam, vb.) ICANN
+# tarafından zorunlu, JSON döner, güvenilir. Bazı ccTLD'ler (.io, .co
+# gibi bazıları hariç) RDAP desteklemeyebilir — o durumda ham WHOIS'a
+# (IANA üzerinden iki adımlı sorgu) düşülüyor. İkisi de başarısız
+# olursa "tespit edilemedi" olarak işaretlenir, ASLA sessizce yanlış
+# registrar'a gönderilmez.
+NICENIC_NAME_HINTS = ["nicenic"]
+
+def _whois_raw_query(server, query, timeout=6):
+    with socket.create_connection((server, 43), timeout=timeout) as s:
+        s.sendall((query + "\r\n").encode())
+        chunks = []
+        while True:
+            data = s.recv(4096)
+            if not data:
+                break
+            chunks.append(data)
+        return b"".join(chunks).decode(errors="ignore")
+
+def _whois_fallback_registrar(domain):
+    """IANA üzerinden TLD'nin gerçek WHOIS sunucusunu bulup domaini
+    orada sorgular. RDAP başarısız olursa devreye girer."""
+    try:
+        tld = domain.rsplit(".", 1)[-1]
+        iana_resp = _whois_raw_query("whois.iana.org", tld, timeout=6)
+        server = None
+        for line in iana_resp.splitlines():
+            if line.lower().startswith("whois:"):
+                server = line.split(":", 1)[1].strip()
+                break
+        if not server:
+            return None
+        resp = _whois_raw_query(server, domain, timeout=6)
+        for line in resp.splitlines():
+            low = line.lower()
+            if low.startswith("registrar:") or "registrar organization" in low or "sponsoring registrar:" in low:
+                return line.split(":", 1)[1].strip()
+    except Exception as e:
+        print(f"    ⚠️ WHOIS fallback başarısız ({domain}): {e}")
+    return None
+
+async def _rdap_registrar(session, domain):
+    """rdap.org bootstrap redirector üzerinden RDAP sorgusu — doğru
+    RDAP sunucusuna otomatik yönlendirir, JSON döner."""
+    try:
+        async with session.get(
+            f"https://rdap.org/domain/{domain}",
+            timeout=aiohttp.ClientTimeout(total=8),
+            allow_redirects=True,
+        ) as resp:
+            if resp.status != 200:
+                return None
+            data = await resp.json(content_type=None)
+            for entity in data.get("entities", []):
+                if "registrar" in entity.get("roles", []):
+                    name, email = None, None
+                    vcard = entity.get("vcardArray")
+                    if vcard and len(vcard) > 1:
+                        for item in vcard[1]:
+                            if item[0] == "fn":
+                                name = item[3]
+                            if item[0] == "email":
+                                email = item[3]
+                    if not name:
+                        name = entity.get("handle")
+                    return {"name": name, "email": email}
+    except Exception as e:
+        print(f"    ⚠️ RDAP sorgusu başarısız ({domain}): {e}")
+    return None
+
+async def detect_registrar(session, domain):
+    """Dönüş: {"name": str|None, "email": str|None, "source": "rdap"|"whois"|None,
+    "is_nicenic": bool}. Hem RDAP hem WHOIS başarısız olursa name=None döner —
+    bu durumda çağıran kod NiceNIC'e göndermemeli, "tespit edilemedi" demeli."""
+    rdap = await _rdap_registrar(session, domain)
+    if rdap and rdap.get("name"):
+        name = rdap["name"]
+        is_nicenic = any(h in name.lower() for h in NICENIC_NAME_HINTS)
+        return {"name": name, "email": rdap.get("email"), "source": "rdap", "is_nicenic": is_nicenic}
+
+    whois_name = await asyncio.get_running_loop().run_in_executor(None, _whois_fallback_registrar, domain)
+    if whois_name:
+        is_nicenic = any(h in whois_name.lower() for h in NICENIC_NAME_HINTS)
+        return {"name": whois_name, "email": None, "source": "whois", "is_nicenic": is_nicenic}
+
+    return {"name": None, "email": None, "source": None, "is_nicenic": False}
 
 # ============================================================
 # YAYGIN PHISHING PATH / SUBDOMAIN KEŞFİ (diğer script'lerle aynı)
@@ -580,6 +682,12 @@ async def main():
     print(f"🎯 {len(domains)} domain, hedefler: {', '.join(sorted(targets))}")
 
     summary_lines = []
+    results_json = {
+        "request_id": INPUT_REQUEST_ID,
+        "generated_at": datetime.now(TZ_SOFIA).isoformat(),
+        "notes": INPUT_NOTES,
+        "domains": [],
+    }
 
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=50)) as session:
         for domain in domains:
@@ -591,67 +699,96 @@ async def main():
             print(f"  📎 {len(found_urls)} canlı kanıt URL bulundu")
             print(f"  📧 Reporter e-postası: {reporter_email_for(brand_key)}")
 
-            domain_results = []
+            domain_results = []       # Telegram özeti için (isim, ok/fail/None) tuple'ları
+            channels_json = []        # JSON çıktısı için yapılandırılmış liste
+            registrar_info = None
+            host_info = None
+
+            def _record(channel_key, label, status, detail=None):
+                domain_results.append((label, status))
+                channels_json.append({
+                    "channel": channel_key, "label": label,
+                    "status": ("ok" if status is True else "fail" if status is False else "skip"),
+                    "detail": detail,
+                })
 
             if "nicenic" in targets:
-                ok = send_email  # placeholder to keep flake happy
-                ok = send_nicenic(domain, brand_key, found_urls)
-                domain_results.append(("NiceNIC", ok))
-                print(f"  {'✅' if ok else '❌'} NiceNIC")
+                print("  🔎 Gerçek registrar tespit ediliyor (RDAP/WHOIS)...")
+                registrar_info = await detect_registrar(session, domain)
+                if registrar_info["name"] is None:
+                    print("  ❓ Registrar tespit edilemedi — NiceNIC'e gönderilmedi, manuel kontrol gerekiyor")
+                    _record("nicenic", "NiceNIC", None, "Registrar tespit edilemedi (RDAP+WHOIS başarısız) — manuel kontrol gerekiyor")
+                elif not registrar_info["is_nicenic"]:
+                    note = f"Gerçek registrar: {registrar_info['name']}"
+                    if registrar_info.get("email"):
+                        note += f" ({registrar_info['email']})"
+                    note += f" [{registrar_info['source']}]"
+                    print(f"  ⚠️ {note} — NiceNIC'e gönderilmedi (yanlış hedef önlendi)")
+                    _record("nicenic", "NiceNIC", None, note)
+                else:
+                    ok = send_nicenic(domain, brand_key, found_urls)
+                    print(f"  {'✅' if ok else '❌'} NiceNIC (registrar teyitli, {registrar_info['source']})")
+                    _record("nicenic", "NiceNIC", ok, f"Registrar teyitli ({registrar_info['source']})")
 
             if "host" in targets:
                 cluster_pair, host_key = resolve_host(domain)
                 if host_key == DEAD_DOMAIN:
-                    domain_results.append(("Host (NXDOMAIN)", None))
+                    host_info = {"status": "dead"}
                     print("  💀 Domain artık kayıtlı değil (NXDOMAIN)")
+                    _record("host", "Host (NXDOMAIN)", None, "Domain artık kayıtlı değil")
                 elif host_key is None:
-                    domain_results.append(("Host (cluster tespit edilemedi)", None))
+                    host_info = {"status": "unknown_cluster", "cluster": "/".join(sorted(cluster_pair)) if cluster_pair else None}
                     print("  ❓ Host tespit edilemedi — manuel inceleme gerekiyor")
+                    _record("host", "Host (cluster tespit edilemedi)", None, host_info.get("cluster"))
                 else:
                     ok = send_host_complaint(domain, brand_key, found_urls, host_key, cluster_pair)
-                    domain_results.append((f"Host ({HOSTS[host_key]['name']})", ok))
+                    host_info = {
+                        "status": "known", "host_key": host_key, "host_name": HOSTS[host_key]["name"],
+                        "cluster": "/".join(sorted(cluster_pair)) if cluster_pair else None,
+                    }
                     print(f"  {'✅' if ok else '❌'} Host ({HOSTS[host_key]['name']})")
+                    _record("host", f"Host ({HOSTS[host_key]['name']})", ok)
 
             if "custom_email" in targets:
                 if INPUT_CUSTOM_EMAIL:
                     ok = send_custom_email(domain, brand_key, found_urls)
-                    domain_results.append((f"Özel mail ({INPUT_CUSTOM_EMAIL})", ok))
                     print(f"  {'✅' if ok else '❌'} Özel mail")
+                    _record("custom_email", f"Özel mail ({INPUT_CUSTOM_EMAIL})", ok)
                 else:
                     print("  ⚠️ custom_email hedefi seçildi ama e-posta adresi verilmedi, atlandı")
 
             if "compromise_notice" in targets:
                 if INPUT_CUSTOM_EMAIL:
                     ok = send_compromise_notice(domain, brand_key)
-                    domain_results.append((f"Hacklenmiş Site Bildirimi ({INPUT_CUSTOM_EMAIL})", ok))
                     print(f"  {'✅' if ok else '❌'} Hacklenmiş site bildirimi")
+                    _record("compromise_notice", f"Hacklenmiş Site Bildirimi ({INPUT_CUSTOM_EMAIL})", ok)
                 else:
                     print("  ⚠️ compromise_notice hedefi seçildi ama e-posta adresi verilmedi, atlandı")
 
             if "netcraft" in targets:
                 ok = await report_netcraft(session, domain, brand_key, found_urls)
-                domain_results.append(("Netcraft", ok))
                 print(f"  {'✅' if ok else '❌'} Netcraft")
+                _record("netcraft", "Netcraft", ok)
 
             if "safebrowsing" in targets:
                 ok = await report_safe_browsing(session, domain, found_urls)
-                domain_results.append(("Safe Browsing", ok))
                 print(f"  {'✅' if ok else '❌'} Safe Browsing")
+                _record("safebrowsing", "Safe Browsing", ok)
 
             if "googlespam" in targets:
                 ok = await report_google_spam(session, domain, brand_key, found_urls)
-                domain_results.append(("Google Spam", ok))
                 print(f"  {'✅' if ok else '❌'} Google Spam")
+                _record("googlespam", "Google Spam", ok)
 
             if "smartscreen" in targets:
                 ok = await report_smartscreen(session, domain, brand_key, found_urls)
-                domain_results.append(("SmartScreen", ok))
                 print(f"  {'✅' if ok else '❌'} SmartScreen")
+                _record("smartscreen", "SmartScreen", ok)
 
             if "spam404" in targets:
                 ok = await report_spam404(session, domain, found_urls)
-                domain_results.append(("Spam404", ok))
                 print(f"  {'✅' if ok else '❌'} Spam404")
+                _record("spam404", "Spam404", ok)
 
             append_to_reported_files(domain)
 
@@ -663,6 +800,16 @@ async def main():
                 f"🎯 `{domain}` ({brand_name}, {len(found_urls)} kanıt URL, reporter: {reporter_email_for(brand_key)})\n   {status_str}"
             )
 
+            results_json["domains"].append({
+                "domain": domain,
+                "brand": brand_name,
+                "found_urls_count": len(found_urls),
+                "reporter_email": reporter_email_for(brand_key),
+                "registrar": registrar_info,
+                "host": host_info,
+                "channels": channels_json,
+            })
+
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     msg = f"📋 *[PANEL] Manuel Şikayet Dispatch* — {now}\n\n"
     msg += "\n\n".join(summary_lines)
@@ -670,6 +817,15 @@ async def main():
         msg += f"\n\n📝 *Not:* {INPUT_NOTES}"
     await send_telegram(msg)
     print("\n✅ Tamamlandı, Telegram'a bildirildi.")
+
+    if INPUT_REQUEST_ID:
+        os.makedirs("dispatch-results", exist_ok=True)
+        result_path = os.path.join("dispatch-results", f"{INPUT_REQUEST_ID}.json")
+        with open(result_path, "w", encoding="utf-8") as f:
+            json.dump(results_json, f, ensure_ascii=False, indent=2)
+        print(f"📄 Sonuç dosyası yazıldı: {result_path} (panel bunu polling ile bulacak)")
+    else:
+        print("⚠️ INPUT_REQUEST_ID verilmedi — sonuç dosyası yazılmadı, panel sadece tetiklemeyi görecek.")
 
 if __name__ == "__main__":
     asyncio.run(main())
