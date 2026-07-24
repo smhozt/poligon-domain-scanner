@@ -184,6 +184,7 @@ CLUSTER_MAP = {
     frozenset({"bowen", "rosemary"}):   "colocatel",
     frozenset({"paityn", "titan"}):     "cloudzy",
     frozenset({"gannon", "nancy"}):     "play2go",
+    frozenset({"daniella", "felipe"}):  "play2go",
     frozenset({"brenda", "leif"}):      "namecheap",
     frozenset({"candy", "edward"}):     "pfcloud",
     frozenset({"huxley", "kami"}):      "pfcloud_io",
