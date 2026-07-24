@@ -192,6 +192,7 @@ CLUSTER_MAP = {
     frozenset({"katja", "tosana"}):     "frantech",
     frozenset({"khalid", "suzanne"}):   "frantech",
     frozenset({"ernest", "oaklyn"}):    "netiface",
+    frozenset({"bowen", "lauryn"}):     "netiface",
     frozenset({"adi", "langston"}):     "vpsdatacenter",
     frozenset({"kurt", "leah"}):        "colocatel",
     frozenset({"donovan", "melinda"}):  "omegatech",
