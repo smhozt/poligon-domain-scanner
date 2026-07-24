@@ -158,6 +158,7 @@ CLUSTER_MAP = {
     frozenset({"elliot", "marlowe"}):   "swissnet",
     frozenset({"ainsley", "lamar"}):    "swissnet",
     frozenset({"lee", "aida"}):         "swissnet",
+    frozenset({"corey", "teresa"}):     "swissnet",
 
     # ── PRQ VPN Network SE ──
     frozenset({"decker", "liberty"}):   "prq",
