@@ -120,6 +120,7 @@ HOSTS = {
     "sahinnetwork":    {"name": "Bursabil Teknoloji A.Ş.",               "abuse": ["abuse@sahinnetwork.com"]},
     "frantech":        {"name": "FranTech Solutions (PONYNET)",          "abuse": ["admin@frantech.ca"]},
     "synlinq":         {"name": "SYNLINQ (Oliver Horscht)",              "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
+    "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ (belirsiz — aynı gün iki farklı teyit geldi)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
 }
 
 CLUSTER_MAP = {
@@ -147,7 +148,7 @@ CLUSTER_MAP = {
     frozenset({"archer", "melissa"}):   "omegatech",
     frozenset({"dane", "alice"}):       "omegatech",
     frozenset({"aleena", "tony"}):      "omegatech",
-    frozenset({"luciane", "oswald"}):   "synlinq",   # DÜZELTİLDİ 27 Tem — önceden omegatech idi, taze veri SYNLINQ gösterdi (host değişmiş olabilir)
+    frozenset({"luciane", "oswald"}):   "luciane_oswald_ambiguous",   # 27 Tem: aynı gün hem SYNLINQ hem Omegatech teyidi geldi, ikisine birden gönderiliyor
     frozenset({"mimi", "sevki"}):       "synlinq",
     frozenset({"ainsley", "tate"}):     "omegatech",
 
