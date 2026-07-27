@@ -59,14 +59,14 @@ BRANDS = {
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        "active_domains": ["betsat.com", "betsat1607.com"],
+        "active_domains": ["betsat.com", "betsat1608.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        "active_domains": ["turkbet.io", "751turkbet.com"],
+        "active_domains": ["turkbet.io", "752turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
@@ -119,7 +119,7 @@ HOSTS = {
     "pfcloud_io":      {"name": "Pfcloud UG (pfcloud.io)",               "abuse": ["abuse@pfcloud.io"]},
     "sahinnetwork":    {"name": "Bursabil Teknoloji A.Ş.",               "abuse": ["abuse@sahinnetwork.com"]},
     "frantech":        {"name": "FranTech Solutions (PONYNET)",          "abuse": ["admin@frantech.ca"]},
-    "synlinq":         {"name": "SYNLINQ (Oliver Horscht)",              "abuse": ["abuse@ghostnet.de"]},
+    "synlinq":         {"name": "SYNLINQ (Oliver Horscht)",              "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
 }
 
 CLUSTER_MAP = {
@@ -147,7 +147,9 @@ CLUSTER_MAP = {
     frozenset({"archer", "melissa"}):   "omegatech",
     frozenset({"dane", "alice"}):       "omegatech",
     frozenset({"aleena", "tony"}):      "omegatech",
-    frozenset({"luciane", "oswald"}):   "omegatech",
+    frozenset({"luciane", "oswald"}):   "synlinq",   # DÜZELTİLDİ 27 Tem — önceden omegatech idi, taze veri SYNLINQ gösterdi (host değişmiş olabilir)
+    frozenset({"mimi", "sevki"}):       "synlinq",
+    frozenset({"ainsley", "tate"}):     "omegatech",
 
     # ── Advin Services LLC ──
     frozenset({"ruben", "ariella"}):    "advin",
