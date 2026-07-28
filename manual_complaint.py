@@ -162,6 +162,7 @@ CLUSTER_MAP = {
     frozenset({"ainsley", "lamar"}):    "swissnet",
     frozenset({"lee", "aida"}):         "swissnet",
     frozenset({"corey", "teresa"}):     "swissnet",
+    frozenset({"elinore", "patrick"}):  "swissnet",
     frozenset({"stevie", "wilson"}):    "netiface",
     frozenset({"jen", "paul"}):         "pfcloud",
 
