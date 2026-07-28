@@ -110,6 +110,7 @@ HOSTS = {
     "fatcat_scrhost":  {"name": "FATCAT-AS / scrhost.com",               "abuse": ["info@scrhost.com"]},
     "fatcat_epikhost": {"name": "FATCAT NETWORK S.A.",                   "abuse": ["abuse@epikhost.org"]},
     "vpsdatacenter":   {"name": "VPS Datacenter Ltd (private-data-center.com)", "abuse": ["abuse@private-data-center.com"]},
+    "weridata":        {"name": "WERIDATA-LLC, US", "abuse": ["report@abuseradar.com"]},
     "colocatel":       {"name": "ColocaTel Inc.",                        "abuse": ["abuse@colocatel.com"]},
     "evoxt":           {"name": "Evoxt Sdn. Bhd.",                       "abuse": ["abuse@evoxt.com"]},
     "cloudzy":         {"name": "RouterHosting/Cloudzy",                 "abuse": ["abuse-reports@cloudzy.com"]},
@@ -182,7 +183,7 @@ CLUSTER_MAP = {
     frozenset({"kipp", "penny"}):       "vpsdatacenter",
     frozenset({"eve", "sean"}):         "vpsdatacenter",
     frozenset({"jewel", "vin"}):        "vpsdatacenter",
-    frozenset({"achiel", "nicole"}):    "vpsdatacenter",
+    frozenset({"achiel", "nicole"}):    "weridata",   # DÜZELTİLDİ 28 Tem — panel VPS Datacenter tahmin etmişti, Cloudflare'in taze teyidi WERIDATA-LLC gösterdi
     frozenset({"andronicus", "emely"}): "vpsdatacenter",
 
     # ── Diğer host'lar ──
