@@ -103,6 +103,7 @@ if INPUT_ACTIVE_OVERRIDE:
 # ============================================================
 HOSTS = {
     "netiface":        {"name": "Netiface LLC / VPS Dedicated LLC",     "abuse": ["abuse@abusehandler.net", "abuse@vpsdedicated.net"]},
+    "vpsdedicated_flashwisp": {"name": "VPS Dedicated LLC, US (flashwisp.com.ng)", "abuse": ["abuse@flashwisp.com.ng"]},
     "omegatech":       {"name": "Omegatech LTD",                        "abuse": ["abuse@pitline.net", "abuse@omegatech.sc"]},
     "advin":           {"name": "Advin Services LLC",                   "abuse": ["anush@advinservers.com"]},
     "swissnet":        {"name": "SwissNet LLC",                          "abuse": ["abuse@swissnetwork.io"]},
@@ -186,6 +187,7 @@ CLUSTER_MAP = {
     frozenset({"eve", "sean"}):         "vpsdatacenter",
     frozenset({"jewel", "vin"}):        "vpsdatacenter",
     frozenset({"james", "maeve"}):      "vpsdatacenter",
+    frozenset({"leanna", "patrick"}):   "vpsdedicated_flashwisp",
     frozenset({"achiel", "nicole"}):    "weridata",   # DÜZELTİLDİ 28 Tem — panel VPS Datacenter tahmin etmişti, Cloudflare'in taze teyidi WERIDATA-LLC gösterdi
     frozenset({"andronicus", "emely"}): "vpsdatacenter",
 
