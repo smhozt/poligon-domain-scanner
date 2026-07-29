@@ -66,7 +66,7 @@ BRANDS = {
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        "active_domains": ["turkbet.io", "753turkbet.com"],
+        "active_domains": ["turkbet.io", "754turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
