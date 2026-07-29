@@ -183,6 +183,7 @@ CLUSTER_MAP = {
     frozenset({"kipp", "penny"}):       "vpsdatacenter",
     frozenset({"eve", "sean"}):         "vpsdatacenter",
     frozenset({"jewel", "vin"}):        "vpsdatacenter",
+    frozenset({"james", "maeve"}):      "vpsdatacenter",
     frozenset({"achiel", "nicole"}):    "weridata",   # DÜZELTİLDİ 28 Tem — panel VPS Datacenter tahmin etmişti, Cloudflare'in taze teyidi WERIDATA-LLC gösterdi
     frozenset({"andronicus", "emely"}): "vpsdatacenter",
 
