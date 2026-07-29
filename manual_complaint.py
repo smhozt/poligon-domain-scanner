@@ -122,6 +122,7 @@ HOSTS = {
     "frantech":        {"name": "FranTech Solutions (PONYNET)",          "abuse": ["admin@frantech.ca"]},
     "synlinq":         {"name": "SYNLINQ (Oliver Horscht)",              "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ (belirsiz — aynı gün iki farklı teyit geldi)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
+    "elinore_patrick_ambiguous": {"name": "SwissNet LLC / FROSTYHOSTING-AS RU (belirsiz — farklı günlerde iki farklı teyit geldi)", "abuse": ["abuse@swissnetwork.io", "frostyhosting@proton.me"]},
 }
 
 CLUSTER_MAP = {
@@ -163,7 +164,7 @@ CLUSTER_MAP = {
     frozenset({"ainsley", "lamar"}):    "swissnet",
     frozenset({"lee", "aida"}):         "swissnet",
     frozenset({"corey", "teresa"}):     "swissnet",
-    frozenset({"elinore", "patrick"}):  "swissnet",
+    frozenset({"elinore", "patrick"}):  "elinore_patrick_ambiguous",   # 29 Tem: önce SwissNet teyit edilmişti, bugün FROSTYHOSTING-AS RU teyidi geldi, ikisine birden gönderiliyor
     frozenset({"stevie", "wilson"}):    "netiface",
     frozenset({"jen", "paul"}):         "pfcloud",
 
