@@ -1,0 +1,1139 @@
+{
+  "request_id": "449030b1-5940-4f2d-a705-3dca2b2faa0a",
+  "generated_at": "2026-07-29T14:02:30.137947+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "betsatresmigiris.icu",
+      "brand": "Betsat",
+      "found_urls_count": 1,
+      "reporter_email": "support@betsat.com",
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "omegatech",
+        "host_name": "Omegatech LTD",
+        "cluster": "cruz/hasslo"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (Omegatech LTD)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "Https:",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": null,
+        "email": null,
+        "source": null,
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "dead"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Registrar tespit edilemedi (RDAP+WHOIS başarısız) — manuel kontrol gerekiyor"
+        },
+        {
+          "channel": "host",
+          "label": "Host (NXDOMAIN)",
+          "status": "skip",
+          "detail": "Domain artık kayıtlı değil"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "fail",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betsat1803.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "reporter_email": "support@betsat.com",
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "weridata",
+        "host_name": "WERIDATA-LLC, US",
+        "cluster": "achiel/nicole"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (WERIDATA-LLC, US)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetingirisin.live",
+      "brand": "Superbetin",
+      "found_urls_count": 3,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": null,
+        "email": null,
+        "source": null,
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "alexia",
+          "greg"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Registrar tespit edilemedi (RDAP+WHOIS başarısız) — manuel kontrol gerekiyor"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: alexia, greg"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetin-amp-giris.icu",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": "Hosting Concepts B.V. d/b/a Registrar.eu",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "ns1",
+          "ns2",
+          "ns3"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Hosting Concepts B.V. d/b/a Registrar.eu [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: ns1, ns2, ns3"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "turkbetgir.vip",
+      "brand": "Turkbet",
+      "found_urls_count": 1,
+      "reporter_email": "support@turkbet.co",
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": "info@dynadot.com",
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "leanna",
+          "patrick"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc (info@dynadot.com) [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: leanna, patrick"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetinresmi.cam",
+      "brand": "Superbetin",
+      "found_urls_count": 2,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "ns1",
+          "ns2"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: ns1, ns2"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetinegirisin724.co",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO LIMITED",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "jeremy",
+          "kay"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (whois)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: jeremy, kay"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetin-amp-mobil.icu",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": "Hosting Concepts B.V. d/b/a Registrar.eu",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "ns1",
+          "ns2",
+          "ns3"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Hosting Concepts B.V. d/b/a Registrar.eu [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: ns1, ns2, ns3"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "2085superbetin.com",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": "Gransy, s.r.o.",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "synlinq",
+        "host_name": "SYNLINQ (Oliver Horscht)",
+        "cluster": "aiden/naya"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Gransy, s.r.o. [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (SYNLINQ (Oliver Horscht))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "anindaonayla.com",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": "Gransy, s.r.o.",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "synlinq",
+        "host_name": "SYNLINQ (Oliver Horscht)",
+        "cluster": "aiden/naya"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Gransy, s.r.o. [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (SYNLINQ (Oliver Horscht))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetin-resmierisimi.icu",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": "Hosting Concepts B.V. d/b/a Registrar.eu",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "ns1",
+          "ns2",
+          "ns3"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Hosting Concepts B.V. d/b/a Registrar.eu [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: ns1, ns2, ns3"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "turkbet-guncelgiris.cam",
+      "brand": "Turkbet",
+      "found_urls_count": 0,
+      "reporter_email": "support@turkbet.co",
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "decker",
+          "dolly"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: decker, dolly"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetin-adresegiris.icu",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": "Hosting Concepts B.V. d/b/a Registrar.eu",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "ina1",
+          "ina2",
+          "ina3"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Hosting Concepts B.V. d/b/a Registrar.eu [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: ina1, ina2, ina3"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betsat-analiz.com",
+      "brand": "Betsat",
+      "found_urls_count": 1,
+      "reporter_email": "support@betsat.com",
+      "registrar": {
+        "name": "Fewmoretaps OU d/b/a Trustname.com",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "netiface",
+        "host_name": "Netiface LLC / VPS Dedicated LLC",
+        "cluster": "conrad/leia"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Fewmoretaps OU d/b/a Trustname.com [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (Netiface LLC / VPS Dedicated LLC)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betsatapp.icu",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "reporter_email": "support@betsat.com",
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "netiface",
+        "host_name": "Netiface LLC / VPS Dedicated LLC",
+        "cluster": "bowen/lauryn"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (Netiface LLC / VPS Dedicated LLC)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetin2151.com",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": "Fewmoretaps OU d/b/a Trustname.com",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "frantech",
+        "host_name": "FranTech Solutions (PONYNET)",
+        "cluster": "mario/norah"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Fewmoretaps OU d/b/a Trustname.com [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (FranTech Solutions (PONYNET))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetinerisimadresin724.co",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "dead"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (NXDOMAIN)",
+          "status": "skip",
+          "detail": "Domain artık kayıtlı değil"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    }
+  ]
+}
