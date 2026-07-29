@@ -153,6 +153,7 @@ CLUSTER_MAP = {
     frozenset({"luciane", "oswald"}):   "luciane_oswald_ambiguous",   # 27 Tem: aynı gün hem SYNLINQ hem Omegatech teyidi geldi, ikisine birden gönderiliyor
     frozenset({"mimi", "sevki"}):       "synlinq",
     frozenset({"ainsley", "tate"}):     "omegatech",
+    frozenset({"cruz", "hasslo"}):      "omegatech",
 
     # ── Advin Services LLC ──
     frozenset({"ruben", "ariella"}):    "advin",
