@@ -156,6 +156,7 @@ CLUSTER_MAP = {
     frozenset({"mimi", "sevki"}):       "synlinq",
     frozenset({"ainsley", "tate"}):     "omegatech",
     frozenset({"cruz", "hasslo"}):      "omegatech",
+    frozenset({"jeremy", "kay"}):       "omegatech",
 
     # ── Advin Services LLC ──
     frozenset({"ruben", "ariella"}):    "advin",
@@ -166,6 +167,7 @@ CLUSTER_MAP = {
     frozenset({"elliot", "marlowe"}):   "swissnet",
     frozenset({"ainsley", "lamar"}):    "swissnet",
     frozenset({"lee", "aida"}):         "swissnet",
+    frozenset({"delilah", "jack"}):     "swissnet",
     frozenset({"corey", "teresa"}):     "swissnet",
     frozenset({"elinore", "patrick"}):  "elinore_patrick_ambiguous",   # 29 Tem: önce SwissNet teyit edilmişti, bugün FROSTYHOSTING-AS RU teyidi geldi, ikisine birden gönderiliyor
     frozenset({"stevie", "wilson"}):    "netiface",
