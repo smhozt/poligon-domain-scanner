@@ -104,6 +104,7 @@ if INPUT_ACTIVE_OVERRIDE:
 HOSTS = {
     "netiface":        {"name": "Netiface LLC / VPS Dedicated LLC",     "abuse": ["abuse@abusehandler.net", "abuse@vpsdedicated.net"]},
     "vpsdedicated_flashwisp": {"name": "VPS Dedicated LLC, US (flashwisp.com.ng)", "abuse": ["abuse@flashwisp.com.ng"]},
+    "sollutium":       {"name": "Unnamed host (sollutium.com)", "abuse": ["abuse@sollutium.com"]},
     "omegatech":       {"name": "Omegatech LTD",                        "abuse": ["abuse@pitline.net", "abuse@omegatech.sc"]},
     "advin":           {"name": "Advin Services LLC",                   "abuse": ["anush@advinservers.com"]},
     "swissnet":        {"name": "SwissNet LLC",                          "abuse": ["abuse@swissnetwork.io"]},
@@ -157,6 +158,7 @@ CLUSTER_MAP = {
     frozenset({"ainsley", "tate"}):     "omegatech",
     frozenset({"cruz", "hasslo"}):      "omegatech",
     frozenset({"jeremy", "kay"}):       "omegatech",
+    frozenset({"alexia", "burt"}):      "sollutium",
 
     # ── Advin Services LLC ──
     frozenset({"ruben", "ariella"}):    "advin",
