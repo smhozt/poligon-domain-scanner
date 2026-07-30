@@ -128,7 +128,8 @@ HOSTS = {
 
 CLUSTER_MAP = {
     # ── Netiface LLC / VPS Dedicated LLC (abusehandler.net ailesi) ──
-    frozenset({"drew", "leia"}):        "netiface",
+    frozenset({"drew", "leia"}):        "pfcloud",   # DÜZELTİLDİ 29 Tem — eskiden netiface kayıtlıydı, bugün defalarca tekrarlanan taze Cloudflare teyidi PFCLOUD gösterdi
+    frozenset({"george", "treasure"}):  "pfcloud",   # YENİ 29 Tem — superbetin2244.com üzerinden teyit edildi
     frozenset({"carol", "mustafa"}):    "netiface",
     frozenset({"conrad", "leia"}):      "netiface",
     frozenset({"remy", "stella"}):      "netiface",
