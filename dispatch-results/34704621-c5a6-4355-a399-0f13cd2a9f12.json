@@ -1,0 +1,131 @@
+{
+  "request_id": "34704621-c5a6-4355-a399-0f13cd2a9f12",
+  "generated_at": "2026-07-30T10:35:06.633911+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "betsat2119.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "reporter_email": "support@betsat.com",
+      "registrar": {
+        "name": "Fewmoretaps OU d/b/a Trustname.com",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "pfcloud",
+        "host_name": "Pfcloud UG (abusehandler.net)",
+        "cluster": "drew/leia"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Fewmoretaps OU d/b/a Trustname.com [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (Pfcloud UG (abusehandler.net))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betsat-blog.com",
+      "brand": "Betsat",
+      "found_urls_count": 1,
+      "reporter_email": "support@betsat.com",
+      "registrar": {
+        "name": "Fewmoretaps OU d/b/a Trustname.com",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "netiface",
+        "host_name": "Netiface LLC / VPS Dedicated LLC",
+        "cluster": "conrad/leia"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Fewmoretaps OU d/b/a Trustname.com [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (Netiface LLC / VPS Dedicated LLC)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    }
+  ]
+}
