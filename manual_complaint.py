@@ -8,7 +8,6 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timezone, timedelta
-
 try:
     import dns.resolver
 except ImportError:
@@ -125,6 +124,8 @@ HOSTS = {
     "synlinq":         {"name": "SYNLINQ (Oliver Horscht)",              "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ (belirsiz — aynı gün iki farklı teyit geldi)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "elinore_patrick_ambiguous": {"name": "SwissNet LLC / FROSTYHOSTING-AS RU (belirsiz — farklı günlerde iki farklı teyit geldi)", "abuse": ["abuse@swissnetwork.io", "frostyhosting@proton.me"]},
+    "digitalocean":    {"name": "DigitalOcean LLC",                     "abuse": ["abuse@digitalocean.com"]},  # YENİ 31 Tem — superbetin-tr.top üzerinden ilk kez görüldü
+    "ovh":             {"name": "OVH SAS, FR",                          "abuse": ["abuse@ovh.net"]},  # YENİ 31 Tem — tr.superbetin-resmi.icu üzerinden ilk kez görüldü
 }
 
 CLUSTER_MAP = {
@@ -223,6 +224,8 @@ CLUSTER_MAP = {
     frozenset({"donovan", "melinda"}):  "omegatech",
     frozenset({"aiden", "naya"}):       "synlinq",
     frozenset({"adaline", "chris"}):    "synlinq",
+    frozenset({"archer", "lana"}):      "digitalocean",   # YENİ 31 Tem — superbetin-tr.top (Aliyun/Dominet HK kayıtlı), archer/melissa'dan (omegatech) farklı
+    frozenset({"paityn", "rick"}):      "ovh",            # YENİ 31 Tem — tr.superbetin-resmi.icu, paityn/titan'dan (cloudzy) farklı
 }
 
 DEAD_DOMAIN = "__dead__"
@@ -308,7 +311,6 @@ def _whois_fallback_registrar(domain):
     if not server:
         print(f"    ⚠️ WHOIS: IANA yanıtında '{tld}' için whois sunucusu bulunamadı ({domain})")
         return None
-
     # Verisign'in .com/.net WHOIS sunucusu, bulut/CI IP aralıklarından gelen
     # otomatik sorguları agresif şekilde rate-limit'lemesiyle bilinir — bu
     # muhtemelen .com domainlerinde gözlemlenen toplu WHOIS başarısızlığının
@@ -326,7 +328,6 @@ def _whois_fallback_registrar(domain):
     if resp is None:
         print(f"    ⚠️ WHOIS: {server} sorgusu başarısız ({domain}), 2 deneme sonrası: {type(last_err).__name__}: {last_err}")
         return None
-
     for line in resp.splitlines():
         low = line.lower()
         if low.startswith("registrar:") or "registrar organization" in low or "sponsoring registrar:" in low:
@@ -376,10 +377,8 @@ async def _rdap_registrar(session, domain):
         except Exception as e:
             print(f"    ⚠️ RDAP {url} başarısız ({domain}): {type(e).__name__}: {e}")
             continue
-
         raw = json.dumps(data).lower()
         is_nicenic = "nicenic" in raw
-
         name, email = None, None
         entity = _find_registrar_entity(data.get("entities"))
         if entity:
@@ -401,7 +400,6 @@ async def _rdap_registrar(session, domain):
             # endpoint'e/WHOIS'e devrediyoruz.
             print(f"    ⚠️ RDAP {url} 200 döndü ama registrar adı çıkarılamadı ({domain})")
             continue
-
         return {"name": name, "email": email, "is_nicenic": is_nicenic}
     return None
 
@@ -412,12 +410,10 @@ async def detect_registrar(session, domain):
     rdap = await _rdap_registrar(session, domain)
     if rdap and rdap.get("name"):
         return {"name": rdap["name"], "email": rdap.get("email"), "source": "rdap", "is_nicenic": rdap["is_nicenic"]}
-
     whois_name = await asyncio.get_running_loop().run_in_executor(None, _whois_fallback_registrar, domain)
     if whois_name:
         is_nicenic = "nicenic" in whois_name.lower()
         return {"name": whois_name, "email": None, "source": "whois", "is_nicenic": is_nicenic}
-
     return {"name": None, "email": None, "source": None, "is_nicenic": False}
 
 # ============================================================
@@ -433,6 +429,7 @@ COMMON_PHISHING_PATHS = [
 ]
 COMMON_PHISHING_SUBDOMAINS = ["m", "tr", "www", "yatirim", "payment", "odeme", "cryptopay"]
 SUBDOMAIN_DEPOSIT_PATHS = ["/", "/havale/", "/crypto/", "/login.php"]
+
 URL_CHECK_TIMEOUT = aiohttp.ClientTimeout(total=4)
 URL_CHECK_CONCURRENCY = 30
 
@@ -592,7 +589,6 @@ Sincerely,
         recipients, subject, body,
         f"{brand['name']} Security Team", reply_to=reporter_email_for(brand_key)
     )
-
 
 def send_compromise_notice(domain, brand_key):
     """Hacklenmiş/ele geçirilmiş meşru üçüncü taraf siteler için — bunlar
@@ -931,7 +927,6 @@ async def main():
             summary_lines.append(
                 f"🎯 `{domain}` ({brand_name}, {len(found_urls)} kanıt URL, reporter: {reporter_email_for(brand_key)})\n   {status_str}"
             )
-
             results_json["domains"].append({
                 "domain": domain,
                 "brand": brand_name,
@@ -948,6 +943,7 @@ async def main():
     if INPUT_NOTES:
         msg += f"\n\n📝 *Not:* {INPUT_NOTES}"
     await send_telegram(msg)
+
     print("\n✅ Tamamlandı, Telegram'a bildirildi.")
 
     if INPUT_REQUEST_ID:
