@@ -170,6 +170,7 @@ CLUSTER_MAP = {
     frozenset({"ainsley", "lamar"}):    "swissnet",
     frozenset({"lee", "aida"}):         "swissnet",
     frozenset({"delilah", "jack"}):     "swissnet",
+    frozenset({"eloise", "peter"}):     "swissnet",
     frozenset({"corey", "teresa"}):     "swissnet",
     frozenset({"elinore", "patrick"}):  "elinore_patrick_ambiguous",   # 29 Tem: önce SwissNet teyit edilmişti, bugün FROSTYHOSTING-AS RU teyidi geldi, ikisine birden gönderiliyor
     frozenset({"stevie", "wilson"}):    "netiface",
@@ -192,6 +193,7 @@ CLUSTER_MAP = {
     frozenset({"eve", "sean"}):         "vpsdatacenter",
     frozenset({"jewel", "vin"}):        "vpsdatacenter",
     frozenset({"james", "maeve"}):      "vpsdatacenter",
+    frozenset({"harlee", "tim"}):       "vpsdatacenter",
     frozenset({"leanna", "patrick"}):   "vpsdedicated_flashwisp",
     frozenset({"achiel", "nicole"}):    "weridata",   # DÜZELTİLDİ 28 Tem — panel VPS Datacenter tahmin etmişti, Cloudflare'in taze teyidi WERIDATA-LLC gösterdi
     frozenset({"andronicus", "emely"}): "vpsdatacenter",
@@ -220,6 +222,7 @@ CLUSTER_MAP = {
     frozenset({"melody", "armando"}):   "colocatel",
     frozenset({"donovan", "melinda"}):  "omegatech",
     frozenset({"aiden", "naya"}):       "synlinq",
+    frozenset({"adaline", "chris"}):    "synlinq",
 }
 
 DEAD_DOMAIN = "__dead__"
