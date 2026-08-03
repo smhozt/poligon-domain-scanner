@@ -163,6 +163,7 @@ CLUSTER_MAP = {
     frozenset({"cruz", "hasslo"}):      "omegatech",
     frozenset({"jeremy", "kay"}):       "jeremy_kay_ambiguous",   # DÜZELTİLDİ 03 Ağu 2026 — eskiden omegatech kayıtlıydı, bugün superbetininadresin724.co üzerinden taze Cloudflare teyidi VPS Dedicated LLC/netiface gösterdi
     frozenset({"aliza", "dean"}):       "netiface",   # YENİ 03 Ağu 2026 — superbetinguncelgiris724.top üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net)
+    frozenset({"chad", "lucy"}):        "netiface",   # YENİ 03 Ağu 2026 — superbetinineris724.co üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"alexia", "burt"}):      "sollutium",
 
     # ── Advin Services LLC ──
