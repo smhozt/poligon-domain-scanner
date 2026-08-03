@@ -51,7 +51,7 @@ BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        "active_domains": ["superbetin.com", "superbetin2085.com"],
+        "active_domains": ["superbetin.com", "superbetin2087.com"],
         "signature_email": "yardim@superbetin.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
@@ -122,6 +122,9 @@ HOSTS = {
     "sahinnetwork":    {"name": "Bursabil Teknoloji A.Ş.",               "abuse": ["abuse@sahinnetwork.com"]},
     "frantech":        {"name": "FranTech Solutions (PONYNET)",          "abuse": ["admin@frantech.ca"]},
     "synlinq":         {"name": "SYNLINQ (Oliver Horscht)",              "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
+    "adaline_chris_ambiguous": {"name": "SYNLINQ / Omegatech LTD (belirsiz — NS rotasyonu, 03 Ağu 2026 Omegatech teyidi geldi ama önceden SYNLINQ kayıtlıydı)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@pitline.net", "abuse@omegatech.sc"]},
+    "brady_harmony_ambiguous": {"name": "VPS Dedicated LLC, US (belirsiz — iki farklı abuse kutusu görüldü: abusehandler.net ve flashwisp.com.ng)", "abuse": ["abuse@abusehandler.net", "abuse@flashwisp.com.ng"]},
+    "jeremy_kay_ambiguous": {"name": "Omegatech LTD / VPS Dedicated LLC (belirsiz — NS rotasyonu, 03 Ağu 2026 netiface teyidi geldi ama önceden Omegatech kayıtlıydı)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@abusehandler.net"]},
     "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ (belirsiz — aynı gün iki farklı teyit geldi)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "elinore_patrick_ambiguous": {"name": "SwissNet LLC / FROSTYHOSTING-AS RU (belirsiz — farklı günlerde iki farklı teyit geldi)", "abuse": ["abuse@swissnetwork.io", "frostyhosting@proton.me"]},
     "digitalocean":    {"name": "DigitalOcean LLC",                     "abuse": ["abuse@digitalocean.com"]},  # YENİ 31 Tem — superbetin-tr.top üzerinden ilk kez görüldü
@@ -144,7 +147,7 @@ CLUSTER_MAP = {
     frozenset({"benedict", "ophelia"}): "netiface",
     frozenset({"georgia", "kobe"}):     "netiface",
     frozenset({"devin", "nucum"}):      "netiface",
-    frozenset({"brady", "harmony"}):    "netiface",   # DÜZELTİLDİ (önceden yanlışlıkla vpsdatacenter'dı)
+    frozenset({"brady", "harmony"}):    "brady_harmony_ambiguous",   # DÜZELTİLDİ 03 Ağu 2026 — "VPS Dedicated LLC, US" adı aynı ama Cloudflare bugün abuse@flashwisp.com.ng gösterdi, önceden abuse@abusehandler.net (netiface) kayıtlıydı — aynı şirketin iki farklı abuse kutusu olabilir, ikisine birden gönderiliyor
     frozenset({"colin", "nena"}):       "netiface",   # DÜZELTİLDİ (önceden yanlışlıkla vpsdatacenter'dı)
 
     # ── Omegatech LTD ──
@@ -158,7 +161,8 @@ CLUSTER_MAP = {
     frozenset({"mimi", "sevki"}):       "synlinq",
     frozenset({"ainsley", "tate"}):     "omegatech",
     frozenset({"cruz", "hasslo"}):      "omegatech",
-    frozenset({"jeremy", "kay"}):       "omegatech",
+    frozenset({"jeremy", "kay"}):       "jeremy_kay_ambiguous",   # DÜZELTİLDİ 03 Ağu 2026 — eskiden omegatech kayıtlıydı, bugün superbetininadresin724.co üzerinden taze Cloudflare teyidi VPS Dedicated LLC/netiface gösterdi
+    frozenset({"aliza", "dean"}):       "netiface",   # YENİ 03 Ağu 2026 — superbetinguncelgiris724.top üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"alexia", "burt"}):      "sollutium",
 
     # ── Advin Services LLC ──
@@ -221,9 +225,10 @@ CLUSTER_MAP = {
     frozenset({"kurt", "leah"}):        "colocatel",
     frozenset({"emely", "ishaan"}):     "colocatel",
     frozenset({"melody", "armando"}):   "colocatel",
-    frozenset({"donovan", "melinda"}):  "omegatech",
+    frozenset({"donovan", "melinda"}):  "netiface",   # DÜZELTİLDİ 03 Ağu 2026 — eskiden omegatech kayıtlıydı, bugün superbetiningercekgiris724.co üzerinden İKİ ayrı Cloudflare teyidi (Trademark + Phishing) tutarlı şekilde VPS Dedicated LLC/abusehandler.net gösterdi
+    frozenset({"braden", "priscilla"}): "netiface",   # YENİ 03 Ağu 2026 — superbetin-resmi-giris.vip üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"aiden", "naya"}):       "synlinq",
-    frozenset({"adaline", "chris"}):    "synlinq",
+    frozenset({"adaline", "chris"}):    "adaline_chris_ambiguous",   # DÜZELTİLDİ 03 Ağu 2026 — superbetin2342.com üzerinden Omegatech teyidi geldi, önceden SYNLINQ kayıtlıydı; ilk oturumdan beri şüphelenilen NS rotasyonu doğrulandı, ikisine birden gönderiliyor
     frozenset({"archer", "lana"}):      "digitalocean",   # YENİ 31 Tem — superbetin-tr.top (Aliyun/Dominet HK kayıtlı), archer/melissa'dan (omegatech) farklı
     frozenset({"paityn", "rick"}):      "ovh",            # YENİ 31 Tem — tr.superbetin-resmi.icu, paityn/titan'dan (cloudzy) farklı
 }
