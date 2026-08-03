@@ -125,6 +125,7 @@ HOSTS = {
     "adaline_chris_ambiguous": {"name": "SYNLINQ / Omegatech LTD (belirsiz — NS rotasyonu, 03 Ağu 2026 Omegatech teyidi geldi ama önceden SYNLINQ kayıtlıydı)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@pitline.net", "abuse@omegatech.sc"]},
     "brady_harmony_ambiguous": {"name": "VPS Dedicated LLC, US (belirsiz — iki farklı abuse kutusu görüldü: abusehandler.net ve flashwisp.com.ng)", "abuse": ["abuse@abusehandler.net", "abuse@flashwisp.com.ng"]},
     "jeremy_kay_ambiguous": {"name": "Omegatech LTD / VPS Dedicated LLC (belirsiz — NS rotasyonu, 03 Ağu 2026 netiface teyidi geldi ama önceden Omegatech kayıtlıydı)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@abusehandler.net"]},
+    "mimi_sevki_ambiguous": {"name": "SYNLINQ / VPS Dedicated LLC (belirsiz — NS rotasyonu, 03 Ağu 2026 netiface teyidi geldi ama önceden SYNLINQ kayıtlıydı)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@abusehandler.net"]},
     "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ (belirsiz — aynı gün iki farklı teyit geldi)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "elinore_patrick_ambiguous": {"name": "SwissNet LLC / FROSTYHOSTING-AS RU (belirsiz — farklı günlerde iki farklı teyit geldi)", "abuse": ["abuse@swissnetwork.io", "frostyhosting@proton.me"]},
     "digitalocean":    {"name": "DigitalOcean LLC",                     "abuse": ["abuse@digitalocean.com"]},  # YENİ 31 Tem — superbetin-tr.top üzerinden ilk kez görüldü
@@ -158,7 +159,7 @@ CLUSTER_MAP = {
     frozenset({"dane", "alice"}):       "omegatech",
     frozenset({"aleena", "tony"}):      "omegatech",
     frozenset({"luciane", "oswald"}):   "luciane_oswald_ambiguous",   # 27 Tem: aynı gün hem SYNLINQ hem Omegatech teyidi geldi, ikisine birden gönderiliyor
-    frozenset({"mimi", "sevki"}):       "synlinq",
+    frozenset({"mimi", "sevki"}):       "mimi_sevki_ambiguous",   # DÜZELTİLDİ 03 Ağu 2026 — eskiden synlinq kayıtlıydı, bugün superbetiningiris724.co üzerinden taze Cloudflare teyidi VPS Dedicated LLC/netiface gösterdi (bu, bugün 5. kez tekrarlanan aynı pattern — bkz. adaline/chris, donovan/melinda, brady/harmony, jeremy/kay)
     frozenset({"ainsley", "tate"}):     "omegatech",
     frozenset({"cruz", "hasslo"}):      "omegatech",
     frozenset({"jeremy", "kay"}):       "jeremy_kay_ambiguous",   # DÜZELTİLDİ 03 Ağu 2026 — eskiden omegatech kayıtlıydı, bugün superbetininadresin724.co üzerinden taze Cloudflare teyidi VPS Dedicated LLC/netiface gösterdi
