@@ -105,6 +105,7 @@ HOSTS = {
     "vpsdedicated_flashwisp": {"name": "VPS Dedicated LLC, US (flashwisp.com.ng)", "abuse": ["abuse@flashwisp.com.ng"]},
     "sollutium":       {"name": "Unnamed host (sollutium.com)", "abuse": ["abuse@sollutium.com"]},
     "omegatech":       {"name": "Omegatech LTD",                        "abuse": ["abuse@pitline.net", "abuse@omegatech.sc"]},
+    "virtualsystems":  {"name": "Virtual Systems LLC",                  "abuse": ["abuse@wehostservers.com"]},   # YENİ 03 Ağu 2026 — superbetin2522.com, cluster cartman/elma
     "advin":           {"name": "Advin Services LLC",                   "abuse": ["anush@advinservers.com"]},
     "swissnet":        {"name": "SwissNet LLC",                          "abuse": ["abuse@swissnetwork.io"]},
     "prq":             {"name": "PRQ VPN Network SE",                    "abuse": ["abuse@dcs.net"]},
@@ -165,6 +166,7 @@ CLUSTER_MAP = {
     frozenset({"jeremy", "kay"}):       "jeremy_kay_ambiguous",   # DÜZELTİLDİ 03 Ağu 2026 — eskiden omegatech kayıtlıydı, bugün superbetininadresin724.co üzerinden taze Cloudflare teyidi VPS Dedicated LLC/netiface gösterdi
     frozenset({"aliza", "dean"}):       "netiface",   # YENİ 03 Ağu 2026 — superbetinguncelgiris724.top üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"chad", "lucy"}):        "netiface",   # YENİ 03 Ağu 2026 — superbetinineris724.co üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net)
+    frozenset({"cartman", "elma"}):     "virtualsystems",   # YENİ 03 Ağu 2026 — superbetin2522.com üzerinden ilk kez görüldü (Virtual Systems LLC, abuse@wehostservers.com)
     frozenset({"alexia", "burt"}):      "sollutium",
 
     # ── Advin Services LLC ──
