@@ -128,7 +128,7 @@ HOSTS = {
     "brady_harmony_ambiguous": {"name": "VPS Dedicated LLC, US (belirsiz — iki farklı abuse kutusu görüldü: abusehandler.net ve flashwisp.com.ng)", "abuse": ["abuse@abusehandler.net", "abuse@flashwisp.com.ng"]},
     "jeremy_kay_ambiguous": {"name": "Omegatech LTD / VPS Dedicated LLC (belirsiz — NS rotasyonu, 03 Ağu 2026 netiface teyidi geldi ama önceden Omegatech kayıtlıydı)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@abusehandler.net"]},
     "mimi_sevki_ambiguous": {"name": "SYNLINQ / VPS Dedicated LLC (belirsiz — NS rotasyonu, 03 Ağu 2026 netiface teyidi geldi ama önceden SYNLINQ kayıtlıydı)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@abusehandler.net"]},
-    "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ (belirsiz — aynı gün iki farklı teyit geldi)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
+    "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ / VPS Dedicated LLC (belirsiz — üç farklı teyit görüldü)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@abusehandler.net"]},
     "elinore_patrick_ambiguous": {"name": "SwissNet LLC / FROSTYHOSTING-AS RU (belirsiz — farklı günlerde iki farklı teyit geldi)", "abuse": ["abuse@swissnetwork.io", "frostyhosting@proton.me"]},
     "digitalocean":    {"name": "DigitalOcean LLC",                     "abuse": ["abuse@digitalocean.com"]},  # YENİ 31 Tem — superbetin-tr.top üzerinden ilk kez görüldü
     "ovh":             {"name": "OVH SAS, FR",                          "abuse": ["abuse@ovh.net"]},  # YENİ 31 Tem — tr.superbetin-resmi.icu üzerinden ilk kez görüldü
