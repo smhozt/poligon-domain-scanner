@@ -106,6 +106,7 @@ HOSTS = {
     "sollutium":       {"name": "Unnamed host (sollutium.com)", "abuse": ["abuse@sollutium.com"]},
     "omegatech":       {"name": "Omegatech LTD",                        "abuse": ["abuse@pitline.net", "abuse@omegatech.sc"]},
     "virtualsystems":  {"name": "Virtual Systems LLC",                  "abuse": ["abuse@wehostservers.com"]},   # YENİ 03 Ağu 2026 — superbetin2522.com, cluster cartman/elma
+    "blazedge":        {"name": "Blazedge",                             "abuse": ["abuse@blazedge.com"]},   # YENİ 03-04 Ağu 2026 — superbetin2087.cam, pdns1/pdns2 nameserver'ları. abuse@blazedge.com'a gönderilen mail "Temporary System Problem" ile bouncelandı (Gmail 47 saat tekrar deneyecek) — kalıcı ret değil, izlenmeli.
     "advin":           {"name": "Advin Services LLC",                   "abuse": ["anush@advinservers.com"]},
     "swissnet":        {"name": "SwissNet LLC",                          "abuse": ["abuse@swissnetwork.io"]},
     "prq":             {"name": "PRQ VPN Network SE",                    "abuse": ["abuse@dcs.net"]},
@@ -225,6 +226,7 @@ CLUSTER_MAP = {
     frozenset({"mario", "norah"}):      "frantech",
     frozenset({"burt", "liz"}):          "frantech",   # YENİ 03 Ağu 2026 — superbetinorijinaladres.top, aynı host (FranTech) farklı cluster
     frozenset({"adaline", "joaquin"}):   "netiface",   # YENİ 03 Ağu 2026 — superbetinguncelgirisadrsi724.top üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net) — adaline/chris'ten FARKLI bir cluster, karıştırılmasın
+    frozenset({"pdns1", "pdns2"}):        "blazedge",   # YENİ 03-04 Ağu 2026 — superbetin2087.cam (jenerik PowerDNS isimlendirmesi, Blazedge'e ait)
     frozenset({"ernest", "oaklyn"}):    "netiface",
     frozenset({"bowen", "lauryn"}):     "netiface",
     frozenset({"adi", "langston"}):     "vpsdatacenter",
