@@ -224,7 +224,10 @@ async def main():
     # yatirim/tr/m/payment/odeme subdomain'leri kontrol ediliyor —
     # betsat1605.cam fraud'unda görülen "yatirim.betsat1605.cam/havale/" deseni.
     print("📷 Turkbet .cam deposit-subdomain kontrolü üretiliyor...")
-    CAM_DEPOSIT_CHECK_NUMBERS = [749]
+    # "724" de eklendi (v3 — 05 Ağu 2026): resmi bir numara değil ama
+    # aktörün Superbetin tarafında en sık kullandığı sabit sayı — marka
+    # geçişi ihtimaline karşı önlem olarak Turkbet'e de eklendi.
+    CAM_DEPOSIT_CHECK_NUMBERS = [749, 724]
     CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
     for onum in CAM_DEPOSIT_CHECK_NUMBERS:
         domains_to_scan.append((f"{onum}turkbet.cam", "CAM-TLD-SWAP", set()))
