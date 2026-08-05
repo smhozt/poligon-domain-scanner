@@ -221,7 +221,11 @@ async def main():
     # içinde YOK — bu yüzden yukarıdaki GAPS+RANGE .cam döngüsü
     # "betsat1605.cam" ana domainini hiç eklemiyordu, sadece
     # subdomain'ler taranıyordu. Ana domain artık açıkça ekleniyor.
-    CAM_DEPOSIT_CHECK_NUMBERS = [1605, 1580]
+    # "724" de eklendi (v3 — 05 Ağu 2026): resmi bir numara değil
+    # ama aktörün Superbetin tarafında en sık kullandığı sabit sayı
+    # (superbetingiris724.co gibi düzinelerce domainde görüldü) —
+    # marka geçişi ihtimaline karşı önlem olarak Betsat'a da eklendi.
+    CAM_DEPOSIT_CHECK_NUMBERS = [1605, 1580, 724]
     CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
     for onum in CAM_DEPOSIT_CHECK_NUMBERS:
         domains_to_scan.append((f"betsat{onum}.cam", "CAM-TLD-SWAP", set()))
