@@ -260,7 +260,7 @@ REGISTRAR_ABUSE_EMAILS = {
     "spaceship":     {"match": ["spaceship"],
                        "abuse": ["abuse@spaceship.com"], "webform_only": False},
     "namesilo":      {"match": ["namesilo"],
-                       "abuse": ["abuse@namesilo.com"], "webform_only": False},  # kendi sayfaları da e-postayı kabul ediyor, form sadece "tercih edilen" yol
+                       "abuse": ["abuse@namesilo.com"], "webform_only": True},  # DÜZELTİLDİ 05 Ağu 2026 — genel abuse sayfası mail'i kabul ediyor gibi görünse de, phishing-specific rapor mail'i bounce'landı, sadece namesilo.com/phishing-report işleniyor
     "namecheap_reg": {"match": ["namecheap"],
                        "abuse": ["abuse@namecheap.com"], "webform_only": False},
     "godaddy":       {"match": ["godaddy"],
