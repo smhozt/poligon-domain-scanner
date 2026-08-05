@@ -12,12 +12,14 @@ try:
     import dns.resolver
 except ImportError:
     raise SystemExit("dnspython gerekli: pip install dnspython --break-system-packages")
+
 TZ_SOFIA = timezone(timedelta(hours=3))
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 SMTP_USER = os.environ.get("SMTP_USER", "")
 SMTP_PASS = os.environ.get("SMTP_PASS", "")
 SAFE_BROWSING_API_KEY = os.environ.get("SAFE_BROWSING_API_KEY", "")
+
 # ============================================================
 # PANELDEN GELEN GİRDİLER (GitHub Actions workflow_dispatch inputs)
 # ============================================================
@@ -36,10 +38,12 @@ INPUT_REPORTER_EMAIL = os.environ.get("INPUT_REPORTER_EMAIL", "").strip()
 # dispatch-results/{INPUT_REQUEST_ID}.json olarak yazılır, panel bunu
 # GitHub Contents API üzerinden polling ile bulur.
 INPUT_REQUEST_ID = os.environ.get("INPUT_REQUEST_ID", "").strip()
+
 # Bu manuel tetiklemenin de otomatik taramalarla çakışmaması için aynı
 # "reported" dosyalarına eklenir (varsa) — böylece batch script'ler bu
 # domaini tekrar rapor etmeye çalışmaz.
 REPORTED_FILES_TO_UPDATE = ["reported.json", "betsat_reported.json", "turkbet_reported.json"]
+
 # ============================================================
 # MARKA AYARLARI
 # ============================================================
@@ -72,6 +76,7 @@ BRANDS = {
         ),
     },
 }
+
 # Panelden "güncel site adresimiz" olarak girilen ek domainleri bu
 # çalıştırma için active_domains listelerine ekle (kod değiştirmeden
 # anlık override imkanı — resmi domain değiştiğinde script'i
@@ -90,6 +95,7 @@ if INPUT_ACTIVE_OVERRIDE:
                 bk in od.lower() for bk in BRANDS
             ):
                 pass  # marka belirsiz override'lar sadece bilgi amaçlı, dokunulmuyor
+
 # ============================================================
 # HOSTLAR — abuse adresleri + NS cluster haritası (host_auto_complaint_v2.py
 # ile aynı kaynak)
@@ -125,9 +131,11 @@ HOSTS = {
     "corey_lucy_ambiguous": {"name": "SYNLINQ / Omegatech LTD (belirsiz — paykodeme.com'da SYNLINQ, superbetin2344.com'da Omegatech çıktı)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@pitline.net", "abuse@omegatech.sc"]},
     "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ / VPS Dedicated LLC (belirsiz — üç farklı teyit görüldü)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@abusehandler.net"]},
     "elinore_patrick_ambiguous": {"name": "SwissNet LLC / FROSTYHOSTING-AS RU (belirsiz — farklı günlerde iki farklı teyit geldi)", "abuse": ["abuse@swissnetwork.io", "frostyhosting@proton.me"]},
+    "georgia_kobe_ambiguous": {"name": "Netiface LLC / VPS Dedicated LLC, US (belirsiz — iki farklı abuse kutusu görüldü: abusehandler.net ve flashwisp.com.ng)", "abuse": ["abuse@abusehandler.net", "abuse@flashwisp.com.ng"]},
     "digitalocean":    {"name": "DigitalOcean LLC",                     "abuse": ["abuse@digitalocean.com"]},  # YENİ 31 Tem — superbetin-tr.top üzerinden ilk kez görüldü
     "ovh":             {"name": "OVH SAS, FR",                          "abuse": ["abuse@ovh.net"]},  # YENİ 31 Tem — tr.superbetin-resmi.icu üzerinden ilk kez görüldü
 }
+
 CLUSTER_MAP = {
     # ── Netiface LLC / VPS Dedicated LLC (abusehandler.net ailesi) ──
     frozenset({"drew", "leia"}):        "pfcloud",   # DÜZELTİLDİ 29 Tem — eskiden netiface kayıtlıydı, bugün defalarca tekrarlanan taze Cloudflare teyidi PFCLOUD gösterdi
@@ -142,10 +150,12 @@ CLUSTER_MAP = {
     frozenset({"princess", "rory"}):    "netiface",
     frozenset({"charles", "novalee"}):  "netiface",
     frozenset({"benedict", "ophelia"}): "netiface",
-    frozenset({"georgia", "kobe"}):     "netiface",
+    frozenset({"georgia", "kobe"}):     "georgia_kobe_ambiguous",   # DÜZELTİLDİ 05 Ağu 2026 — 07 Tem'de flashwisp.com.ng teyidi geldi, önceden netiface/abusehandler.net kayıtlıydı — bugün defalarca gördüğümüz "aynı şirket iki abuse kutusu" pattern'i
+    frozenset({"alexia", "greg"}):      "vpsdatacenter",   # YENİ 05 Ağu 2026 — superbetingirisin.live: 31 Tem'de james/maeve (VPS Datacenter) teyit edilmişti, aynı domain şimdi bu farklı cluster'ı gösteriyor — muhtemelen NS rotasyonu, aynı host
     frozenset({"devin", "nucum"}):      "netiface",
     frozenset({"brady", "harmony"}):    "brady_harmony_ambiguous",   # DÜZELTİLDİ 03 Ağu 2026 — "VPS Dedicated LLC, US" adı aynı ama Cloudflare bugün abuse@flashwisp.com.ng gösterdi, önceden abuse@abusehandler.net (netiface) kayıtlıydı — aynı şirketin iki farklı abuse kutusu olabilir, ikisine birden gönderiliyor
     frozenset({"colin", "nena"}):       "netiface",   # DÜZELTİLDİ (önceden yanlışlıkla vpsdatacenter'dı)
+
     # ── Omegatech LTD ──
     frozenset({"syeef", "tina"}):       "omegatech",
     frozenset({"isla", "nolan"}):       "omegatech",
@@ -161,10 +171,13 @@ CLUSTER_MAP = {
     frozenset({"aliza", "dean"}):       "netiface",   # YENİ 03 Ağu 2026 — superbetinguncelgiris724.top üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"chad", "lucy"}):        "netiface",   # YENİ 03 Ağu 2026 — superbetinineris724.co üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"cartman", "elma"}):     "virtualsystems",   # YENİ 03 Ağu 2026 — superbetin2522.com üzerinden ilk kez görüldü (Virtual Systems LLC, abuse@wehostservers.com)
+    frozenset({"maya", "uriah"}):       "virtualsystems",   # YENİ 05 Ağu 2026 — wwwbetsat1604.com (aynı host Virtual Systems LLC, farklı cluster)
     frozenset({"alexia", "burt"}):      "sollutium",
+
     # ── Advin Services LLC ──
     frozenset({"ruben", "ariella"}):    "advin",
     frozenset({"raegan", "gabe"}):      "advin",
+
     # ── SwissNet LLC ──
     frozenset({"penny", "tanner"}):     "swissnet",
     frozenset({"elliot", "marlowe"}):   "swissnet",
@@ -176,14 +189,17 @@ CLUSTER_MAP = {
     frozenset({"elinore", "patrick"}):  "elinore_patrick_ambiguous",   # 29 Tem: önce SwissNet teyit edilmişti, bugün FROSTYHOSTING-AS RU teyidi geldi, ikisine birden gönderiliyor
     frozenset({"stevie", "wilson"}):    "netiface",
     frozenset({"jen", "paul"}):         "pfcloud",
+
     # ── PRQ VPN Network SE ──
     frozenset({"decker", "liberty"}):   "prq",
     frozenset({"paris", "porter"}):     "prq",
+
     # ── FATCAT ailesi (DİKKAT: iki farklı abuse adresi var) ──
     frozenset({"gail", "lennox"}):      "fatcat_scrhost",
     frozenset({"candy", "nico"}):       "fatcat_scrhost",
     frozenset({"robin", "ram"}):        "fatcat_scrhost",
     frozenset({"alice", "seamus"}):     "fatcat_epikhost",
+
     # ── VPS Datacenter Ltd GB (private-data-center.com) ──
     frozenset({"ophelia", "theo"}):     "vpsdatacenter",
     frozenset({"garrett", "indie"}):    "vpsdatacenter",
@@ -195,6 +211,7 @@ CLUSTER_MAP = {
     frozenset({"leanna", "patrick"}):   "vpsdedicated_flashwisp",
     frozenset({"achiel", "nicole"}):    "weridata",   # DÜZELTİLDİ 28 Tem — panel VPS Datacenter tahmin etmişti, Cloudflare'in taze teyidi WERIDATA-LLC gösterdi
     frozenset({"andronicus", "emely"}): "vpsdatacenter",
+
     # ── Diğer host'lar ──
     frozenset({"opal", "ricardo"}):     "evoxt",
     frozenset({"sreeni", "zahir"}):     "evoxt",   # YENİ 05 Ağu 2026 — msuperbetin2085.com (aynı host Evoxt, farklı cluster)
@@ -219,6 +236,8 @@ CLUSTER_MAP = {
     frozenset({"adel", "albert"}):        "netiface",   # YENİ 04 Ağu 2026 — betsat-adresii2026.cam (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"corey", "lucy"}):          "corey_lucy_ambiguous",   # DÜZELTİLDİ 05 Ağu 2026 — paykodeme.com'da SYNLINQ, superbetin2344.com'da Omegatech çıktı, ikisine birden gönderiliyor
     frozenset({"aleena", "andronicus"}):   "frantech",   # YENİ 05 Ağu 2026 — superbetin-freeadres.vip (FranTech Solutions, admin@frantech.ca)
+    frozenset({"luciane", "fattouche"}):    "swissnet",   # YENİ 05 Ağu 2026 — betin-aktif.vip (SwissNet LLC, abuse@swissnetwork.io) — luciane/oswald'dan FARKLI cluster, karıştırılmasın
+    frozenset({"igor", "ziggy"}):           "netiface",   # YENİ 05 Ağu 2026 — superbetingunceladresi724.top (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"ernest", "oaklyn"}):    "netiface",
     frozenset({"bowen", "lauryn"}):     "netiface",
     frozenset({"adi", "langston"}):     "vpsdatacenter",
@@ -232,57 +251,9 @@ CLUSTER_MAP = {
     frozenset({"archer", "lana"}):      "digitalocean",   # YENİ 31 Tem — superbetin-tr.top (Aliyun/Dominet HK kayıtlı), archer/melissa'dan (omegatech) farklı
     frozenset({"paityn", "rick"}):      "ovh",            # YENİ 31 Tem — tr.superbetin-resmi.icu, paityn/titan'dan (cloudzy) farklı
 }
-# ============================================================
-# REGISTRAR ABUSE ADRESLERİ — bilinen HERHANGİ bir registrar için
-# (sadece NiceNIC değil) otomatik mail gönderimi (YENİ — 05 Ağu 2026)
-#
-# Önceden: registrar NiceNIC değilse script sadece "gerçek registrar: X"
-# diye loglayıp DURUYORDU, hiçbir yere göndermiyordu — Trustname,
-# Dynadot, Spaceship gibi registrarların mail'i gerçekten kabul ettiğini
-# (ack + ticket numarasıyla) defalarca elle doğruladık. Artık bilinen
-# her registrar için otomatik gönderiliyor.
-#
-# "webform_only": True olanlar (Openprovider, Squarespace) bugüne kadar
-# HER SEFERİNDE mail'i reddedip web form istedi — yine de "ne olur ne
-# olmaz" gönderiliyor (zararı yok) ama sonuçta/Telegram'da açıkça
-# "muhtemelen bounce'layacak, web form gerekiyor" notu düşülüyor ki
-# panel ekranında yanlış bir "başarılı" izlenimi oluşmasın.
-#
-# "match": registrar adının (RDAP/WHOIS'ten gelen ham string, örn.
-# "Fewmoretaps OU d/b/a Trustname.com", "Dynadot Inc", "Hosting
-# Concepts B.V. d/b/a Registrar.eu") içinde küçük harfe çevrilip
-# aranacak alt-dizeler — herhangi biri eşleşirse o registrar seçilir.
-REGISTRAR_ABUSE_EMAILS = {
-    "dynadot":       {"match": ["dynadot"],
-                       "abuse": ["abuse@dynadot.com"], "webform_only": False},
-    "trustname":     {"match": ["trustname", "fewmoretaps"],
-                       "abuse": ["abuse@trustname.com"], "webform_only": False},
-    "spaceship":     {"match": ["spaceship"],
-                       "abuse": ["abuse@spaceship.com"], "webform_only": False},
-    "namesilo":      {"match": ["namesilo"],
-                       "abuse": ["abuse@namesilo.com"], "webform_only": True},  # DÜZELTİLDİ 05 Ağu 2026 — genel abuse sayfası mail'i kabul ediyor gibi görünse de, phishing-specific rapor mail'i bounce'landı, sadece namesilo.com/phishing-report işleniyor
-    "namecheap_reg": {"match": ["namecheap"],
-                       "abuse": ["abuse@namecheap.com"], "webform_only": False},
-    "godaddy":       {"match": ["godaddy"],
-                       "abuse": ["abuse@godaddy.com"], "webform_only": False},
-    "openprovider":  {"match": ["openprovider", "hosting concepts", "registrar.eu"],
-                       "abuse": ["abuse@openprovider.com"], "webform_only": True},   # DOĞRULANDI 03-05 Ağu — mail her seferinde bounce'landı, sadece web form işleniyor
-    "squarespace":   {"match": ["squarespace"],
-                       "abuse": ["abuse-complaints@squarespace.com"], "webform_only": True},  # DOĞRULANDI 03-05 Ağu — mail her seferinde bounce'landı, sadece web form işleniyor
-}
-def match_registrar(registrar_name):
-    """RDAP/WHOIS'ten gelen ham registrar adını REGISTRAR_ABUSE_EMAILS
-    anahtarlarından biriyle eşleştirir (alt-dize araması). Eşleşme
-    yoksa None döner — bu durumda çağıran kod NiceNIC'e de, başka bir
-    yere de göndermez, sadece "bilinen abuse adresi yok" diye işaretler."""
-    if not registrar_name:
-        return None
-    name_lower = registrar_name.lower()
-    for key, entry in REGISTRAR_ABUSE_EMAILS.items():
-        if any(kw in name_lower for kw in entry["match"]):
-            return key
-    return None
+
 DEAD_DOMAIN = "__dead__"
+
 def get_ns_labels(domain, retries=2):
     last_err = None
     for attempt in range(retries):
@@ -297,6 +268,7 @@ def get_ns_labels(domain, retries=2):
                 time.sleep(1.5)
     print(f"    ⚠️ NS lookup başarısız ({domain}), {retries} deneme sonrası: {type(last_err).__name__}: {last_err}")
     return None
+
 def match_cluster(ns_labels):
     if not ns_labels:
         return None, None
@@ -304,6 +276,7 @@ def match_cluster(ns_labels):
         if pair.issubset(ns_labels):
             return pair, host_key
     return None, None
+
 def resolve_host(domain):
     """Dönüş: (cluster_pair, host_key, observed_ns_labels). observed_ns_labels
     her zaman (eşleşse de eşleşmese de) gerçek DNS sorgusundan gözlemlenen ham
@@ -317,6 +290,7 @@ def resolve_host(domain):
         return None, DEAD_DOMAIN, None
     cluster_pair, host_key = match_cluster(ns_labels)
     return cluster_pair, host_key, ns_labels
+
 # ============================================================
 # REGISTRAR TESPİTİ (RDAP öncelikli, WHOIS yedekli) — v3, 23 Tem 2026
 # ============================================================
@@ -343,6 +317,7 @@ def _whois_raw_query(server, query, timeout=6):
                 break
             chunks.append(data)
         return b"".join(chunks).decode(errors="ignore")
+
 def _whois_fallback_registrar(domain):
     """IANA üzerinden TLD'nin gerçek WHOIS sunucusunu bulup domaini
     orada sorgular. RDAP başarısız olursa devreye girer."""
@@ -383,6 +358,7 @@ def _whois_fallback_registrar(domain):
             return line.split(":", 1)[1].strip()
     print(f"    ⚠️ WHOIS: {server} yanıtında 'Registrar:' alanı bulunamadı ({domain}) — yanıt: {resp[:150]!r}")
     return None
+
 def _find_registrar_entity(entities):
     """RDAP yanıtlarında 'registrar' rolündeki entity bazen üst
     seviyede değil, başka bir entity'nin İÇİNDE (nested) oluyor —
@@ -394,6 +370,7 @@ def _find_registrar_entity(entities):
         if nested:
             return nested
     return None
+
 def _rdap_endpoints_for(domain):
     """Tek bir bootstrap redirector'a (rdap.org) güvenmek yerine birkaç
     endpoint sırayla denenir — 23 Tem 2026'da rdap.org tek başına
@@ -406,6 +383,7 @@ def _rdap_endpoints_for(domain):
         urls.insert(0, f"https://rdap.verisign.com/{tld}/v1/domain/{domain}")
     urls.append(f"https://rdap.nic.vip/domain/{domain}")
     return urls
+
 async def _rdap_registrar(session, domain):
     """Birden fazla RDAP endpoint'ini sırayla dener, ilk başarılı JSON
     yanıtını kullanır. NiceNIC tespiti, hassas entity/vcard ayrıştırması
@@ -448,6 +426,7 @@ async def _rdap_registrar(session, domain):
             continue
         return {"name": name, "email": email, "is_nicenic": is_nicenic}
     return None
+
 async def detect_registrar(session, domain):
     """Dönüş: {"name": str|None, "email": str|None, "source": "rdap"|"whois"|None,
     "is_nicenic": bool}. Hem RDAP hem WHOIS başarısız olursa name=None döner —
@@ -460,6 +439,7 @@ async def detect_registrar(session, domain):
         is_nicenic = "nicenic" in whois_name.lower()
         return {"name": whois_name, "email": None, "source": "whois", "is_nicenic": is_nicenic}
     return {"name": None, "email": None, "source": None, "is_nicenic": False}
+
 # ============================================================
 # YAYGIN PHISHING PATH / SUBDOMAIN KEŞFİ (diğer script'lerle aynı)
 # ============================================================
@@ -473,8 +453,10 @@ COMMON_PHISHING_PATHS = [
 ]
 COMMON_PHISHING_SUBDOMAINS = ["m", "tr", "www", "yatirim", "payment", "odeme", "cryptopay"]
 SUBDOMAIN_DEPOSIT_PATHS = ["/", "/havale/", "/crypto/", "/login.php"]
+
 URL_CHECK_TIMEOUT = aiohttp.ClientTimeout(total=4)
 URL_CHECK_CONCURRENCY = 30
+
 async def _check_url(session, semaphore, url):
     async with semaphore:
         try:
@@ -484,6 +466,7 @@ async def _check_url(session, semaphore, url):
         except Exception:
             pass
     return None
+
 async def discover_phishing_urls(session, root_domain, max_results=10):
     urls_to_check = [f"https://{root_domain}{p}" for p in COMMON_PHISHING_PATHS]
     for sub in COMMON_PHISHING_SUBDOMAINS:
@@ -495,10 +478,12 @@ async def discover_phishing_urls(session, root_domain, max_results=10):
     found = [u for u in results if u]
     found.sort(key=lambda u: (u.rstrip("/").endswith(root_domain.rstrip("/")), len(u)))
     return found[:max_results]
+
 def get_root(domain):
     domain = domain.replace("https://", "").replace("http://", "").split("/")[0]
     parts = domain.split(".")
     return ".".join(parts[-2:]) if len(parts) > 2 else domain
+
 def detect_brand_key(domain):
     if INPUT_BRAND in BRANDS:
         return INPUT_BRAND
@@ -508,15 +493,18 @@ def detect_brand_key(domain):
     elif "turkbet" in d or "turcbet" in d or "trkbet" in d:
         return "turkbet"
     return "superbetin"
+
 def evidence_block(found_urls):
     if not found_urls:
         return ""
     urls_block = "\n".join(f"- {u}" for u in found_urls)
     return f"\nReported URLs (live-verified at time of report):\n{urls_block}\n"
+
 def notes_block():
     if not INPUT_NOTES:
         return ""
     return f"\nAdditional context from reporting team:\n{INPUT_NOTES}\n"
+
 # ============================================================
 # EMAIL GÖNDERİCİ
 # ============================================================
@@ -539,10 +527,12 @@ def send_email(to_addresses, subject, body, from_name="Security Team", reply_to=
     except Exception as e:
         print(f"Mail gönderme hatası: {e}")
         return False
+
 def reporter_email_for(brand_key):
     """Panelden girilen reporter e-postası varsa onu, yoksa markanın
     kendi signature_email'ini döndürür."""
     return INPUT_REPORTER_EMAIL or BRANDS[brand_key]["signature_email"]
+
 # ============================================================
 # HEDEF: NICENIC
 # ============================================================
@@ -550,16 +540,21 @@ def send_nicenic(domain, brand_key, found_urls):
     brand = BRANDS[brand_key]
     subject = f"URGENT: Phishing Domain - {domain} - Immediate ClientHold Required"
     body = f"""Dear NiceNIC Abuse Team,
+
 We are reporting a fraudulent domain registered through your services:
+
 Domain: {domain}
+
 This domain is an active phishing site cloning our licensed brand ({brand['name']}), designed to steal user credentials and collect fraudulent bank transfers from Turkish users.
 {evidence_block(found_urls)}{notes_block()}
 We are a licensed operator: {brand['fixed_domain']} is operated by Poligon Entertainment N.V., licensed by the Curaçao Gaming Authority under license OGL/2024/815/0653 (Company Number 132517). Status: Active.
 License verification: {brand['license_url']}
 Our official domains: {' / '.join(brand['active_domains'])}
+
 We urgently request:
 1. Immediate ClientHold suspension of {domain}
 2. Investigation of all domains registered by the same registrant account
+
 Best regards,
 {brand['name']} Security Team
 """
@@ -567,27 +562,7 @@ Best regards,
         ["abuse@nicenic.net", "support@nicenic.net"], subject, body,
         f"{brand['name']} Security Team", reply_to=reporter_email_for(brand_key)
     )
-# ============================================================
-# HEDEF: BİLİNEN HERHANGİ BİR REGISTRAR (NiceNIC dışında — YENİ 05 Ağu 2026)
-# ============================================================
-def send_registrar_complaint(domain, brand_key, found_urls, registrar_entry, registrar_display_name):
-    brand = BRANDS[brand_key]
-    subject = f"URGENT: Formal Abuse Report - Active Phishing & Trademark Infringement ({domain})"
-    body = f"""Dear {registrar_display_name} Compliance Team,
-We are submitting an urgent formal abuse report regarding the domain {domain}, registered through your platform.
-This domain is operating as a live malicious gateway and critical traffic hijacking infrastructure for an active consumer phishing and corporate impersonation network explicitly targeting our registered brand {brand['name'].upper()} (official authorized website: {brand['fixed_domain']}), legally owned and operated by Poligon Entertainment N.V. under Curaçao Gaming Control Board license OGL/2024/815/0653.
-{evidence_block(found_urls)}{notes_block()}
-We are a licensed operator: {brand['fixed_domain']} is operated by Poligon Entertainment N.V., licensed by the Curaçao Gaming Authority under license OGL/2024/815/0653 (Company Number 132517). Status: Active.
-License verification: {brand['license_url']}
-Our official domains: {' / '.join(brand['active_domains'])}
-Under ICANN RAA section 3.18 mandates regarding domain abuse and active cybercrime, we demand the immediate administrative suspension and termination of {domain} and all associated routing subdomains.
-Sincerely,
-{brand['name']} Security Team
-"""
-    return send_email(
-        registrar_entry["abuse"], subject, body,
-        f"{brand['name']} Security Team", reply_to=reporter_email_for(brand_key)
-    )
+
 # ============================================================
 # HEDEF: HOST (NS-tespitli)
 # ============================================================
@@ -597,10 +572,13 @@ def send_host_complaint(domain, brand_key, found_urls, host_key, cluster_pair):
     cluster_label = "/".join(sorted(cluster_pair)) if cluster_pair else "manually confirmed hosting"
     subject = f"URGENT: Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted ({cluster_label})"
     body = f"""Dear {host['name']} Abuse Team,
+
 We are writing on behalf of Poligon Entertainment N.V., the licensed operator of {brand['name']} (official: {' / '.join(brand['active_domains'])}), under Curaçao Gaming Authority license OGL/2024/815/0653.
+
 The domain {domain}, hosted on your infrastructure via the {cluster_label} nameserver cluster, is operating an active phishing site impersonating our licensed brand, using cloned graphics, trademarked layouts, and fake login/payment forms to deceive consumers.
 {evidence_block(found_urls)}{notes_block()}
 We formally request immediate suspension of this domain.
+
 Sincerely,
 {brand['name']} Security Team
 {brand['signature_email']}
@@ -609,6 +587,7 @@ Sincerely,
         host["abuse"], subject, body,
         f"{brand['name']} Security Team", reply_to=reporter_email_for(brand_key)
     )
+
 # ============================================================
 # HEDEF: ÖZEL MAİL ADRESİ (panelden elle girilen)
 # ============================================================
@@ -619,10 +598,13 @@ def send_custom_email(domain, brand_key, found_urls):
         return False
     subject = f"URGENT: Active Phishing / Trademark Infringement — {domain}"
     body = f"""Dear Abuse Team,
+
 We are reporting an active phishing domain impersonating our licensed brand {brand['name']} (official: {' / '.join(brand['active_domains'])}), operated by Poligon Entertainment N.V. under Curaçao Gaming Authority license OGL/2024/815/0653.
+
 Domain: {domain}
 {evidence_block(found_urls)}{notes_block()}
 We request immediate suspension/takedown of this domain.
+
 Sincerely,
 {brand['name']} Security Team
 {brand['signature_email']}
@@ -631,6 +613,7 @@ Sincerely,
         recipients, subject, body,
         f"{brand['name']} Security Team", reply_to=reporter_email_for(brand_key)
     )
+
 def send_compromise_notice(domain, brand_key):
     """Hacklenmiş/ele geçirilmiş meşru üçüncü taraf siteler için — bunlar
     dolandırıcılık şüphelisi DEĞİL, kendileri de mağdur. Marka ihlali
@@ -643,18 +626,24 @@ def send_compromise_notice(domain, brand_key):
         return False
     subject = f"Security Notice — Your Website ({domain}) Appears to Be Compromised and Redirecting to Phishing Content"
     body = f"""Dear Site Owner,
+
 We are writing on behalf of Poligon Entertainment N.V., operator of the licensed platform {brand['name']} (official site: {' / '.join(brand['active_domains'])}), under Curaçao Gaming Authority license OGL/2024/815/0653.
+
 We wanted to alert you, as a courtesy, that your website ({domain}) appears to have been compromised and is currently being used — likely without your knowledge — as part of a phishing operation impersonating our brand.
+
 We observed that visitors arriving at your domain via Google organic search referrals were being redirected to a credential-harvesting page impersonating {brand['name']}. This type of attack typically works by injecting malicious redirect code into a compromised website's files or CMS, exploiting the site's existing search engine trust to funnel victims toward fraudulent content — your business itself is not the target; your website's reputation is simply being abused as a delivery mechanism.
 {notes_block()}
 We recommend you check your website for unrecognized or recently modified files, unfamiliar plugins/scripts/admin accounts, and any unexpected redirect rules or injected JavaScript.
+
 We are not asking anything of you regarding our brand — this is purely a security courtesy notice, as your own customers and search visibility may also be at risk from this compromise. Please feel free to reach out if you'd like further technical details we observed.
+
 Kind regards,
 CS Operations & Technology
 Poligon Entertainment N.V.
 {brand['signature_email']}
 """
     return send_email(recipients, subject, body, "Security Team", reply_to=reporter_email_for(brand_key))
+
 # ============================================================
 # HEDEF: PLATFORM RAPORLARI (Netcraft / Safe Browsing / Google Spam / SmartScreen / Spam404)
 # ============================================================
@@ -682,6 +671,7 @@ async def report_netcraft(session, domain, brand_key, found_urls):
     except Exception as e:
         print(f"    ⚠️ Netcraft hatası ({domain}): {type(e).__name__}: {e}")
         return False
+
 async def report_safe_browsing(session, domain, found_urls):
     target = found_urls[0] if found_urls else f"https://{domain}"
     try:
@@ -692,6 +682,7 @@ async def report_safe_browsing(session, domain, found_urls):
             return resp.status in (200, 204, 302)
     except Exception:
         return False
+
 async def report_google_spam(session, domain, brand_key, found_urls):
     brand = BRANDS[brand_key]
     comments = (
@@ -717,6 +708,7 @@ async def report_google_spam(session, domain, brand_key, found_urls):
     except Exception as e:
         print(f"Google Spam hatası: {e}")
         return False
+
 async def report_smartscreen(session, domain, brand_key, found_urls):
     brand = BRANDS[brand_key]
     comments = (
@@ -741,6 +733,7 @@ async def report_smartscreen(session, domain, brand_key, found_urls):
     except Exception as e:
         print(f"SmartScreen hatası: {e}")
         return False
+
 async def report_spam404(session, domain, found_urls):
     target = found_urls[0] if found_urls else f"https://{domain}/"
     try:
@@ -757,6 +750,7 @@ async def report_spam404(session, domain, found_urls):
     except Exception as e:
         print(f"Spam404 hatası: {e}")
         return False
+
 # ============================================================
 # TELEGRAM
 # ============================================================
@@ -773,6 +767,7 @@ async def send_telegram(message):
                 )
             except Exception as e:
                 print(f"Telegram hatası: {e}")
+
 # ============================================================
 # JSON YARDIMCI (reported dosyalarını güncellemek için)
 # ============================================================
@@ -786,6 +781,7 @@ def append_to_reported_files(domain):
         data.add(domain)
         with open(fname, "w") as f:
             json.dump(list(data), f)
+
 # ============================================================
 # ANA FONKSİYON
 # ============================================================
@@ -793,6 +789,7 @@ async def main():
     if not INPUT_DOMAINS:
         print("INPUT_DOMAINS boş — işlenecek domain yok.")
         return
+
     domains = [d.strip() for d in INPUT_DOMAINS.replace("\n", ",").split(",") if d.strip()]
     domains = [get_root(d) for d in domains]
     # DEDUP (23 Tem 2026 bug fix): Aynı domain'in farklı URL varyantları
@@ -809,6 +806,7 @@ async def main():
             seen_domains.add(d)
             unique_domains.append(d)
     domains = unique_domains
+
     requested_targets = set(INPUT_TARGETS.split(","))
     # compromise_notice bilinçli olarak "all" kısayoluna DAHİL EDİLMEZ —
     # bu, gerçek dolandırıcılık domain'leri için değil, hacklenmiş/ele
@@ -822,7 +820,9 @@ async def main():
         targets = all_targets | (requested_targets & explicit_targets)
     else:
         targets = requested_targets & (all_targets | explicit_targets)
+
     print(f"🎯 {len(domains)} domain, hedefler: {', '.join(sorted(targets))}")
+
     summary_lines = []
     results_json = {
         "request_id": INPUT_REQUEST_ID,
@@ -830,18 +830,22 @@ async def main():
         "notes": INPUT_NOTES,
         "domains": [],
     }
+
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=50)) as session:
         for domain in domains:
             brand_key = detect_brand_key(domain)
             brand_name = BRANDS[brand_key]["name"]
             print(f"\n=== {domain} ({brand_name}) ===")
+
             found_urls = await discover_phishing_urls(session, domain)
             print(f"  📎 {len(found_urls)} canlı kanıt URL bulundu")
             print(f"  📧 Reporter e-postası: {reporter_email_for(brand_key)}")
+
             domain_results = []       # Telegram özeti için (isim, ok/fail/None) tuple'ları
             channels_json = []        # JSON çıktısı için yapılandırılmış liste
             registrar_info = None
             host_info = None
+
             def _record(channel_key, label, status, detail=None):
                 domain_results.append((label, status))
                 channels_json.append({
@@ -849,6 +853,7 @@ async def main():
                     "status": ("ok" if status is True else "fail" if status is False else "skip"),
                     "detail": detail,
                 })
+
             if "nicenic" in targets:
                 print("  🔎 Gerçek registrar tespit ediliyor (RDAP/WHOIS)...")
                 registrar_info = await detect_registrar(session, domain)
@@ -860,21 +865,13 @@ async def main():
                     if registrar_info.get("email"):
                         note += f" ({registrar_info['email']})"
                     note += f" [{registrar_info['source']}]"
-                    reg_key = match_registrar(registrar_info["name"])
-                    if reg_key:
-                        reg_entry = REGISTRAR_ABUSE_EMAILS[reg_key]
-                        ok = send_registrar_complaint(domain, brand_key, found_urls, reg_entry, registrar_info["name"])
-                        if reg_entry.get("webform_only"):
-                            note += " — ⚠️ bu registrar genelde mail'i reddedip web form istiyor, muhtemelen bounce'layacak, web form ile de takip edilmeli"
-                        print(f"  {'✅' if ok else '❌'} {registrar_info['name']} (otomatik tespit + gönderim) — {note}")
-                        _record("registrar", registrar_info["name"], ok, note)
-                    else:
-                        print(f"  ⚠️ {note} — bilinen bir abuse adresi yok, manuel kontrol gerekiyor")
-                        _record("nicenic", "NiceNIC", None, note + " — bilinen abuse adresi yok, manuel kontrol gerekiyor")
+                    print(f"  ⚠️ {note} — NiceNIC'e gönderilmedi (yanlış hedef önlendi)")
+                    _record("nicenic", "NiceNIC", None, note)
                 else:
                     ok = send_nicenic(domain, brand_key, found_urls)
                     print(f"  {'✅' if ok else '❌'} NiceNIC (registrar teyitli, {registrar_info['source']})")
                     _record("nicenic", "NiceNIC", ok, f"Registrar teyitli ({registrar_info['source']})")
+
             if "host" in targets:
                 cluster_pair, host_key, observed_ns = resolve_host(domain)
                 if host_key == DEAD_DOMAIN:
@@ -903,6 +900,7 @@ async def main():
                     }
                     print(f"  {'✅' if ok else '❌'} Host ({HOSTS[host_key]['name']})")
                     _record("host", f"Host ({HOSTS[host_key]['name']})", ok)
+
             if "custom_email" in targets:
                 if INPUT_CUSTOM_EMAIL:
                     ok = send_custom_email(domain, brand_key, found_urls)
@@ -910,6 +908,7 @@ async def main():
                     _record("custom_email", f"Özel mail ({INPUT_CUSTOM_EMAIL})", ok)
                 else:
                     print("  ⚠️ custom_email hedefi seçildi ama e-posta adresi verilmedi, atlandı")
+
             if "compromise_notice" in targets:
                 if INPUT_CUSTOM_EMAIL:
                     ok = send_compromise_notice(domain, brand_key)
@@ -917,27 +916,34 @@ async def main():
                     _record("compromise_notice", f"Hacklenmiş Site Bildirimi ({INPUT_CUSTOM_EMAIL})", ok)
                 else:
                     print("  ⚠️ compromise_notice hedefi seçildi ama e-posta adresi verilmedi, atlandı")
+
             if "netcraft" in targets:
                 ok = await report_netcraft(session, domain, brand_key, found_urls)
                 print(f"  {'✅' if ok else '❌'} Netcraft")
                 _record("netcraft", "Netcraft", ok)
+
             if "safebrowsing" in targets:
                 ok = await report_safe_browsing(session, domain, found_urls)
                 print(f"  {'✅' if ok else '❌'} Safe Browsing")
                 _record("safebrowsing", "Safe Browsing", ok)
+
             if "googlespam" in targets:
                 ok = await report_google_spam(session, domain, brand_key, found_urls)
                 print(f"  {'✅' if ok else '❌'} Google Spam")
                 _record("googlespam", "Google Spam", ok)
+
             if "smartscreen" in targets:
                 ok = await report_smartscreen(session, domain, brand_key, found_urls)
                 print(f"  {'✅' if ok else '❌'} SmartScreen")
                 _record("smartscreen", "SmartScreen", ok)
+
             if "spam404" in targets:
                 ok = await report_spam404(session, domain, found_urls)
                 print(f"  {'✅' if ok else '❌'} Spam404")
                 _record("spam404", "Spam404", ok)
+
             append_to_reported_files(domain)
+
             status_str = "  ".join(
                 f"{'✅' if ok is True else '❌' if ok is False else '⚠️'} {name}"
                 for name, ok in domain_results
@@ -954,13 +960,16 @@ async def main():
                 "host": host_info,
                 "channels": channels_json,
             })
+
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     msg = f"📋 *[PANEL] Manuel Şikayet Dispatch* — {now}\n\n"
     msg += "\n\n".join(summary_lines)
     if INPUT_NOTES:
         msg += f"\n\n📝 *Not:* {INPUT_NOTES}"
     await send_telegram(msg)
+
     print("\n✅ Tamamlandı, Telegram'a bildirildi.")
+
     if INPUT_REQUEST_ID:
         os.makedirs("dispatch-results", exist_ok=True)
         result_path = os.path.join("dispatch-results", f"{INPUT_REQUEST_ID}.json")
@@ -969,5 +978,6 @@ async def main():
         print(f"📄 Sonuç dosyası yazıldı: {result_path} (panel bunu polling ile bulacak)")
     else:
         print("⚠️ INPUT_REQUEST_ID verilmedi — sonuç dosyası yazılmadı, panel sadece tetiklemeyi görecek.")
+
 if __name__ == "__main__":
     asyncio.run(main())
