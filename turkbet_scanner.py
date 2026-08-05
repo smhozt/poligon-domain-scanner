@@ -7,14 +7,12 @@ import json
 from datetime import datetime, timezone, timedelta
 import gspread
 from google.oauth2.service_account import Credentials
-
 TZ_SOFIA = timezone(timedelta(hours=3))
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 GCP_CREDENTIALS = os.environ.get("GCP_CREDENTIALS")
 SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
-
 # ============================================================
 # TURKBET WHİTELİST — Bizim domainlerimiz
 # NOT: Turkbet'in domain formatı [num]turkbet.com (sayı önde!)
@@ -78,21 +76,17 @@ TURKBET_WHITELIST.update([
     "yonleniyoramp.com", "googlecdnservice.net",
     "supetbetingirisadresim.vip", "turkbetgirisadresim.vip",
 ])
-
 TURKBET_RANGE = range(891, 2001)
 REPORTED_FILE = "turkbet_reported.json"
-
 def load_reported():
     try:
         with open(REPORTED_FILE, "r") as f:
             return set(json.load(f))
     except:
         return set()
-
 def save_reported(reported):
     with open(REPORTED_FILE, "w") as f:
         json.dump(list(reported), f)
-
 def save_to_google_sheets(found_items):
     if not GCP_CREDENTIALS or not SPREADSHEET_ID:
         return
@@ -112,15 +106,19 @@ def save_to_google_sheets(found_items):
             print(f"✅ {len(rows_to_add)} domain Google E-Tablolara kaydedildi!")
     except Exception as e:
         print(f"Sheets hatasi: {e}")
-
-async def check_dns_native(domain):
+async def check_dns_native(domain, retries=2):
+    # v2 — 31 Tem 2026: retry eklendi (betsat_scanner.py ile aynı fix —
+    # bkz. betsat2610.com vakası). Tek deneme geçici DNS hatalarında
+    # domainleri sessizce kaçırıyordu.
     loop = asyncio.get_running_loop()
-    try:
-        ip = await loop.run_in_executor(executor, socket.gethostbyname, domain)
-        return True, ip
-    except:
-        return False, ""
-
+    for attempt in range(retries):
+        try:
+            ip = await loop.run_in_executor(executor, socket.gethostbyname, domain)
+            return True, ip
+        except Exception:
+            if attempt < retries - 1:
+                await asyncio.sleep(0.3)
+    return False, ""
 async def scan_domain(session, domain, dtype, whitelist, reported, found):
     if domain in whitelist or domain in reported:
         return
@@ -144,7 +142,6 @@ async def scan_domain(session, domain, dtype, whitelist, reported, found):
     })
     reported.add(domain)
     print(f"[FOUND] {domain} ({ip})")
-
 async def send_telegram(message):
     async with aiohttp.ClientSession() as session:
         for chat_id in TELEGRAM_CHAT_IDS:
@@ -154,38 +151,31 @@ async def send_telegram(message):
                 "text": message,
                 "parse_mode": "Markdown"
             })
-
 async def main():
     reported = load_reported()
     found = []
     domains_to_scan = []
-
     # 1. STANDART TURKBET SAYILARI
     for num in list(TURKBET_RANGE):
         domains_to_scan.append((f"{num}turkbet.com", "YENI", TURKBET_WHITELIST))
-
     # 2. TARİH FORMATI
     for num in range(100, 1000):
         domains_to_scan.append((f"{num:04d}turkbet.com", "TARIH-FORMAT", set()))
         domains_to_scan.append((f"turkbet{num:04d}.com", "TARIH-TERS", set()))
-
     # 3. TYPO VARYASYONLARI
     for num in range(700, 2001):
         domains_to_scan.append((f"turkbet{num}.com", "TYPO-TERS", set()))
         domains_to_scan.append((f"{num}trkbet.com", "TYPO-U-EKSIK", set()))
         domains_to_scan.append((f"{num}turkbetm.com", "TYPO-M", set()))
         domains_to_scan.append((f"m{num}turkbet.com", "TYPO-M-ON", set()))
-
     # 4. TERS PATTERN 4 HANELİ
     print("🔄 4 haneli ters pattern üretiliyor...")
     for num in range(700, 2001):
         domains_to_scan.append((f"{num}turkbet.com", "TERS-PATTERN", TURKBET_WHITELIST))
-
     # 5. TERS PATTERN 5 HANELİ
     print("5️⃣ 5 haneli ters pattern üretiliyor...")
     for num in range(10000, 25001):
         domains_to_scan.append((f"{num}turkbet.com", "TERS-5HANE", set()))
-
     # 6. IDN SAHTE HARF
     print("🧬 Sahte harfli (IDN) varyasyonlar üretiliyor...")
     for num in range(700, 2001):
@@ -195,7 +185,6 @@ async def main():
                 domains_to_scan.append((puny, "IDN-SAHTE", set()))
             except:
                 pass
-
     # 7. TİRELİ ÖNEKLER
     print("🔗 Tireli önek varyasyonları üretiliyor...")
     PREFIXES = ["m-", "tr-", "www-", "vip-"]
@@ -203,13 +192,22 @@ async def main():
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}{num}turkbet.com", "PREFIX-PATTERN", set()))
             domains_to_scan.append((f"{prefix}turkbet{num}.com", "PREFIX-PATTERN-TERS", set()))
-
+    # 7b. TİRESİZ ÖNEKLER (v2 — 05 Ağu 2026) — mbetsat1610.com (tiresiz,
+    # bitişik) gerçek, aktif bir phishing domain olarak bulundu ama
+    # yukarıdaki döngü sadece tireli "m-..." üretiyordu, bu kör
+    # noktaydı. Turkbet için de kapatılıyor (m749turkbet.com,
+    # mturkbet749.com gibi).
+    print("🔗 Tiresiz önek varyasyonları üretiliyor...")
+    NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    for num in range(700, 2001):
+        for prefix in NOHYPHEN_PREFIXES:
+            domains_to_scan.append((f"{prefix}{num}turkbet.com", "PREFIX-NOHYPHEN-PATTERN", set()))
+            domains_to_scan.append((f"{prefix}turkbet{num}.com", "PREFIX-NOHYPHEN-PATTERN-TERS", set()))
     # 8. .CO TLD
     print("🌐 Turkbet .co TLD varyasyonları taranıyor...")
     for num in range(700, 2001):
         domains_to_scan.append((f"{num}turkbet.co", "CO-TYPO", set()))
         domains_to_scan.append((f"turkbet{num}.co", "CO-TERS", set()))
-
     # 9. DİĞER ALT TLD'LER
     # v2 — 22 Tem 2026: "cam" eklendi. betsat1605.cam ve
     # (öngörülen) superbetin2077.cam ile aynı fraud deseni —
@@ -219,7 +217,6 @@ async def main():
         for tld in ["vip", "icu", "live", "net", "org", "cam"]:
             domains_to_scan.append((f"{num}turkbet.{tld}", f"TURKBET-{tld.upper()}", set()))
             domains_to_scan.append((f"turkbet{num}.{tld}", f"TURKBET-{tld.upper()}-TERS", set()))
-
     # 10. .CAM DEPOSIT-SUBDOMAIN KONTROLÜ (v2 — 22 Tem 2026)
     # Resmi aktif numara (749) için ANA domain (zaten yukarıdaki
     # alt-TLD döngüsünde 700-2001 aralığında olduğu için taranıyor,
@@ -233,23 +230,16 @@ async def main():
         domains_to_scan.append((f"{onum}turkbet.cam", "CAM-TLD-SWAP", set()))
         for sub in CAM_DEPOSIT_SUBS:
             domains_to_scan.append((f"{sub}.{onum}turkbet.cam", "CAM-TLD-SWAP-DEPOSIT-SUB", set()))
-
     print(f"🚀 Toplam {len(domains_to_scan)} Turkbet domain taranacak...")
-
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
-
         async def bounded_scan(d, t, w):
             async with semaphore:
                 await scan_domain(session, d, t, w, reported, found)
-
         await asyncio.gather(*[bounded_scan(d, t, w) for d, t, w in domains_to_scan])
-
     save_reported(reported)
-
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
-
     if found:
         msg = (
             f"🚨 *[TURKBET ALARM] Aktif Sahte Domain!*\n"
@@ -278,6 +268,5 @@ async def main():
         )
         await send_telegram(msg)
         print("Temiz.")
-
 if __name__ == "__main__":
     asyncio.run(main())
