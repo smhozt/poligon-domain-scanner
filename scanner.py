@@ -273,8 +273,12 @@ async def main():
     # döngüyle de taranıyor, burada tutarlılık/güvence için
     # açıkça tekrar ekleniyor — resmi numara ileride değişirse
     # aralık dışına düşme riskine karşı) hem deposit-subdomain
-    # kontrolü:
-    CAM_DEPOSIT_CHECK_NUMBERS = [2077]
+    # kontrolü. "724" de eklendi (v3 — 05 Ağu 2026): resmi bir
+    # numara değil ama bu sezon boyunca aktörün en sık kullandığı
+    # sabit sayı (superbetingiris724.co, superbetinerisimadresin724.co
+    # gibi düzinelerce domainde görüldü) — superbetin724.cam bu
+    # kalıbın .cam TLD-swap versiyonu, önceden hiç taranmıyordu.
+    CAM_DEPOSIT_CHECK_NUMBERS = [2077, 724]
     CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
     for onum in CAM_DEPOSIT_CHECK_NUMBERS:
         domains_to_scan.append((f"superbetin{onum}.cam", "CAM-TLD-SWAP", set()))
