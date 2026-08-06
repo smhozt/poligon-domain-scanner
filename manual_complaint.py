@@ -252,6 +252,7 @@ CLUSTER_MAP = {
     frozenset({"archer", "lana"}):      "digitalocean",   # YENİ 31 Tem — superbetin-tr.top (Aliyun/Dominet HK kayıtlı), archer/melissa'dan (omegatech) farklı
     frozenset({"paityn", "rick"}):      "ovh",            # YENİ 31 Tem — tr.superbetin-resmi.icu, paityn/titan'dan (cloudzy) farklı
     frozenset({"decker", "dolly"}):     "alexhost",       # YENİ 05 Ağu 2026 — tr.turkbet-guncelgiris.cam (AlexHost SRL, noc@alexhost.com) — decker/liberty'den (PRQ) FARKLI cluster, karıştırılmasın
+    frozenset({"burt", "kiki"}):        "alexhost",       # YENİ 06 Ağu 2026 — superbetin2249.com (aynı host AlexHost, farklı cluster)
     frozenset({"edna", "shane"}):       "swissnet",       # YENİ 06 Ağu 2026 — betsat1910.com (SwissNet LLC, abuse@swissnetwork.io)
     frozenset({"martha", "rex"}):       "netiface",       # YENİ 06 Ağu 2026 — bet.sat-girisleri.com (VPS Dedicated LLC, abuse@abusehandler.net) — önceki "guvenligirisler.co" vakasında host bilinmiyordu, şimdi teyit edildi
 }
