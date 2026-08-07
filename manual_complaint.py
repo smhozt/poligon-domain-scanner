@@ -117,6 +117,7 @@ HOSTS = {
     "colocatel":       {"name": "ColocaTel Inc.",                        "abuse": ["abuse@colocatel.com"]},
     "evoxt":           {"name": "Evoxt Sdn. Bhd.",                       "abuse": ["abuse@evoxt.com"]},
     "cloudzy":         {"name": "RouterHosting/Cloudzy",                 "abuse": ["abuse-reports@cloudzy.com"]},
+    "gannon_nancy_ambiguous": {"name": "PLAY2GO INTERNATIONAL LIMITED / Omegatech LTD (belirsiz — NS rotasyonu, 07 Ağu 2026 Omegatech teyidi geldi ama önceden Play2Go kayıtlıydı)", "abuse": ["abuse@play2go.cloud", "abuse@pitline.net", "abuse@omegatech.sc"]},
     "play2go":         {"name": "PLAY2GO INTERNATIONAL LIMITED",         "abuse": ["abuse@play2go.cloud"]},
     "namecheap":       {"name": "Namecheap, Inc.",                       "abuse": ["abuse@namecheaphosting.com"]},
     "pfcloud":         {"name": "Pfcloud UG (abusehandler.net)",         "abuse": ["abuse@abusehandler.net"]},
@@ -221,7 +222,7 @@ CLUSTER_MAP = {
     frozenset({"aron", "javier"}):      "colocatel",
     frozenset({"bowen", "rosemary"}):   "colocatel",
     frozenset({"paityn", "titan"}):     "cloudzy",
-    frozenset({"gannon", "nancy"}):     "play2go",
+    frozenset({"gannon", "nancy"}):     "gannon_nancy_ambiguous",   # DÜZELTİLDİ 07 Ağu 2026 — superbetin2293.com üzerinden Omegatech teyidi geldi, önceden Play2Go kayıtlıydı
     frozenset({"daniella", "felipe"}):  "play2go",
     frozenset({"brenda", "leif"}):      "namecheap",
     frozenset({"candy", "edward"}):     "pfcloud",
