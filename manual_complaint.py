@@ -135,6 +135,7 @@ HOSTS = {
     "digitalocean":    {"name": "DigitalOcean LLC",                     "abuse": ["abuse@digitalocean.com"]},  # YENİ 31 Tem — superbetin-tr.top üzerinden ilk kez görüldü
     "alexhost":        {"name": "AlexHost SRL, MD",                     "abuse": ["noc@alexhost.com"]},  # YENİ 05 Ağu 2026 — tr.turkbet-guncelgiris.cam üzerinden ilk kez görüldü, cluster decker/dolly
     "ovh":             {"name": "OVH SAS, FR",                          "abuse": ["abuse@ovh.net"]},  # YENİ 31 Tem — tr.superbetin-resmi.icu üzerinden ilk kez görüldü
+    "knownsrv":        {"name": "KnownSRV Ltd.",                        "abuse": ["abuse@pronect.hr"]},   # YENİ 07 Ağu 2026 — superbetin-girisadresi.cam üzerinden ilk kez görüldü
 }
 
 CLUSTER_MAP = {
@@ -255,6 +256,7 @@ CLUSTER_MAP = {
     frozenset({"adaline", "chris"}):    "adaline_chris_ambiguous",   # DÜZELTİLDİ 03 Ağu 2026 — superbetin2342.com üzerinden Omegatech teyidi geldi, önceden SYNLINQ kayıtlıydı; ilk oturumdan beri şüphelenilen NS rotasyonu doğrulandı, ikisine birden gönderiliyor
     frozenset({"archer", "lana"}):      "digitalocean",   # YENİ 31 Tem — superbetin-tr.top (Aliyun/Dominet HK kayıtlı), archer/melissa'dan (omegatech) farklı
     frozenset({"paityn", "rick"}):      "ovh",            # YENİ 31 Tem — tr.superbetin-resmi.icu, paityn/titan'dan (cloudzy) farklı
+    frozenset({"emerie", "kai"}):       "knownsrv",       # YENİ 07 Ağu 2026 — superbetin-girisadresi.cam (KnownSRV Ltd., abuse@pronect.hr)
     frozenset({"decker", "dolly"}):     "alexhost",       # YENİ 05 Ağu 2026 — tr.turkbet-guncelgiris.cam (AlexHost SRL, noc@alexhost.com) — decker/liberty'den (PRQ) FARKLI cluster, karıştırılmasın
     frozenset({"burt", "kiki"}):        "alexhost",       # YENİ 06 Ağu 2026 — superbetin2249.com (aynı host AlexHost, farklı cluster)
     frozenset({"edna", "shane"}):       "swissnet",       # YENİ 06 Ağu 2026 — betsat1910.com (SwissNet LLC, abuse@swissnetwork.io)
