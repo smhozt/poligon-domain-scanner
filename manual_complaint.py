@@ -246,6 +246,7 @@ CLUSTER_MAP = {
     frozenset({"kurt", "leah"}):        "colocatel",
     frozenset({"emely", "ishaan"}):     "colocatel",
     frozenset({"melody", "armando"}):   "colocatel",
+    frozenset({"elaine", "emerson"}):   "colocatel",   # YENİ 07 Ağu 2026 — superbetin-son-bonusu.icu (ColocaTel Inc., abuse@colocatel.com)
     frozenset({"donovan", "melinda"}):  "netiface",   # DÜZELTİLDİ 03 Ağu 2026 — eskiden omegatech kayıtlıydı, bugün superbetiningercekgiris724.co üzerinden İKİ ayrı Cloudflare teyidi (Trademark + Phishing) tutarlı şekilde VPS Dedicated LLC/abusehandler.net gösterdi
     frozenset({"braden", "priscilla"}): "netiface",   # YENİ 03 Ağu 2026 — superbetin-resmi-giris.vip üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"aiden", "naya"}):       "synlinq",
