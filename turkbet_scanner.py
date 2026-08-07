@@ -76,7 +76,7 @@ TURKBET_WHITELIST.update([
     "yonleniyoramp.com", "googlecdnservice.net",
     "supetbetingirisadresim.vip", "turkbetgirisadresim.vip",
 ])
-TURKBET_RANGE = range(891, 2001)
+TURKBET_RANGE = range(891, 5001)
 REPORTED_FILE = "turkbet_reported.json"
 def load_reported():
     try:
