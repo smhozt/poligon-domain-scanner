@@ -78,7 +78,7 @@ BETSAT_WHITELIST.update([
     "supetbetingirisadresim.vip", "turkbetgirisadresim.vip", "betsatgirisadresim.vip",
 ])
 BETSAT_GAPS = [1542, 1547, 1552, 1560, 1561, 1564, 1566, 1572, 1574, 1576, 1592, 1594, 1627, 1649, 1659, 1660, 1671, 1676, 1679, 1689, 1694, 1699, 1703]
-BETSAT_RANGE = range(1710, 5501)
+BETSAT_RANGE = range(1710, 9501)
 REPORTED_FILE = "betsat_reported.json"
 def load_reported():
     try:
