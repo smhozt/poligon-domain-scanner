@@ -200,6 +200,7 @@ CLUSTER_MAP = {
     frozenset({"candy", "nico"}):       "fatcat_scrhost",
     frozenset({"robin", "ram"}):        "fatcat_scrhost",
     frozenset({"alice", "seamus"}):     "fatcat_epikhost",
+    frozenset({"ara", "mark"}):         "fatcat_epikhost",   # YENİ 07 Ağu 2026 — superbetin-resmigiris.icu (FATCAT NETWORK S.A., abuse@epikhost.org)
 
     # ── VPS Datacenter Ltd GB (private-data-center.com) ──
     frozenset({"ophelia", "theo"}):     "vpsdatacenter",
