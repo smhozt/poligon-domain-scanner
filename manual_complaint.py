@@ -236,6 +236,7 @@ CLUSTER_MAP = {
     frozenset({"ezra", "veda"}):          "swissnet",   # YENİ 04 Ağu 2026 — 2087superbetin.com (SwissNet LLC, abuse@swissnetwork.io)
     frozenset({"adel", "albert"}):        "netiface",   # YENİ 04 Ağu 2026 — betsat-adresii2026.cam (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"elliott", "paloma"}):     "netiface",   # YENİ 06 Ağu 2026 — superbetinguncellgiris724.top (VPS Dedicated LLC, abuse@abusehandler.net)
+    frozenset({"jack", "nora"}):          "netiface",   # YENİ 07 Ağu 2026 — betsat-2026.icu (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"corey", "lucy"}):          "corey_lucy_ambiguous",   # DÜZELTİLDİ 05 Ağu 2026 — paykodeme.com'da SYNLINQ, superbetin2344.com'da Omegatech çıktı, ikisine birden gönderiliyor
     frozenset({"aleena", "andronicus"}):   "frantech",   # YENİ 05 Ağu 2026 — superbetin-freeadres.vip (FranTech Solutions, admin@frantech.ca)
     frozenset({"luciane", "fattouche"}):    "swissnet",   # YENİ 05 Ağu 2026 — betin-aktif.vip (SwissNet LLC, abuse@swissnetwork.io) — luciane/oswald'dan FARKLI cluster, karıştırılmasın
