@@ -238,6 +238,7 @@ CLUSTER_MAP = {
     frozenset({"mario", "norah"}):      "mario_norah_ambiguous",   # DÜZELTİLDİ 10 Ağu 2026 — superbetin2151.com üzerinden VPS Dedicated LLC teyidi geldi, önceden hep FranTech kayıtlıydı
     frozenset({"burt", "liz"}):          "frantech",   # YENİ 03 Ağu 2026 — superbetinorijinaladres.top, aynı host (FranTech) farklı cluster
     frozenset({"fred", "ivy"}):          "frantech",   # YENİ 10 Ağu 2026 — superbetineozelgirisi.icu (FranTech Solutions, admin@frantech.ca)
+    frozenset({"hal", "lola"}):          "frantech",   # YENİ 10 Ağu 2026 — superbetinaccessadres.co (aynı host FranTech, farklı cluster)
     frozenset({"adaline", "joaquin"}):   "netiface",   # YENİ 03 Ağu 2026 — superbetinguncelgirisadrsi724.top üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net) — adaline/chris'ten FARKLI bir cluster, karıştırılmasın
     frozenset({"pdns1", "pdns2"}):        "blazedge",   # YENİ 03-04 Ağu 2026 — superbetin2087.cam (jenerik PowerDNS isimlendirmesi, Blazedge'e ait)
     frozenset({"ezra", "veda"}):          "swissnet",   # YENİ 04 Ağu 2026 — 2087superbetin.com (SwissNet LLC, abuse@swissnetwork.io)
