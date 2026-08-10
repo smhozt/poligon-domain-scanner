@@ -237,6 +237,7 @@ CLUSTER_MAP = {
     frozenset({"cosmin", "melany"}):    "frantech",
     frozenset({"mario", "norah"}):      "mario_norah_ambiguous",   # DÜZELTİLDİ 10 Ağu 2026 — superbetin2151.com üzerinden VPS Dedicated LLC teyidi geldi, önceden hep FranTech kayıtlıydı
     frozenset({"burt", "liz"}):          "frantech",   # YENİ 03 Ağu 2026 — superbetinorijinaladres.top, aynı host (FranTech) farklı cluster
+    frozenset({"fred", "ivy"}):          "frantech",   # YENİ 10 Ağu 2026 — superbetineozelgirisi.icu (FranTech Solutions, admin@frantech.ca)
     frozenset({"adaline", "joaquin"}):   "netiface",   # YENİ 03 Ağu 2026 — superbetinguncelgirisadrsi724.top üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net) — adaline/chris'ten FARKLI bir cluster, karıştırılmasın
     frozenset({"pdns1", "pdns2"}):        "blazedge",   # YENİ 03-04 Ağu 2026 — superbetin2087.cam (jenerik PowerDNS isimlendirmesi, Blazedge'e ait)
     frozenset({"ezra", "veda"}):          "swissnet",   # YENİ 04 Ağu 2026 — 2087superbetin.com (SwissNet LLC, abuse@swissnetwork.io)
@@ -264,6 +265,7 @@ CLUSTER_MAP = {
     frozenset({"paityn", "rick"}):      "ovh",            # YENİ 31 Tem — tr.superbetin-resmi.icu, paityn/titan'dan (cloudzy) farklı
     frozenset({"emerie", "kai"}):       "knownsrv",       # YENİ 07 Ağu 2026 — superbetin-girisadresi.cam (KnownSRV Ltd., abuse@pronect.hr)
     frozenset({"conrad", "veda"}):      "privatelayer",   # YENİ 09 Ağu 2026 — superbetinlive.co (Private Layer INC, abuse@privatelayer.com) — conrad/leia'dan (netiface) FARKLI cluster, karıştırılmasın
+    frozenset({"nitin", "selah"}):      "privatelayer",   # YENİ 10 Ağu 2026 — betingercek.co (aynı host Private Layer, farklı cluster)
     frozenset({"decker", "dolly"}):     "alexhost",       # YENİ 05 Ağu 2026 — tr.turkbet-guncelgiris.cam (AlexHost SRL, noc@alexhost.com) — decker/liberty'den (PRQ) FARKLI cluster, karıştırılmasın
     frozenset({"burt", "kiki"}):        "alexhost",       # YENİ 06 Ağu 2026 — superbetin2249.com (aynı host AlexHost, farklı cluster)
     frozenset({"edna", "shane"}):       "swissnet",       # YENİ 06 Ağu 2026 — betsat1910.com (SwissNet LLC, abuse@swissnetwork.io)
