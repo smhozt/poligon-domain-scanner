@@ -117,7 +117,7 @@ HOSTS = {
     "colocatel":       {"name": "ColocaTel Inc.",                        "abuse": ["abuse@colocatel.com"]},
     "evoxt":           {"name": "Evoxt Sdn. Bhd.",                       "abuse": ["abuse@evoxt.com"]},
     "cloudzy":         {"name": "RouterHosting/Cloudzy",                 "abuse": ["abuse-reports@cloudzy.com"]},
-    "gannon_nancy_ambiguous": {"name": "PLAY2GO INTERNATIONAL LIMITED / Omegatech LTD (belirsiz — NS rotasyonu, 07 Ağu 2026 Omegatech teyidi geldi ama önceden Play2Go kayıtlıydı)", "abuse": ["abuse@play2go.cloud", "abuse@pitline.net", "abuse@omegatech.sc"]},
+    "gannon_nancy_ambiguous": {"name": "PLAY2GO INTERNATIONAL LIMITED / Omegatech LTD / SYNLINQ (belirsiz — NS rotasyonu, 07 Ağu 2026'da aynı gün içinde üç farklı teyit geldi: Omegatech (superbetin2293.com) ve SYNLINQ (paykodeme.com); önceden Play2Go kayıtlıydı)", "abuse": ["abuse@play2go.cloud", "abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "play2go":         {"name": "PLAY2GO INTERNATIONAL LIMITED",         "abuse": ["abuse@play2go.cloud"]},
     "namecheap":       {"name": "Namecheap, Inc.",                       "abuse": ["abuse@namecheaphosting.com"]},
     "pfcloud":         {"name": "Pfcloud UG (abusehandler.net)",         "abuse": ["abuse@abusehandler.net"]},
@@ -130,6 +130,8 @@ HOSTS = {
     "jeremy_kay_ambiguous": {"name": "Omegatech LTD / VPS Dedicated LLC (belirsiz — NS rotasyonu, 03 Ağu 2026 netiface teyidi geldi ama önceden Omegatech kayıtlıydı)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@abusehandler.net"]},
     "mimi_sevki_ambiguous": {"name": "SYNLINQ / VPS Dedicated LLC (belirsiz — NS rotasyonu, 03 Ağu 2026 netiface teyidi geldi ama önceden SYNLINQ kayıtlıydı)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@abusehandler.net"]},
     "corey_lucy_ambiguous": {"name": "SYNLINQ / Omegatech LTD (belirsiz — paykodeme.com'da SYNLINQ, superbetin2344.com'da Omegatech çıktı)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@pitline.net", "abuse@omegatech.sc"]},
+    "aisha_langston_ambiguous": {"name": "Omegatech LTD / VPS Dedicated LLC, US (belirsiz — NS rotasyonu, 10 Ağu 2026'da VPS Dedicated LLC teyidi geldi ama önceden hep Omegatech kayıtlıydı)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@abusehandler.net"]},
+    "mario_norah_ambiguous": {"name": "FranTech Solutions / VPS Dedicated LLC, US (belirsiz — NS rotasyonu, 10 Ağu 2026'da VPS Dedicated LLC teyidi geldi ama önceden hep FranTech kayıtlıydı)", "abuse": ["admin@frantech.ca", "abuse@vpsdedicated.net"]},
     "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ / VPS Dedicated LLC (belirsiz — üç farklı teyit görüldü)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@abusehandler.net"]},
     "elinore_patrick_ambiguous": {"name": "SwissNet LLC / FROSTYHOSTING-AS RU (belirsiz — farklı günlerde iki farklı teyit geldi)", "abuse": ["abuse@swissnetwork.io", "frostyhosting@proton.me"]},
     "georgia_kobe_ambiguous": {"name": "Netiface LLC / VPS Dedicated LLC, US (belirsiz — iki farklı abuse kutusu görüldü: abusehandler.net ve flashwisp.com.ng)", "abuse": ["abuse@abusehandler.net", "abuse@flashwisp.com.ng"]},
@@ -137,6 +139,7 @@ HOSTS = {
     "alexhost":        {"name": "AlexHost SRL, MD",                     "abuse": ["noc@alexhost.com"]},  # YENİ 05 Ağu 2026 — tr.turkbet-guncelgiris.cam üzerinden ilk kez görüldü, cluster decker/dolly
     "ovh":             {"name": "OVH SAS, FR",                          "abuse": ["abuse@ovh.net"]},  # YENİ 31 Tem — tr.superbetin-resmi.icu üzerinden ilk kez görüldü
     "knownsrv":        {"name": "KnownSRV Ltd.",                        "abuse": ["abuse@pronect.hr"]},   # YENİ 07 Ağu 2026 — superbetin-girisadresi.cam üzerinden ilk kez görüldü
+    "privatelayer":    {"name": "Private Layer INC, PA",                 "abuse": ["abuse@privatelayer.com"]},   # YENİ 09 Ağu 2026 — superbetinlive.co üzerinden ilk kez görüldü
 }
 
 CLUSTER_MAP = {
@@ -162,7 +165,7 @@ CLUSTER_MAP = {
     # ── Omegatech LTD ──
     frozenset({"syeef", "tina"}):       "omegatech",
     frozenset({"isla", "nolan"}):       "omegatech",
-    frozenset({"aisha", "langston"}):   "omegatech",
+    frozenset({"aisha", "langston"}):   "aisha_langston_ambiguous",   # DÜZELTİLDİ 10 Ağu 2026 — superbetineresmigir724.co üzerinden VPS Dedicated LLC teyidi geldi, önceden hep Omegatech kayıtlıydı
     frozenset({"archer", "melissa"}):   "omegatech",
     frozenset({"dane", "alice"}):       "omegatech",
     frozenset({"aleena", "tony"}):      "omegatech",
@@ -232,7 +235,7 @@ CLUSTER_MAP = {
     frozenset({"khalid", "suzanne"}):   "frantech",
     frozenset({"kate", "ed"}):          "frantech",
     frozenset({"cosmin", "melany"}):    "frantech",
-    frozenset({"mario", "norah"}):      "frantech",
+    frozenset({"mario", "norah"}):      "mario_norah_ambiguous",   # DÜZELTİLDİ 10 Ağu 2026 — superbetin2151.com üzerinden VPS Dedicated LLC teyidi geldi, önceden hep FranTech kayıtlıydı
     frozenset({"burt", "liz"}):          "frantech",   # YENİ 03 Ağu 2026 — superbetinorijinaladres.top, aynı host (FranTech) farklı cluster
     frozenset({"adaline", "joaquin"}):   "netiface",   # YENİ 03 Ağu 2026 — superbetinguncelgirisadrsi724.top üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net) — adaline/chris'ten FARKLI bir cluster, karıştırılmasın
     frozenset({"pdns1", "pdns2"}):        "blazedge",   # YENİ 03-04 Ağu 2026 — superbetin2087.cam (jenerik PowerDNS isimlendirmesi, Blazedge'e ait)
@@ -240,6 +243,7 @@ CLUSTER_MAP = {
     frozenset({"adel", "albert"}):        "netiface",   # YENİ 04 Ağu 2026 — betsat-adresii2026.cam (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"elliott", "paloma"}):     "netiface",   # YENİ 06 Ağu 2026 — superbetinguncellgiris724.top (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"jack", "nora"}):          "netiface",   # YENİ 07 Ağu 2026 — betsat-2026.icu (VPS Dedicated LLC, abuse@abusehandler.net)
+    frozenset({"emerson", "lady"}):       "netiface",   # YENİ 09 Ağu 2026 — superbetinsiteadresi.icu (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"corey", "lucy"}):          "corey_lucy_ambiguous",   # DÜZELTİLDİ 05 Ağu 2026 — paykodeme.com'da SYNLINQ, superbetin2344.com'da Omegatech çıktı, ikisine birden gönderiliyor
     frozenset({"aleena", "andronicus"}):   "frantech",   # YENİ 05 Ağu 2026 — superbetin-freeadres.vip (FranTech Solutions, admin@frantech.ca)
     frozenset({"luciane", "fattouche"}):    "swissnet",   # YENİ 05 Ağu 2026 — betin-aktif.vip (SwissNet LLC, abuse@swissnetwork.io) — luciane/oswald'dan FARKLI cluster, karıştırılmasın
@@ -250,6 +254,7 @@ CLUSTER_MAP = {
     frozenset({"kurt", "leah"}):        "colocatel",
     frozenset({"emely", "ishaan"}):     "colocatel",
     frozenset({"melody", "armando"}):   "colocatel",
+    frozenset({"gene", "hans"}):        "colocatel",   # YENİ 10 Ağu 2026 — superbetinew-adresi.icu (ColocaTel Inc., abuse@colocatel.com)
     frozenset({"elaine", "emerson"}):   "colocatel",   # YENİ 07 Ağu 2026 — superbetin-son-bonusu.icu (ColocaTel Inc., abuse@colocatel.com)
     frozenset({"donovan", "melinda"}):  "netiface",   # DÜZELTİLDİ 03 Ağu 2026 — eskiden omegatech kayıtlıydı, bugün superbetiningercekgiris724.co üzerinden İKİ ayrı Cloudflare teyidi (Trademark + Phishing) tutarlı şekilde VPS Dedicated LLC/abusehandler.net gösterdi
     frozenset({"braden", "priscilla"}): "netiface",   # YENİ 03 Ağu 2026 — superbetin-resmi-giris.vip üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net)
@@ -258,6 +263,7 @@ CLUSTER_MAP = {
     frozenset({"archer", "lana"}):      "digitalocean",   # YENİ 31 Tem — superbetin-tr.top (Aliyun/Dominet HK kayıtlı), archer/melissa'dan (omegatech) farklı
     frozenset({"paityn", "rick"}):      "ovh",            # YENİ 31 Tem — tr.superbetin-resmi.icu, paityn/titan'dan (cloudzy) farklı
     frozenset({"emerie", "kai"}):       "knownsrv",       # YENİ 07 Ağu 2026 — superbetin-girisadresi.cam (KnownSRV Ltd., abuse@pronect.hr)
+    frozenset({"conrad", "veda"}):      "privatelayer",   # YENİ 09 Ağu 2026 — superbetinlive.co (Private Layer INC, abuse@privatelayer.com) — conrad/leia'dan (netiface) FARKLI cluster, karıştırılmasın
     frozenset({"decker", "dolly"}):     "alexhost",       # YENİ 05 Ağu 2026 — tr.turkbet-guncelgiris.cam (AlexHost SRL, noc@alexhost.com) — decker/liberty'den (PRQ) FARKLI cluster, karıştırılmasın
     frozenset({"burt", "kiki"}):        "alexhost",       # YENİ 06 Ağu 2026 — superbetin2249.com (aynı host AlexHost, farklı cluster)
     frozenset({"edna", "shane"}):       "swissnet",       # YENİ 06 Ağu 2026 — betsat1910.com (SwissNet LLC, abuse@swissnetwork.io)
