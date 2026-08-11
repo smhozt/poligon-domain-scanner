@@ -132,6 +132,7 @@ HOSTS = {
     "corey_lucy_ambiguous": {"name": "SYNLINQ / Omegatech LTD (belirsiz — paykodeme.com'da SYNLINQ, superbetin2344.com'da Omegatech çıktı)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@pitline.net", "abuse@omegatech.sc"]},
     "aisha_langston_ambiguous": {"name": "Omegatech LTD / VPS Dedicated LLC, US (belirsiz — NS rotasyonu, 10 Ağu 2026'da VPS Dedicated LLC teyidi geldi ama önceden hep Omegatech kayıtlıydı)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@abusehandler.net"]},
     "mario_norah_ambiguous": {"name": "FranTech Solutions / VPS Dedicated LLC, US (belirsiz — NS rotasyonu, 10 Ağu 2026'da VPS Dedicated LLC teyidi geldi ama önceden hep FranTech kayıtlıydı)", "abuse": ["admin@frantech.ca", "abuse@vpsdedicated.net"]},
+    "ezra_veda_ambiguous": {"name": "SwissNet LLC / Pfcloud UG (belirsiz — bu cluster oturum boyunca 5+ kez kesin SwissNet çıkmıştı, 11 Ağu 2026'da payment.betsat1712.com üzerinden ilk kez Pfcloud teyidi geldi — tek seferlik anomali de olabilir, NS rotasyonu da olabilir, temkinli olarak ikisine birden gönderiliyor)", "abuse": ["abuse@swissnetwork.io", "abuse@abusehandler.net"]},
     "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ / VPS Dedicated LLC (belirsiz — üç farklı teyit görüldü)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@abusehandler.net"]},
     "elinore_patrick_ambiguous": {"name": "SwissNet LLC / FROSTYHOSTING-AS RU (belirsiz — farklı günlerde iki farklı teyit geldi)", "abuse": ["abuse@swissnetwork.io", "frostyhosting@proton.me"]},
     "georgia_kobe_ambiguous": {"name": "Netiface LLC / VPS Dedicated LLC, US (belirsiz — iki farklı abuse kutusu görüldü: abusehandler.net ve flashwisp.com.ng)", "abuse": ["abuse@abusehandler.net", "abuse@flashwisp.com.ng"]},
@@ -241,7 +242,7 @@ CLUSTER_MAP = {
     frozenset({"hal", "lola"}):          "frantech",   # YENİ 10 Ağu 2026 — superbetinaccessadres.co (aynı host FranTech, farklı cluster)
     frozenset({"adaline", "joaquin"}):   "netiface",   # YENİ 03 Ağu 2026 — superbetinguncelgirisadrsi724.top üzerinden ilk kez görüldü (VPS Dedicated LLC, abuse@abusehandler.net) — adaline/chris'ten FARKLI bir cluster, karıştırılmasın
     frozenset({"pdns1", "pdns2"}):        "blazedge",   # YENİ 03-04 Ağu 2026 — superbetin2087.cam (jenerik PowerDNS isimlendirmesi, Blazedge'e ait)
-    frozenset({"ezra", "veda"}):          "swissnet",   # YENİ 04 Ağu 2026 — 2087superbetin.com (SwissNet LLC, abuse@swissnetwork.io)
+    frozenset({"ezra", "veda"}):          "ezra_veda_ambiguous",   # DÜZELTİLDİ 11 Ağu 2026 — payment.betsat1712.com üzerinden Pfcloud teyidi geldi, önceden 5+ kez kesin SwissNet kayıtlıydı (2087superbetin.com, superbetin2088.cam, betsat1610.cam, 2088superbetin.com, betsat1611.cam)
     frozenset({"adel", "albert"}):        "netiface",   # YENİ 04 Ağu 2026 — betsat-adresii2026.cam (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"elliott", "paloma"}):     "netiface",   # YENİ 06 Ağu 2026 — superbetinguncellgiris724.top (VPS Dedicated LLC, abuse@abusehandler.net)
     frozenset({"jack", "nora"}):          "netiface",   # YENİ 07 Ağu 2026 — betsat-2026.icu (VPS Dedicated LLC, abuse@abusehandler.net)
@@ -271,6 +272,7 @@ CLUSTER_MAP = {
     frozenset({"burt", "kiki"}):        "alexhost",       # YENİ 06 Ağu 2026 — superbetin2249.com (aynı host AlexHost, farklı cluster)
     frozenset({"edna", "shane"}):       "swissnet",       # YENİ 06 Ağu 2026 — betsat1910.com (SwissNet LLC, abuse@swissnetwork.io)
     frozenset({"martha", "rex"}):       "netiface",       # YENİ 06 Ağu 2026 — bet.sat-girisleri.com (VPS Dedicated LLC, abuse@abusehandler.net) — önceki "guvenligirisler.co" vakasında host bilinmiyordu, şimdi teyit edildi
+    frozenset({"kyle", "roxy"}):        "netiface",       # YENİ 11 Ağu 2026 — superbetintekgercek724.co (VPS Dedicated LLC, abuse@abusehandler.net)
 }
 
 DEAD_DOMAIN = "__dead__"
