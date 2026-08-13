@@ -1,0 +1,70 @@
+{
+  "request_id": "fb046317-e317-4448-86c8-301aa17c96c0",
+  "generated_at": "2026-08-13T13:25:05.789206+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "betsat1612.cam",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Spaceship, Inc.",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "ezra_veda_ambiguous",
+        "host_name": "SwissNet LLC / Pfcloud UG (belirsiz)",
+        "cluster": "ezra/veda"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Spaceship, Inc. [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (SwissNet LLC / Pfcloud UG (belirsiz))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    }
+  ]
+}
