@@ -21,9 +21,6 @@ SMTP_USER = os.environ.get("SMTP_USER", "")
 SMTP_PASS = os.environ.get("SMTP_PASS", "")
 SAFE_BROWSING_API_KEY = os.environ.get("SAFE_BROWSING_API_KEY", "")
 
-# ============================================================
-# PANELDEN GELEN GİRDİLER (GitHub Actions workflow_dispatch inputs)
-# ============================================================
 INPUT_DOMAINS        = os.environ.get("INPUT_DOMAINS", "")
 INPUT_BRAND          = os.environ.get("INPUT_BRAND", "auto").strip().lower()
 INPUT_TARGETS        = os.environ.get("INPUT_TARGETS", "all").strip().lower()
@@ -43,24 +40,24 @@ BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        # GÜNCELLENDİ 12 Ağu 2026 — superbetin2088.com artık pasif, aktif adres superbetin2090.com
-        "active_domains": ["superbetin.com", "superbetin2090.com"],
+        # GÜNCELLENDİ 14 Ağu 2026 — superbetin2091.com artık pasif, aktif adres superbetin2092.com
+        "active_domains": ["superbetin.com", "superbetin2092.com"],
         "signature_email": "yardim@superbetin.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 12 Ağu 2026 — betsat1611.com artık pasif, aktif adres betsat1612.com
-        "active_domains": ["betsat.com", "betsat1612.com"],
+        # GÜNCELLENDİ 14 Ağu 2026 — betsat1613.com artık pasif, aktif adres betsat1614.com
+        "active_domains": ["betsat.com", "betsat1614.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        # GÜNCELLENDİ 11 Ağu 2026 — 754turkbet.com artık pasif, aktif adres 755turkbet.com
-        "active_domains": ["turkbet.io", "755turkbet.com"],
+        # GÜNCELLENDİ 14 Ağu 2026 — 755turkbet.com artık pasif, aktif adres 757turkbet.com
+        "active_domains": ["turkbet.io", "757turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
@@ -86,7 +83,7 @@ if INPUT_ACTIVE_OVERRIDE:
                 pass
 
 # ============================================================
-# HOSTLAR — abuse adresleri + NS cluster haritası
+# HOSTLAR
 # ============================================================
 HOSTS = {
     "netiface":        {"name": "Netiface LLC / VPS Dedicated LLC",     "abuse": ["abuse@abusehandler.net", "abuse@vpsdedicated.net"]},
@@ -114,7 +111,7 @@ HOSTS = {
     "frantech":        {"name": "FranTech Solutions (PONYNET)",          "abuse": ["admin@frantech.ca"]},
     "synlinq":         {"name": "SYNLINQ (Oliver Horscht)",              "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "adaline_chris_ambiguous": {"name": "SYNLINQ / Omegatech LTD (belirsiz)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@pitline.net", "abuse@omegatech.sc"]},
-    "brady_harmony_ambiguous": {"name": "VPS Dedicated LLC, US (belirsiz — iki abuse kutusu)", "abuse": ["abuse@abusehandler.net", "abuse@flashwisp.com.ng"]},
+    "brady_harmony_ambiguous": {"name": "VPS Dedicated LLC, US (belirsiz)", "abuse": ["abuse@abusehandler.net", "abuse@flashwisp.com.ng"]},
     "jeremy_kay_ambiguous": {"name": "Omegatech LTD / VPS Dedicated LLC (belirsiz)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@abusehandler.net"]},
     "mimi_sevki_ambiguous": {"name": "SYNLINQ / VPS Dedicated LLC (belirsiz)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@abusehandler.net"]},
     "corey_lucy_ambiguous": {"name": "SYNLINQ / Omegatech LTD (belirsiz)", "abuse": ["abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@pitline.net", "abuse@omegatech.sc"]},
@@ -122,9 +119,9 @@ HOSTS = {
     "mario_norah_ambiguous": {"name": "FranTech Solutions / VPS Dedicated LLC, US (belirsiz)", "abuse": ["admin@frantech.ca", "abuse@vpsdedicated.net"]},
     "ezra_veda_ambiguous": {"name": "SwissNet LLC / Pfcloud UG (belirsiz)", "abuse": ["abuse@swissnetwork.io", "abuse@abusehandler.net"]},
     "luciane_oswald_ambiguous": {"name": "Omegatech LTD / SYNLINQ / VPS Dedicated LLC (belirsiz)", "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de", "abuse@abusehandler.net"]},
-    "elinore_patrick_ambiguous": {"name": "SwissNet LLC / FROSTYHOSTING-AS RU / VPS Dedicated LLC (belirsiz — 13 Ağu 2026: betsatmobile.com'da VPS Dedicated teyidi geldi)", "abuse": ["abuse@swissnetwork.io", "frostyhosting@proton.me", "abuse@vpsdedicated.net"]},
+    "elinore_patrick_ambiguous": {"name": "SwissNet LLC / FROSTYHOSTING-AS RU / VPS Dedicated LLC (belirsiz)", "abuse": ["abuse@swissnetwork.io", "frostyhosting@proton.me", "abuse@vpsdedicated.net"]},
     "georgia_kobe_ambiguous": {"name": "Netiface LLC / VPS Dedicated LLC, US (belirsiz)", "abuse": ["abuse@abusehandler.net", "abuse@flashwisp.com.ng"]},
-    "ruben_ariella_ambiguous": {"name": "Advin Services LLC / VPS Dedicated LLC, US (belirsiz — 12 Ağu 2026 düzeltildi)", "abuse": ["anush@advinservers.com", "abuse@flashwisp.com.ng"]},
+    "ruben_ariella_ambiguous": {"name": "Advin Services LLC / VPS Dedicated LLC, US (belirsiz)", "abuse": ["anush@advinservers.com", "abuse@flashwisp.com.ng"]},
     "digitalocean":    {"name": "DigitalOcean LLC",                     "abuse": ["abuse@digitalocean.com"]},
     "alexhost":        {"name": "AlexHost SRL, MD",                     "abuse": ["noc@alexhost.com"]},
     "ovh":             {"name": "OVH SAS, FR",                          "abuse": ["abuse@ovh.net"]},
@@ -132,6 +129,11 @@ HOSTS = {
     "privatelayer":    {"name": "Private Layer INC, PA / Digitale Suisse AG, CH", "abuse": ["abuse@privatelayer.com"]},
     "frostyhosting":   {"name": "FrostyHosting (Belenkii Ivan Alexandrovich, RU)", "abuse": ["frostyhosting@proton.me"]},
     "ipvendetta":      {"name": "IP Vendetta Inc.",                      "abuse": ["abuse@ipvendetta.com"]},
+    # YENİ 14 Ağu 2026 — desi/josh cluster'ı önceden kesin SwissNet kayıtlıydı ama
+    # superbetin2088.co üzerinden Cloudflare Trademark teyidi VPS Datacenter Ltd
+    # (private-data-center.com) gösterdi. Aynı "bir cluster, birden fazla host
+    # gördük" pattern'i — ikisine birden gönderiliyor.
+    "desi_josh_ambiguous": {"name": "SwissNet LLC / VPS Datacenter Ltd (belirsiz — 14 Ağu 2026 superbetin2088.co'da VPS Datacenter teyidi geldi, önceden SwissNet kayıtlıydı)", "abuse": ["abuse@swissnetwork.io", "abuse@private-data-center.com"]},
 }
 
 WEB_FORM_ONLY_REGISTRARS = {
@@ -271,7 +273,7 @@ CLUSTER_MAP = {
     frozenset({"edna", "shane"}):       "swissnet",
     frozenset({"martha", "rex"}):       "netiface",
     frozenset({"kyle", "roxy"}):        "netiface",
-    frozenset({"desi", "josh"}):        "swissnet",
+    frozenset({"desi", "josh"}):        "desi_josh_ambiguous",
     frozenset({"brodie", "laylah"}):    "vpsdedicated_flashwisp",
     frozenset({"abdullah", "liv"}):     "swissnet",
     frozenset({"marge", "sullivan"}):   "frantech",
@@ -280,6 +282,10 @@ CLUSTER_MAP = {
     frozenset({"dayana", "harlan"}):    "weridata",
     frozenset({"cash", "macy"}):        "weridata",
     frozenset({"cortney", "denver"}):   "privatelayer",
+    frozenset({"pedro", "susan"}):      "ipvendetta",
+    frozenset({"elmo", "romina"}):      "netiface",
+    frozenset({"clayton", "jade"}):     "vpsdatacenter",
+    frozenset({"nitin", "raina"}):      "colocatel",
 }
 
 DEAD_DOMAIN = "__dead__"
@@ -766,7 +772,7 @@ async def main():
         print(f"⚠️  UYARI: Şu domain(ler) daha önce de raporlanmış görünüyor (reported.json'da mevcut):")
         for d in duplicate_domains:
             print(f"     - {d}")
-        print("   Kasıtlı bir tekrar gönderim değilse (örn. yanlışlıkla aynı domaini iki kez panelden girme), lütfen kontrol edin.")
+        print("   Kasıtlı bir tekrar gönderim değilse, lütfen kontrol edin.")
         print("   Script yine de devam ediyor (bu bir engelleme değil, sadece bilgilendirme).")
 
     requested_targets = set(INPUT_TARGETS.split(","))
