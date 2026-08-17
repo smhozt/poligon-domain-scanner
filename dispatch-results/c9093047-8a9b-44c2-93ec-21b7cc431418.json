@@ -1,0 +1,461 @@
+{
+  "request_id": "c9093047-8a9b-44c2-93ec-21b7cc431418",
+  "generated_at": "2026-08-17T10:20:41.413692+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "superbetingirisiniz724.co",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO LIMITED",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "marek",
+          "simone"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (whois)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: marek, simone"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "fail",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "resmigiris724.icu",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "ns1",
+          "ns2"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://dynadot.com/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: ns1, ns2"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "resmigiris724.co",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "kurt",
+          "tina"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://dynadot.com/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: kurt, tina"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetingercekgir726.co",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "ns1",
+          "ns2"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://dynadot.com/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: ns1, ns2"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betsat-erisim2.icu",
+      "brand": "Betsat",
+      "found_urls_count": 3,
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "craig",
+          "gracie"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (whois)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: craig, gracie"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetin-amp-kayit.icu",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Hosting Concepts B.V. d/b/a Registrar.eu",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "ina1",
+          "ina2",
+          "ina3"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Hosting Concepts B.V. d/b/a Registrar.eu [whois] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://abuse.registrar.eu"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: ina1, ina2, ina3"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "fail",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betsat-vip.icu",
+      "brand": "Betsat",
+      "found_urls_count": 3,
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "known",
+        "host_key": "vpsdatacenter",
+        "host_name": "VPS Datacenter Ltd (private-data-center.com)",
+        "cluster": "clayton/jade"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (whois)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (VPS Datacenter Ltd (private-data-center.com))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    }
+  ]
+}
