@@ -544,6 +544,24 @@ Sincerely,
         recipients, subject, body,
         f"{brand['name']} Security Team", reply_to=reporter_email_for(brand_key)
     )
+def send_apwg(domain, brand_key, found_urls):
+    brand = BRANDS[brand_key]
+    subject = f"Phishing URL Report - {domain}"
+    target_url = found_urls[0] if found_urls else f"https://{domain}/"
+    body = f"""Reported URL: {target_url}
+
+This domain impersonates our licensed brand {brand['name']} (official: {' / '.join(brand['active_domains'])}), operated by Poligon Entertainment N.V. under Curaçao Gaming Authority license OGL/2024/815/0653, using cloned branding and/or credential-harvesting forms to deceive consumers.
+{evidence_block(found_urls)}{notes_block()}
+Sincerely,
+{brand['name']} Security Team
+{brand['signature_email']}
+"""
+    return send_email(
+        ['reportphishing@apwg.org'], subject, body,
+        f"{brand['name']} Security Team", reply_to=reporter_email_for(brand_key)
+    )
+
+
 def send_compromise_notice(domain, brand_key):
     brand = BRANDS[brand_key]
     recipients = [e.strip() for e in INPUT_CUSTOM_EMAIL.split(",") if e.strip()]
@@ -756,7 +774,7 @@ async def main():
         print("   Kasıtlı bir tekrar gönderim değilse, lütfen kontrol edin.")
         print("   Script yine de devam ediyor (bu bir engelleme değil, sadece bilgilendirme).")
     requested_targets = set(INPUT_TARGETS.split(","))
-    all_targets = {"nicenic", "host", "netcraft", "safebrowsing", "googlespam", "smartscreen", "spam404", "custom_email", "spamhaus"}
+    all_targets = {"nicenic", "host", "netcraft", "safebrowsing", "googlespam", "smartscreen", "spam404", "custom_email", "spamhaus", "apwg"}
     explicit_targets = {"compromise_notice"}
     if "all" in requested_targets:
         targets = all_targets | (requested_targets & explicit_targets)
@@ -879,6 +897,10 @@ async def main():
                 ok = await report_spamhaus(session, domain, brand_key, found_urls)
                 print(f"  {'✅' if ok else '❌'} Spamhaus")
                 _record("spamhaus", "Spamhaus", ok)
+            if "apwg" in targets:
+                ok = send_apwg(domain, brand_key, found_urls)
+                print(f"  {'✅' if ok else '❌'} APWG")
+                _record("apwg", "APWG", ok)
             append_to_reported_files(domain)
             status_str = "  ".join(
                 f"{'✅' if ok is True else '❌' if ok is False else '⚠️'} {name}"
