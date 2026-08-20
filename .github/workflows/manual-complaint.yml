@@ -1,5 +1,4 @@
 name: Manuel Şikayet Paneli
-
 on:
   workflow_dispatch:
     inputs:
@@ -18,7 +17,7 @@ on:
           - turkbet
         default: auto
       targets:
-        description: 'Hedefler (virgülle): nicenic,host,custom_email,netcraft,safebrowsing,googlespam,smartscreen,spam404 veya "all". compromise_notice ayrı yazılmalı, "all" içine dahil değil (hacklenmiş 3. taraf site bildirimi için).'
+        description: 'Hedefler (virgülle): nicenic,host,custom_email,netcraft,safebrowsing,googlespam,smartscreen,spam404,spamhaus,apwg veya "all". compromise_notice ayrı yazılmalı, "all" içine dahil değil (hacklenmiş 3. taraf site bildirimi için).'
         required: true
         type: string
         default: all
@@ -42,26 +41,21 @@ on:
         description: 'Panelin bu çalıştırmayı takip etmesi için benzersiz kimlik (panel otomatik üretir, elle dokunma)'
         required: false
         type: string
-
 # Sonuç JSON dosyasını repoya geri commit'leyebilmek için yazma izni
 # gerekiyor — panel bu dosyayı polling ile okuyup gerçek sonuçları
 # (mail gitti mi, hangi host bulundu vb.) gösteriyor.
 permissions:
   contents: write
-
 jobs:
   dispatch-complaint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Bağımlılıkları kur
         run: pip install aiohttp dnspython --break-system-packages
-
       - name: Şikayetleri gönder
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
@@ -69,6 +63,7 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           SAFE_BROWSING_API_KEY: ${{ secrets.SAFE_BROWSING_API_KEY }}
+          SPAMHAUS_API_TOKEN: ${{ secrets.SPAMHAUS_API_TOKEN }}
           INPUT_DOMAINS: ${{ github.event.inputs.domains }}
           INPUT_BRAND: ${{ github.event.inputs.brand }}
           INPUT_TARGETS: ${{ github.event.inputs.targets }}
@@ -78,7 +73,6 @@ jobs:
           INPUT_NOTES: ${{ github.event.inputs.notes }}
           INPUT_REQUEST_ID: ${{ github.event.inputs.request_id }}
         run: python manual_complaint.py
-
       - name: Sonuç dosyasını repoya yaz (panel bunu okuyacak)
         if: always() && github.event.inputs.request_id != ''
         run: |
