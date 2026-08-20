@@ -118,6 +118,7 @@ HOSTS = {
     "frostyhosting":   {"name": "FrostyHosting (Belenkii Ivan Alexandrovich, RU)", "abuse": ["frostyhosting@proton.me"]},
     "ipvendetta":      {"name": "IP Vendetta Inc.",                      "abuse": ["abuse@ipvendetta.com"]},
     "desi_josh_ambiguous": {"name": "SwissNet LLC / VPS Datacenter Ltd (belirsiz)", "abuse": ["abuse@swissnetwork.io", "abuse@private-data-center.com"]},
+    "dayana_kurt_ambiguous": {"name": "Netiface LLC / VPS Dedicated LLC, US (flashwisp.com.ng) (belirsiz)", "abuse": ["abuse@abusehandler.net", "abuse@vpsdedicated.net", "abuse@flashwisp.com.ng"]},
 }
 WEB_FORM_ONLY_REGISTRARS = {
     "fewmoretaps": {"display": "Trustname / Fewmoretaps OU", "form_url": "https://trustname.com/help/report-abuse"},
@@ -269,10 +270,9 @@ CLUSTER_MAP = {
     frozenset({"nitin", "raina"}):      "colocatel",
     # YENİ 20 Ağu 2026 — betsat-uefa.icu teyidi
     frozenset({"imani", "kipp"}):       "koddos",
-    # TODO: dayana/kurt (superbetinonlinetr.icu) — VPS Dedicated LLC teyit edildi ama
-    # "netiface" (abuse@abusehandler.net + abuse@vpsdedicated.net) mi yoksa
-    # "vpsdedicated_flashwisp" (abuse@flashwisp.com.ng) mi olduğu netleşmedi.
-    # Semih onaylayınca eklenecek.
+    # YENİ 20 Ağu 2026 — superbetinonlinetr.icu, VPS Dedicated LLC teyitli ama hangi
+    # abuse adresi net değil, şimdilik ikisine de gidiyor (netiface + flashwisp)
+    frozenset({"dayana", "kurt"}):      "dayana_kurt_ambiguous",
 }
 DEAD_DOMAIN = "__dead__"
 def get_ns_labels(domain, retries=2):
