@@ -702,18 +702,15 @@ async def report_spamhaus(session, domain, brand_key, found_urls):
         reason += " Evidence URLs: " + ", ".join(found_urls[:5])
     if INPUT_NOTES:
         reason += f" Notes: {INPUT_NOTES}"
-    reason = reason[:1000]
-    submission_id = hashlib.sha256(f"{domain}-{time.time()}".encode()).hexdigest()
+    reason = reason[:255]
     payload = {
         "threat_type": "phish",
         "reason": reason,
-        "id": submission_id,
-        "submission_type": "domain",
         "source": {"object": domain},
     }
     try:
         async with session.post(
-            "https://submit.spamhaus.org/portal/api/v1/submit",
+            "https://submit.spamhaus.org/portal/api/v1/submissions/add/domain",
             json=payload,
             headers={
                 "Content-Type": "application/json",
@@ -721,7 +718,8 @@ async def report_spamhaus(session, domain, brand_key, found_urls):
             },
             timeout=aiohttp.ClientTimeout(total=15),
         ) as resp:
-            if resp.status in (200, 201, 202, 204):
+            # 208 = bu domain zaten daha önce Spamhaus'a bildirilmiş — hata değil, başarı sayılır
+            if resp.status in (200, 201, 202, 204, 208):
                 return True
             body_snippet = (await resp.text())[:200]
             print(f"    ⚠️ Spamhaus HTTP {resp.status} ({domain}) — yanıt: {body_snippet}")
