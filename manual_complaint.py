@@ -44,8 +44,8 @@ BRANDS = {
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 19 Ağu 2026 — aktif adres betsat1615.com
-        "active_domains": ["betsat.com", "betsat1615.com"],
+        # GÜNCELLENDİ 20 Ağu 2026 — aktif adres betsat1616.com
+        "active_domains": ["betsat.com", "betsat1616.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
@@ -174,7 +174,10 @@ CLUSTER_MAP = {
     frozenset({"maya", "uriah"}):       "virtualsystems",
     frozenset({"alexia", "burt"}):      "sollutium",
     frozenset({"kanye", "magnolia"}):   "omegatech",
-    frozenset({"ruben", "ariella"}):    "ruben_ariella_ambiguous",
+    # GÜNCELLENDİ 20 Ağu 2026 — superbetin-orjinal.icu üzerinden Cloudflare'in host
+    # teyit mailiyle netleşti: VPSDEDICATED-AS (VPS Dedicated LLC, US, flashwisp.com.ng),
+    # Advin değil — artık belirsiz değil
+    frozenset({"ruben", "ariella"}):    "vpsdedicated_flashwisp",
     frozenset({"raegan", "gabe"}):      "advin",
     frozenset({"penny", "tanner"}):     "swissnet",
     frozenset({"elliot", "marlowe"}):   "swissnet",
@@ -276,6 +279,9 @@ CLUSTER_MAP = {
     # YENİ 20 Ağu 2026 — betsatguncelgiris1.co üzerinden Cloudflare'in host teyit
     # mailiyle netleşti: FROSTYHOSTING-AS (Belenkii Ivan Alexandrovich, RU)
     frozenset({"elma", "salvador"}):    "frostyhosting",
+    # YENİ 20 Ağu 2026 — betsat1718.com üzerinden Cloudflare'in host teyit
+    # mailiyle netleşti: PFCLOUD UG (haftungsbeschrankt), DE
+    frozenset({"elsa", "norm"}):        "pfcloud",
 }
 DEAD_DOMAIN = "__dead__"
 def get_ns_labels(domain, retries=2):
