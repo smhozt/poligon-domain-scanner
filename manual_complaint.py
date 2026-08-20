@@ -273,6 +273,9 @@ CLUSTER_MAP = {
     # YENİ 20 Ağu 2026 — superbetinonlinetr.icu, VPS Dedicated LLC teyitli ama hangi
     # abuse adresi net değil, şimdilik ikisine de gidiyor (netiface + flashwisp)
     frozenset({"dayana", "kurt"}):      "dayana_kurt_ambiguous",
+    # YENİ 20 Ağu 2026 — betsatguncelgiris1.co üzerinden Cloudflare'in host teyit
+    # mailiyle netleşti: FROSTYHOSTING-AS (Belenkii Ivan Alexandrovich, RU)
+    frozenset({"elma", "salvador"}):    "frostyhosting",
 }
 DEAD_DOMAIN = "__dead__"
 def get_ns_labels(domain, retries=2):
