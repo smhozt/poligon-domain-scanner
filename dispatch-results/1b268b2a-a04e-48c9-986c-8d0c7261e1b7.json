@@ -1,0 +1,177 @@
+{
+  "request_id": "1b268b2a-a04e-48c9-986c-8d0c7261e1b7",
+  "generated_at": "2026-08-20T09:22:24.685844+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "betsatguncelgiris1.co",
+      "brand": "Betsat",
+      "found_urls_count": 2,
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betsat-guncal.icu",
+      "brand": "Betsat",
+      "found_urls_count": 0,
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "fail",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetinadresi.cam",
+      "brand": "Superbetin",
+      "found_urls_count": 4,
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetinonlinetr.icu",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betsat-gunceladresimz.icu",
+      "brand": "Betsat",
+      "found_urls_count": 0,
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "superbetinsonresmi724.co",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "m-betsat1627.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": true,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betin-trgunceli.cam",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betsatguncelgiris.live",
+      "brand": "Betsat",
+      "found_urls_count": 2,
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    },
+    {
+      "domain": "betsatdirect.live",
+      "brand": "Betsat",
+      "found_urls_count": 2,
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        }
+      ]
+    }
+  ]
+}
