@@ -69,12 +69,6 @@ if INPUT_ACTIVE_OVERRIDE:
         for od in override_domains:
             if brand_key in od.lower() and od not in BRANDS[brand_key]["active_domains"]:
                 BRANDS[brand_key]["active_domains"].append(od)
-    for brand_key in BRANDS:
-        for od in override_domains:
-            if od not in BRANDS[brand_key]["active_domains"] and not any(
-                bk in od.lower() for bk in BRANDS
-            ):
-                pass
 # ============================================================
 # HOSTLAR
 # ============================================================
@@ -95,6 +89,7 @@ HOSTS = {
     "colocatel":       {"name": "ColocaTel Inc.",                        "abuse": ["abuse@colocatel.com"]},
     "evoxt":           {"name": "Evoxt Sdn. Bhd.",                       "abuse": ["abuse@evoxt.com"]},
     "cloudzy":         {"name": "RouterHosting/Cloudzy",                 "abuse": ["abuse-reports@cloudzy.com"]},
+    "koddos":          {"name": "KoDDoS / Amarutu Technology Ltd",       "abuse": ["abuse@koddos.com", "abuse@koddos.net"]},
     "gannon_nancy_ambiguous": {"name": "PLAY2GO INTERNATIONAL LIMITED / Omegatech LTD / SYNLINQ (belirsiz)", "abuse": ["abuse@play2go.cloud", "abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "play2go":         {"name": "PLAY2GO INTERNATIONAL LIMITED",         "abuse": ["abuse@play2go.cloud"]},
     "namecheap":       {"name": "Namecheap, Inc.",                       "abuse": ["abuse@namecheaphosting.com"]},
@@ -272,6 +267,12 @@ CLUSTER_MAP = {
     frozenset({"elmo", "romina"}):      "netiface",
     frozenset({"clayton", "jade"}):     "vpsdatacenter",
     frozenset({"nitin", "raina"}):      "colocatel",
+    # YENİ 20 Ağu 2026 — betsat-uefa.icu teyidi
+    frozenset({"imani", "kipp"}):       "koddos",
+    # TODO: dayana/kurt (superbetinonlinetr.icu) — VPS Dedicated LLC teyit edildi ama
+    # "netiface" (abuse@abusehandler.net + abuse@vpsdedicated.net) mi yoksa
+    # "vpsdedicated_flashwisp" (abuse@flashwisp.com.ng) mi olduğu netleşmedi.
+    # Semih onaylayınca eklenecek.
 }
 DEAD_DOMAIN = "__dead__"
 def get_ns_labels(domain, retries=2):
@@ -549,7 +550,6 @@ def send_apwg(domain, brand_key, found_urls):
     subject = f"Phishing URL Report - {domain}"
     target_url = found_urls[0] if found_urls else f"https://{domain}/"
     body = f"""Reported URL: {target_url}
-
 This domain impersonates our licensed brand {brand['name']} (official: {' / '.join(brand['active_domains'])}), operated by Poligon Entertainment N.V. under Curaçao Gaming Authority license OGL/2024/815/0653, using cloned branding and/or credential-harvesting forms to deceive consumers.
 {evidence_block(found_urls)}{notes_block()}
 Sincerely,
@@ -560,8 +560,6 @@ Sincerely,
         ['reportphishing@apwg.org'], subject, body,
         f"{brand['name']} Security Team", reply_to=reporter_email_for(brand_key)
     )
-
-
 def send_compromise_notice(domain, brand_key):
     brand = BRANDS[brand_key]
     recipients = [e.strip() for e in INPUT_CUSTOM_EMAIL.split(",") if e.strip()]
