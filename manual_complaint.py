@@ -2,6 +2,7 @@ import asyncio
 import aiohttp
 import os
 import json
+import re
 import socket
 import time
 import hashlib
@@ -292,6 +293,26 @@ CLUSTER_MAP = {
     frozenset({"crystal", "marty"}):        "frostyhosting",        # betsatonline.co (tr. subdomain üzerinden Cloudflare zaten teyit etmişti)
 }
 DEAD_DOMAIN = "__dead__"
+# ============================================================
+# KALICI ÖLÜ DOMAIN KAYDI (v22 — 21 Ağu 2026)
+# NXDOMAIN çıkan domainler buraya biriktirilir. Panelden aynı domain
+# tekrar gönderilirse (ör. yanlışlıkla), NiceNIC/registrar tespiti gibi
+# pahalı ağ çağrılarını atlayıp direkt "zaten ölü" diye işaretleriz.
+# ============================================================
+DEAD_DOMAINS_FILE = "dead_domains.json"
+def load_dead_domains():
+    try:
+        with open(DEAD_DOMAINS_FILE, "r") as f:
+            return set(json.load(f))
+    except Exception:
+        return set()
+def save_dead_domain(domain, dead_domains_cache):
+    dead_domains_cache.add(domain)
+    try:
+        with open(DEAD_DOMAINS_FILE, "w") as f:
+            json.dump(list(dead_domains_cache), f)
+    except Exception as e:
+        print(f"    ⚠️ dead_domains.json yazılamadı: {e}")
 def get_ns_labels(domain, retries=2):
     last_err = None
     for attempt in range(retries):
@@ -313,12 +334,116 @@ def match_cluster(ns_labels):
         if pair.issubset(ns_labels):
             return pair, host_key
     return None, None
-def resolve_host(domain):
-    ns_labels = get_ns_labels(domain)
+def _get_a_record(domain, retries=2):
+    last_err = None
+    for attempt in range(retries):
+        try:
+            answers = dns.resolver.resolve(domain, "A", lifetime=8)
+            return str(answers[0].address)
+        except dns.resolver.NXDOMAIN:
+            return "NXDOMAIN"
+        except Exception as e:
+            last_err = e
+            if attempt < retries - 1:
+                time.sleep(1.5)
+    return None
+# ============================================================
+# IP/WHOIS FALLBACK (v22 — 21 Ağu 2026) — DÜRÜST NOT:
+# CLUSTER_MAP'teki tüm cluster'lar Cloudflare'in kendi nameserver
+# çiftleri (Cloudflare domaini proxy'liyor). Bu yüzden bir domain'in
+# A kaydına bakıp o IP'yi WHOIS'lersek, gerçek host'u DEĞİL,
+# Cloudflare'in edge IP'sini görürüz — WHOIS her seferinde
+# "Cloudflare, Inc." döner, bu da HOST_IP_KEYWORDS'te hiç yok ve
+# hiçbir zaman eşleşmez. Yani bu fallback, Cloudflare arkasındaki
+# (yani neredeyse tüm) domainler için ÇALIŞMAZ ve çalışması da
+# beklenmemeli. Sadece nadir görülen, Cloudflare kullanmayan bir
+# domain çıkarsa (örn. doğrudan host'un kendi NS'lerini kullanan bir
+# domain) iş görür — zararsız, ücretsiz bir ek deneme, "büyük çözüm"
+# değil.
+# ============================================================
+HOST_IP_KEYWORDS = [
+    ("vmheaven", "pfcloud_vmheaven"),
+    ("pfcloud", "pfcloud"),
+    ("swissnet", "swissnet"),
+    ("swiss network", "swissnet"),
+    ("frantech", "frantech"),
+    ("ponynet", "frantech"),
+    ("netiface", "netiface"),
+    ("flashwisp", "vpsdedicated_flashwisp"),
+    ("vps dedicated", "vpsdedicated_flashwisp"),
+    ("vpsdedicated", "vpsdedicated_flashwisp"),
+    ("omegatech", "omegatech"),
+    ("digitale suisse", "privatelayer"),
+    ("private layer", "privatelayer"),
+    ("privatelayer", "privatelayer"),
+    ("amarutu", "koddos"),
+    ("koddos", "koddos"),
+    ("belenkii", "frostyhosting"),
+    ("frostyhosting", "frostyhosting"),
+    ("colocatel", "colocatel"),
+    ("evoxt", "evoxt"),
+    ("routerhosting", "cloudzy"),
+    ("cloudzy", "cloudzy"),
+    ("digitalocean", "digitalocean"),
+    ("alexhost", "alexhost"),
+    ("ovh", "ovh"),
+    ("ipvendetta", "ipvendetta"),
+    ("ip vendetta", "ipvendetta"),
+    ("abuseradar", "weridata"),
+    ("virtuo", "weridata"),
+    ("weridata", "weridata"),
+    ("advin", "advin"),
+    ("ghostnet", "synlinq"),
+    ("horscht", "synlinq"),
+    ("synlinq", "synlinq"),
+    ("scrhost", "fatcat_scrhost"),
+    ("epikhost", "fatcat_epikhost"),
+    ("play2go", "play2go"),
+    ("namecheap", "namecheap"),
+    ("bursabil", "sahinnetwork"),
+    ("sahinnetwork", "sahinnetwork"),
+    ("pronect", "knownsrv"),
+    ("knownsrv", "knownsrv"),
+    ("blazedge", "blazedge"),
+    ("sollutium", "sollutium"),
+    ("wehostservers", "virtualsystems"),
+    ("virtual systems", "virtualsystems"),
+    ("private-data-center", "vpsdatacenter"),
+    ("vps datacenter", "vpsdatacenter"),
+]
+async def resolve_host_via_ip(session, ip):
+    try:
+        async with session.get(
+            f"https://rdap.org/ip/{ip}", timeout=aiohttp.ClientTimeout(total=8),
+        ) as resp:
+            if resp.status != 200:
+                return None
+            data = await resp.json(content_type=None)
+    except Exception as e:
+        print(f"    ⚠️ IP RDAP başarısız ({ip}): {type(e).__name__}: {e}")
+        return None
+    raw = json.dumps(data).lower()
+    for keyword, host_key in HOST_IP_KEYWORDS:
+        if keyword in raw:
+            return host_key
+    return None
+async def resolve_host(session, domain):
+    loop = asyncio.get_running_loop()
+    ns_labels = await loop.run_in_executor(None, get_ns_labels, domain)
     if ns_labels == "NXDOMAIN":
-        return None, DEAD_DOMAIN, None
+        return None, DEAD_DOMAIN, None, False
     cluster_pair, host_key = match_cluster(ns_labels)
-    return cluster_pair, host_key, ns_labels
+    if host_key:
+        return cluster_pair, host_key, ns_labels, False
+    # NS cluster bilinmiyor — nadir/best-effort IP-WHOIS fallback dene
+    # (bkz. yukarıdaki dürüst not: Cloudflare arkasındaki domainlerde
+    # bu adım hemen hemen hiçbir zaman eşleşme bulmayacaktır)
+    ip = await loop.run_in_executor(None, _get_a_record, domain)
+    if ip and ip != "NXDOMAIN":
+        fallback_key = await resolve_host_via_ip(session, ip)
+        if fallback_key:
+            return None, fallback_key, ns_labels, True
+    return cluster_pair, host_key, ns_labels, False
 def _whois_raw_query(server, query, timeout=6):
     with socket.create_connection((server, 43), timeout=timeout) as s:
         s.sendall((query + "\r\n").encode())
@@ -452,6 +577,55 @@ async def discover_phishing_urls(session, root_domain, max_results=10):
     found = [u for u in results if u]
     found.sort(key=lambda u: (u.rstrip("/").endswith(root_domain.rstrip("/")), len(u)))
     return found[:max_results]
+# ============================================================
+# MULE / IBAN & CÜZDAN KORELASYON SİSTEMİ (v22 — 21 Ağu 2026)
+# Ödeme/havale/kripto sayfalarında görülen IBAN ve cüzdan adreslerini
+# regex ile yakalar, kalıcı bir registry'de biriktirir. Aynı değer
+# başka bir domain'de daha önce görülmüşse otomatik korelasyon uyarısı
+# üretir (Barış Şahin / betsat1718.com vakasında elle yaptığımız işin
+# otomasyonu). Not: bazı ödeme sayfaları (ör. "Havale" butonuna
+# tıklandıktan sonra açılan alt sayfa) basit bir GET ile hiç
+# görünmeyebilir — bu durumda hiçbir şey bulunamaz, bu beklenen bir
+# sınırlamadır, ekran görüntüsünden elle eklemeye devam edilmeli.
+# ============================================================
+MULE_REGISTRY_FILE = "mule_registry.json"
+IBAN_RE = re.compile(r'\bTR\d{24}\b')
+BTC_BECH32_RE = re.compile(r'\bbc1[a-z0-9]{25,90}\b', re.IGNORECASE)
+ETH_RE = re.compile(r'\b0x[a-fA-F0-9]{40}\b')
+TRC20_RE = re.compile(r'\bT[A-Za-z1-9]{33}\b')
+MULE_PATH_KEYWORDS = ["havale", "deposit", "payment", "crypto", "odeme", "pay", "yatir", "kripto"]
+def load_mule_registry():
+    try:
+        with open(MULE_REGISTRY_FILE, "r") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+def save_mule_registry(registry):
+    try:
+        with open(MULE_REGISTRY_FILE, "w") as f:
+            json.dump(registry, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"    ⚠️ mule_registry.json yazılamadı: {e}")
+async def extract_mule_info(session, found_urls, max_fetch=5):
+    candidates = [u for u in found_urls if any(k in u.lower() for k in MULE_PATH_KEYWORDS)][:max_fetch]
+    ibans, wallets = set(), set()
+    for url in candidates:
+        try:
+            async with session.get(
+                url, timeout=aiohttp.ClientTimeout(total=5), allow_redirects=True, ssl=False,
+            ) as resp:
+                text = await resp.text(errors="ignore")
+        except Exception:
+            continue
+        for m in IBAN_RE.findall(text):
+            ibans.add(m)
+        for m in BTC_BECH32_RE.findall(text):
+            wallets.add(m.lower())
+        for m in ETH_RE.findall(text):
+            wallets.add(m.lower())
+        for m in TRC20_RE.findall(text):
+            wallets.add(m)
+    return {"ibans": sorted(ibans), "wallets": sorted(wallets)}
 def get_root(domain):
     domain = domain.replace("https://", "").replace("http://", "").split("/")[0]
     parts = domain.split(".")
@@ -525,14 +699,20 @@ Best regards,
         ["abuse@nicenic.net", "support@nicenic.net"], subject, body,
         f"{brand['name']} Security Team", reply_to=reporter_email_for(brand_key)
     )
-def send_host_complaint(domain, brand_key, found_urls, host_key, cluster_pair):
+def send_host_complaint(domain, brand_key, found_urls, host_key, cluster_pair, via_ip=False):
     brand = BRANDS[brand_key]
     host = HOSTS[host_key]
-    cluster_label = "/".join(sorted(cluster_pair)) if cluster_pair else "manually confirmed hosting"
-    subject = f"URGENT: Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted ({cluster_label})"
+    if via_ip:
+        cluster_label = "IP/WHOIS lookup"
+        infra_phrase = "hosted on your infrastructure (identified via IP WHOIS lookup)"
+        subject = f"URGENT: Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted"
+    else:
+        cluster_label = "/".join(sorted(cluster_pair)) if cluster_pair else "manually confirmed hosting"
+        infra_phrase = f"hosted on your infrastructure via the {cluster_label} nameserver cluster"
+        subject = f"URGENT: Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted ({cluster_label})"
     body = f"""Dear {host['name']} Abuse Team,
 We are writing on behalf of Poligon Entertainment N.V., the licensed operator of {brand['name']} (official: {' / '.join(brand['active_domains'])}), under Curaçao Gaming Authority license OGL/2024/815/0653.
-The domain {domain}, hosted on your infrastructure via the {cluster_label} nameserver cluster, is operating an active phishing site impersonating our licensed brand, using cloned graphics, trademarked layouts, and fake login/payment forms to deceive consumers.
+The domain {domain}, {infra_phrase}, is operating an active phishing site impersonating our licensed brand, using cloned graphics, trademarked layouts, and fake login/payment forms to deceive consumers.
 {evidence_block(found_urls)}{notes_block()}
 We formally request immediate suspension of this domain.
 Sincerely,
@@ -779,6 +959,8 @@ async def main():
             unique_domains.append(d)
     domains = unique_domains
     already_reported = load_reported()
+    dead_domains = load_dead_domains()
+    mule_registry = load_mule_registry()
     duplicate_domains = [d for d in domains if d in already_reported]
     if duplicate_domains:
         print(f"⚠️  UYARI: Şu domain(ler) daha önce de raporlanmış görünüyor (reported.json'da mevcut):")
@@ -806,11 +988,35 @@ async def main():
             brand_key = detect_brand_key(domain)
             brand_name = BRANDS[brand_key]["name"]
             print(f"\n=== {domain} ({brand_name}) ===")
+            if domain in dead_domains:
+                print("  💀 Bu domain daha önce NXDOMAIN olarak teyit edilmişti — tüm kanallar atlanıyor (hızlı geçiş)")
+                append_to_reported_files(domain)
+                summary_lines.append(f"💀 `{domain}` ({brand_name}) — zaten ölü (NXDOMAIN), atlandı")
+                results_json["domains"].append({
+                    "domain": domain, "brand": brand_name, "found_urls_count": 0, "found_urls": [],
+                    "reporter_email": reporter_email_for(brand_key),
+                    "already_reported_before": domain in already_reported,
+                    "registrar": None, "host": {"status": "dead"}, "channels": [],
+                    "mule_detected": {"ibans": [], "wallets": []}, "mule_correlations": [],
+                })
+                continue
             if domain in already_reported:
                 print("  ⚠️  Bu domain daha önce raporlanmış (yukarıdaki uyarıya bak)")
             found_urls = await discover_phishing_urls(session, domain)
             print(f"  📎 {len(found_urls)} canlı kanıt URL bulundu")
             print(f"  📧 Reporter e-postası: {reporter_email_for(brand_key)}")
+            mule_info = await extract_mule_info(session, found_urls)
+            mule_correlations = []
+            if mule_info["ibans"] or mule_info["wallets"]:
+                for value in mule_info["ibans"] + mule_info["wallets"]:
+                    prior_domains = [d for d in mule_registry.get(value, []) if d != domain]
+                    if prior_domains:
+                        mule_correlations.append({"value": value, "seen_on": prior_domains})
+                        print(f"  🧬 Mule tekrarı: {value} daha önce şurada da görülmüş: {', '.join(prior_domains)}")
+                    registry_list = mule_registry.setdefault(value, [])
+                    if domain not in registry_list:
+                        registry_list.append(domain)
+                save_mule_registry(mule_registry)
             domain_results = []
             channels_json = []
             registrar_info = None
@@ -845,11 +1051,12 @@ async def main():
                     print(f"  {'✅' if ok else '❌'} NiceNIC (registrar teyitli, {registrar_info['source']})")
                     _record("nicenic", "NiceNIC", ok, f"Registrar teyitli ({registrar_info['source']})")
             if "host" in targets:
-                cluster_pair, host_key, observed_ns = resolve_host(domain)
+                cluster_pair, host_key, observed_ns, via_ip = await resolve_host(session, domain)
                 if host_key == DEAD_DOMAIN:
                     host_info = {"status": "dead"}
                     print("  💀 Domain artık kayıtlı değil (NXDOMAIN)")
                     _record("host", "Host (NXDOMAIN)", None, "Domain artık kayıtlı değil")
+                    save_dead_domain(domain, dead_domains)
                 elif host_key is None:
                     observed_str = ", ".join(sorted(observed_ns)) if observed_ns else None
                     host_info = {
@@ -865,13 +1072,15 @@ async def main():
                         detail = "DNS sorgusu başarısız oldu, NS hiç okunamadı — muhtemelen geçici ağ hatası"
                     _record("host", "Host (cluster tespit edilemedi)", None, detail)
                 else:
-                    ok = send_host_complaint(domain, brand_key, found_urls, host_key, cluster_pair)
+                    ok = send_host_complaint(domain, brand_key, found_urls, host_key, cluster_pair, via_ip)
                     host_info = {
                         "status": "known", "host_key": host_key, "host_name": HOSTS[host_key]["name"],
                         "cluster": "/".join(sorted(cluster_pair)) if cluster_pair else None,
+                        "source": "ip_whois" if via_ip else "ns_cluster",
                     }
-                    print(f"  {'✅' if ok else '❌'} Host ({HOSTS[host_key]['name']})")
-                    _record("host", f"Host ({HOSTS[host_key]['name']})", ok)
+                    label = f"Host ({HOSTS[host_key]['name']}{' — IP/WHOIS' if via_ip else ''})"
+                    print(f"  {'✅' if ok else '❌'} {label}")
+                    _record("host", label, ok)
             if "custom_email" in targets:
                 if INPUT_CUSTOM_EMAIL:
                     ok = send_custom_email(domain, brand_key, found_urls)
@@ -920,18 +1129,26 @@ async def main():
                 for name, ok in domain_results
             )
             dup_marker = " 🔁 *(TEKRAR RAPOR — daha önce de gönderilmişti)*" if domain in already_reported else ""
+            mule_note = ""
+            if mule_correlations:
+                mule_note = " 🧬 *Mule tekrarı:* " + "; ".join(
+                    f"{c['value']} → {', '.join(c['seen_on'])}" for c in mule_correlations
+                )
             summary_lines.append(
-                f"🎯 `{domain}` ({brand_name}, {len(found_urls)} kanıt URL, reporter: {reporter_email_for(brand_key)}){dup_marker}\n   {status_str}"
+                f"🎯 `{domain}` ({brand_name}, {len(found_urls)} kanıt URL, reporter: {reporter_email_for(brand_key)}){dup_marker}{mule_note}\n   {status_str}"
             )
             results_json["domains"].append({
                 "domain": domain,
                 "brand": brand_name,
                 "found_urls_count": len(found_urls),
+                "found_urls": found_urls,
                 "reporter_email": reporter_email_for(brand_key),
                 "already_reported_before": domain in already_reported,
                 "registrar": registrar_info,
                 "host": host_info,
                 "channels": channels_json,
+                "mule_detected": mule_info,
+                "mule_correlations": mule_correlations,
             })
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     msg = f"📋 *[PANEL] Manuel Şikayet Dispatch* — {now}\n\n"
