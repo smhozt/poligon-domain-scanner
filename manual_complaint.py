@@ -283,6 +283,12 @@ CLUSTER_MAP = {
     # YENİ 20 Ağu 2026 — betsat1718.com üzerinden Cloudflare'in host teyit
     # mailiyle netleşti: PFCLOUD UG (haftungsbeschrankt), DE
     frozenset({"elsa", "norm"}):        "pfcloud",
+    # YENİ 21 Ağu 2026 — Cloudflare host teyit mailleriyle netleşen 5 yeni cluster
+    frozenset({"damiete", "elisa"}):        "pfcloud_vmheaven",     # betsatnetresmilucky.icu
+    frozenset({"evangeline", "sullivan"}):  "privatelayer",         # betsat-2026-giris.com
+    frozenset({"elinore", "julio"}):        "vpsdatacenter",        # superbetin2089.co
+    frozenset({"kehlani", "yahir"}):        "frostyhosting",        # betsatresmigiris.co
+    frozenset({"camilo", "hera"}):          "netiface",             # betsatgirtekadres1.com (aynı zamanda eski bilinmeyen superbetin2199.com'u da çözüyor)
 }
 DEAD_DOMAIN = "__dead__"
 def get_ns_labels(domain, retries=2):
