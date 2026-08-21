@@ -130,6 +130,7 @@ WEB_FORM_ONLY_REGISTRARS = {
     "squarespace": {"display": "Squarespace Domains",         "form_url": "https://support.squarespace.com/hc/en-us/requests/new?ticket_form_id=23532118441357"},
     "dominet":     {"display": "Dominet (HK) / Alibaba Cloud", "form_url": "https://report.alibabacloud.com/#/reportCenter/home"},
     "gname":       {"display": "Gname.com Pte. Ltd.",         "form_url": "https://www.gname.com/abuse/category/2"},
+    "digitalocean": {"display": "DigitalOcean LLC",           "form_url": "https://www.digitalocean.com/company/contact/#abuse"},
 }
 def web_form_only_match(registrar_name):
     if not registrar_name:
