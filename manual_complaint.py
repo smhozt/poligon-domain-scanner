@@ -90,6 +90,7 @@ HOSTS = {
     "evoxt":           {"name": "Evoxt Sdn. Bhd.",                       "abuse": ["abuse@evoxt.com"]},
     "cloudzy":         {"name": "RouterHosting/Cloudzy",                 "abuse": ["abuse-reports@cloudzy.com"]},
     "koddos":          {"name": "KoDDoS / Amarutu Technology Ltd",       "abuse": ["abuse@koddos.com", "abuse@koddos.net"]},
+    "pfcloud_vmheaven": {"name": "Pfcloud UG (vmheaven.io)",              "abuse": ["abuse@vmheaven.io"]},
     "gannon_nancy_ambiguous": {"name": "PLAY2GO INTERNATIONAL LIMITED / Omegatech LTD / SYNLINQ (belirsiz)", "abuse": ["abuse@play2go.cloud", "abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "play2go":         {"name": "PLAY2GO INTERNATIONAL LIMITED",         "abuse": ["abuse@play2go.cloud"]},
     "namecheap":       {"name": "Namecheap, Inc.",                       "abuse": ["abuse@namecheaphosting.com"]},
