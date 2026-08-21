@@ -289,6 +289,7 @@ CLUSTER_MAP = {
     frozenset({"elinore", "julio"}):        "vpsdatacenter",        # superbetin2089.co
     frozenset({"kehlani", "yahir"}):        "frostyhosting",        # betsatresmigiris.co
     frozenset({"camilo", "hera"}):          "netiface",             # betsatgirtekadres1.com (aynı zamanda eski bilinmeyen superbetin2199.com'u da çözüyor)
+    frozenset({"crystal", "marty"}):        "frostyhosting",        # betsatonline.co (tr. subdomain üzerinden Cloudflare zaten teyit etmişti)
 }
 DEAD_DOMAIN = "__dead__"
 def get_ns_labels(domain, retries=2):
