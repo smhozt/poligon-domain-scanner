@@ -16,7 +16,7 @@ SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 # ============================================================
 # TURKBET WHİTELİST — Bizim domainlerimiz
 # NOT: Turkbet'in domain formatı [num]turkbet.com (sayı önde!)
-# Resmi güncel adres: 749turkbet.com
+# Resmi güncel adres: 758turkbet.com
 # ============================================================
 TURKBET_WHITELIST = set([
     "turkbet.com",
@@ -218,21 +218,49 @@ async def main():
             domains_to_scan.append((f"{num}turkbet.{tld}", f"TURKBET-{tld.upper()}", set()))
             domains_to_scan.append((f"turkbet{num}.{tld}", f"TURKBET-{tld.upper()}-TERS", set()))
     # 10. .CAM DEPOSIT-SUBDOMAIN KONTROLÜ (v2 — 22 Tem 2026)
-    # Resmi aktif numara (749) için ANA domain (zaten yukarıdaki
-    # alt-TLD döngüsünde 700-2001 aralığında olduğu için taranıyor,
-    # burada tutarlılık/güvence için açıkça tekrar ekleniyor) ve
+    # Resmi aktif numara için ANA domain (zaten yukarıdaki alt-TLD
+    # döngüsünde 700-2001 aralığında olduğu için taranıyor, burada
+    # tutarlılık/güvence için açıkça tekrar ekleniyor) ve
     # yatirim/tr/m/payment/odeme subdomain'leri kontrol ediliyor —
     # betsat1605.cam fraud'unda görülen "yatirim.betsat1605.cam/havale/" deseni.
+    # GÜNCELLENDİ (23 Ağu 2026): resmi domain 749 → 757 → 758'e değişti,
+    # liste güncellendi (eski 749 çıkarıldı, 758/757 eklendi).
     print("📷 Turkbet .cam deposit-subdomain kontrolü üretiliyor...")
     # "724" de eklendi (v3 — 05 Ağu 2026): resmi bir numara değil ama
     # aktörün Superbetin tarafında en sık kullandığı sabit sayı — marka
     # geçişi ihtimaline karşı önlem olarak Turkbet'e de eklendi.
-    CAM_DEPOSIT_CHECK_NUMBERS = [749, 724]
+    CAM_DEPOSIT_CHECK_NUMBERS = [758, 757, 724]
     CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
     for onum in CAM_DEPOSIT_CHECK_NUMBERS:
         domains_to_scan.append((f"{onum}turkbet.cam", "CAM-TLD-SWAP", set()))
         for sub in CAM_DEPOSIT_SUBS:
             domains_to_scan.append((f"{sub}.{onum}turkbet.cam", "CAM-TLD-SWAP-DEPOSIT-SUB", set()))
+    # ── 11. .LIVE ÖNEKLİ (PREFIX) VARYASYONLAR — YENİ (23 Ağu 2026) ──
+    # Superbetin/Betsat tarafında m-superbetin1353.live gibi tireli
+    # önekli .live domainleri gerçek fraud olarak bulundu. Bare .live
+    # zaten 9. bölümdeki alt-TLD döngüsünde (700-2001, ileri+ters)
+    # taranıyor — ama önekli haller (m-758turkbet.live, mturkbet758.live
+    # gibi) hiç üretilmiyordu, çünkü önek bloğu (7/7b) sadece .com'a
+    # hardcode edilmişti. Diğer 5 alt-TLD'ye (vip/icu/net/org/cam)
+    # bilinçli olarak ÖNEK genişletmesi yapılmıyor — sadece somut fraud
+    # görülen .live için, kombinatoryal patlamayı önlemek adına.
+    print("🟢 Turkbet .live önekli varyasyonları üretiliyor...")
+    LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-"]
+    LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    for num in range(700, 2001):
+        for prefix in LIVE_PREFIXES:
+            domains_to_scan.append((f"{prefix}{num}turkbet.live", "LIVE-PREFIX-PATTERN", set()))
+            domains_to_scan.append((f"{prefix}turkbet{num}.live", "LIVE-PREFIX-PATTERN-TERS", set()))
+        for prefix in LIVE_NOHYPHEN_PREFIXES:
+            domains_to_scan.append((f"{prefix}{num}turkbet.live", "LIVE-PREFIX-NOHYPHEN", set()))
+            domains_to_scan.append((f"{prefix}turkbet{num}.live", "LIVE-PREFIX-NOHYPHEN-TERS", set()))
+    # .cam bloğuyla aynı mantık: bilinen/güncel resmi numaralar için
+    # deposit-subdomain derin taraması, .live için de.
+    LIVE_DEPOSIT_CHECK_NUMBERS = [758, 757, 724]
+    LIVE_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
+    for onum in LIVE_DEPOSIT_CHECK_NUMBERS:
+        for sub in LIVE_DEPOSIT_SUBS:
+            domains_to_scan.append((f"{sub}.{onum}turkbet.live", "LIVE-TLD-SWAP-DEPOSIT-SUB", set()))
     print(f"🚀 Toplam {len(domains_to_scan)} Turkbet domain taranacak...")
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
@@ -251,6 +279,7 @@ async def main():
         )
         for item in found:
             icon = (
+                "🟢" if "LIVE" in item["type"] else
                 "📷" if "CAM" in item["type"] else
                 "5️⃣" if item["type"] == "TERS-5HANE" else
                 "🌐" if "CO-" in item["type"] or "TURKBET-" in item["type"] else
