@@ -37,24 +37,24 @@ BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        # GÜNCELLENDİ 20 Ağu 2026 — superbetin2093.com artık pasif, aktif adres superbetin2094.com
-        "active_domains": ["superbetin.com", "superbetin2094.com"],
+        # GÜNCELLENDİ 25 Ağu 2026 — aktif adres superbetin2097.com
+        "active_domains": ["superbetin.com", "superbetin2097.com"],
         "signature_email": "yardim@superbetin.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 20 Ağu 2026 — aktif adres betsat1616.com
-        "active_domains": ["betsat.com", "betsat1616.com"],
+        # GÜNCELLENDİ 25 Ağu 2026 — aktif adres betsat1618.com
+        "active_domains": ["betsat.com", "betsat1618.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        # GÜNCELLENDİ 21 Ağu 2026 — aktif adres 758turkbet.com
-        "active_domains": ["turkbet.io", "758turkbet.com"],
+        # GÜNCELLENDİ 25 Ağu 2026 — aktif adres 759turkbet.com
+        "active_domains": ["turkbet.io", "759turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
@@ -80,6 +80,11 @@ HOSTS = {
     "sollutium":       {"name": "Unnamed host (sollutium.com)", "abuse": ["abuse@sollutium.com"]},
     "omegatech":       {"name": "Omegatech LTD",                        "abuse": ["abuse@pitline.net", "abuse@omegatech.sc"]},
     "virtualsystems":  {"name": "Virtual Systems LLC",                  "abuse": ["abuse@wehostservers.com"]},
+    # YENİ 25 Ağu 2026 — tr.betsatanasite-girisi.icu üzerinden Cloudflare trademark
+    # host teyidiyle netleşti. Aynı isimdeki mevcut "virtualsystems" key'i
+    # (abuse@wehostservers.com) ile farklı abuse adresi taşıdığı için ayrı tutuldu —
+    # aynı şirket mi değil mi teyitsiz, karıştırmamak için bilerek ayrı key.
+    "virtualsystems_vsys": {"name": "Virtual Systems LLC (v-sys.org)",  "abuse": ["abuse@v-sys.org"]},
     "blazedge":        {"name": "Blazedge",                             "abuse": ["abuse@blazedge.com"]},
     "advin":           {"name": "Advin Services LLC",                   "abuse": ["anush@advinservers.com"]},
     "swissnet":        {"name": "SwissNet LLC",                          "abuse": ["abuse@swissnetwork.io"]},
@@ -272,7 +277,10 @@ CLUSTER_MAP = {
     frozenset({"cash", "macy"}):        "weridata",
     frozenset({"cortney", "denver"}):   "privatelayer",
     frozenset({"pedro", "susan"}):      "ipvendetta",
-    frozenset({"elmo", "romina"}):      "netiface",
+    # DÜZELTİLDİ 25 Ağu 2026 — m-superbetin2096.com üzerinden panel host tespiti
+    # bunu "Evoxt Sdn. Bhd." olarak teyit etti (eskiden yanlışlıkla "netiface"
+    # olarak eşleşiyordu, üzerine yazıldı)
+    frozenset({"elmo", "romina"}):      "evoxt",
     frozenset({"clayton", "jade"}):     "vpsdatacenter",
     frozenset({"nitin", "raina"}):      "colocatel",
     # YENİ 20 Ağu 2026 — betsat-uefa.icu teyidi
@@ -293,6 +301,12 @@ CLUSTER_MAP = {
     frozenset({"kehlani", "yahir"}):        "frostyhosting",        # betsatresmigiris.co
     frozenset({"camilo", "hera"}):          "netiface",             # betsatgirtekadres1.com (aynı zamanda eski bilinmeyen superbetin2199.com'u da çözüyor)
     frozenset({"crystal", "marty"}):        "frostyhosting",        # betsatonline.co (tr. subdomain üzerinden Cloudflare zaten teyit etmişti)
+    # YENİ 25 Ağu 2026 — tr.betsatanasite-girisi.icu üzerinden Cloudflare
+    # trademark host teyidiyle netleşti: Virtual Systems LLC (abuse@v-sys.org)
+    frozenset({"julio", "piper"}):          "virtualsystems_vsys",
+    # YENİ 25 Ağu 2026 — superbetin2208.com üzerinden Cloudflare trademark host
+    # teyidiyle netleşti: AlexHost SRL, MD
+    frozenset({"jim", "sneh"}):             "alexhost",
 }
 DEAD_DOMAIN = "__dead__"
 # ============================================================
@@ -410,6 +424,7 @@ HOST_IP_KEYWORDS = [
     ("sollutium", "sollutium"),
     ("wehostservers", "virtualsystems"),
     ("virtual systems", "virtualsystems"),
+    ("v-sys", "virtualsystems_vsys"),
     ("private-data-center", "vpsdatacenter"),
     ("vps datacenter", "vpsdatacenter"),
 ]
