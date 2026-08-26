@@ -195,7 +195,12 @@ CLUSTER_MAP = {
     frozenset({"delilah", "jack"}):     "swissnet",
     frozenset({"eloise", "peter"}):     "swissnet",
     frozenset({"corey", "teresa"}):     "swissnet",
-    frozenset({"elinore", "patrick"}):  "elinore_patrick_ambiguous",
+    # DÜZELTİLDİ 26 Ağu 2026 — artık belirsiz değil: betsatdirect.live,
+    # betsatmobil.co, betsatguncelgiris.live üzerinden AYNI GÜN 3 bağımsız
+    # Cloudflare host teyidi hepsi "VPS Dedicated LLC, abuse@vpsdedicated.net"
+    # dedi (SwissNet/FrostyHosting değil) — netiface'in abuse listesinde
+    # vpsdedicated.net zaten var
+    frozenset({"elinore", "patrick"}):  "netiface",
     frozenset({"stevie", "wilson"}):    "netiface",
     frozenset({"jen", "paul"}):         "pfcloud",
     frozenset({"fattouche", "luciane"}): "swissnet",
@@ -285,6 +290,12 @@ CLUSTER_MAP = {
     frozenset({"nitin", "raina"}):      "colocatel",
     # YENİ 20 Ağu 2026 — betsat-uefa.icu teyidi
     frozenset({"imani", "kipp"}):       "koddos",
+    # YENİ 26 Ağu 2026 — betsat1636.cam üzerinden Cloudflare trademark host
+    # teyidiyle netleşti: Evoxt Sdn. Bhd.
+    frozenset({"karl", "nova"}):        "evoxt",
+    # YENİ 26 Ağu 2026 — superbetinonlinetr.icu üzerinden Cloudflare trademark
+    # host teyidiyle netleşti: VPS Dedicated LLC, abuse@abusehandler.net
+    frozenset({"donald", "eve"}):       "netiface",
     # YENİ 20 Ağu 2026 — superbetinonlinetr.icu, VPS Dedicated LLC teyitli ama hangi
     # abuse adresi net değil, şimdilik ikisine de gidiyor (netiface + flashwisp)
     frozenset({"dayana", "kurt"}):      "dayana_kurt_ambiguous",
