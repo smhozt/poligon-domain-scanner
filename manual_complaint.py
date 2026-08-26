@@ -296,6 +296,9 @@ CLUSTER_MAP = {
     # YENİ 26 Ağu 2026 — superbetinonlinetr.icu üzerinden Cloudflare trademark
     # host teyidiyle netleşti: VPS Dedicated LLC, abuse@abusehandler.net
     frozenset({"donald", "eve"}):       "netiface",
+    # YENİ 26 Ağu 2026 — superbetinhizlierisim.icu üzerinden Cloudflare
+    # trademark host teyidiyle netleşti: FranTech Solutions
+    frozenset({"drake", "paris"}):      "frantech",
     # YENİ 20 Ağu 2026 — superbetinonlinetr.icu, VPS Dedicated LLC teyitli ama hangi
     # abuse adresi net değil, şimdilik ikisine de gidiyor (netiface + flashwisp)
     frozenset({"dayana", "kurt"}):      "dayana_kurt_ambiguous",
