@@ -321,6 +321,9 @@ CLUSTER_MAP = {
     # YENİ 25 Ağu 2026 — superbetin2208.com üzerinden Cloudflare trademark host
     # teyidiyle netleşti: AlexHost SRL, MD
     frozenset({"jim", "sneh"}):             "alexhost",
+    # YENİ 27 Ağu 2026 — m-betsat1645.cam üzerinden Cloudflare trademark
+    # host teyidiyle netleşti: Pfcloud UG (haftungsbeschrankt), DE
+    frozenset({"magali", "neil"}):          "pfcloud",
 }
 DEAD_DOMAIN = "__dead__"
 # ============================================================
