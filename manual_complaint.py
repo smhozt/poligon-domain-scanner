@@ -328,6 +328,12 @@ CLUSTER_MAP = {
     # teyidiyle netleşti: VPS Dedicated LLC. betsat1.cam de aynı cluster'da
     # görülüyor, henüz ayrıca teyit edilmedi ama muhtemelen aynı host.
     frozenset({"bethany", "cosmin"}):       "netiface",
+    # YENİ 28 Ağu 2026 — superbetin-tekgirisimiz.icu üzerinden Cloudflare
+    # trademark host teyidiyle netleşti: VPS Dedicated LLC, US (flashwisp.com.ng)
+    frozenset({"chase", "kelly"}):          "vpsdedicated_flashwisp",
+    # YENİ 28 Ağu 2026 — superbetingercek724.co üzerinden Cloudflare
+    # trademark host teyidiyle netleşti: VPS Dedicated LLC (abuse@abusehandler.net)
+    frozenset({"kelly", "kolton"}):         "netiface",
 }
 DEAD_DOMAIN = "__dead__"
 # ============================================================
