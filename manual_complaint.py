@@ -324,6 +324,10 @@ CLUSTER_MAP = {
     # YENİ 27 Ağu 2026 — m-betsat1645.cam üzerinden Cloudflare trademark
     # host teyidiyle netleşti: Pfcloud UG (haftungsbeschrankt), DE
     frozenset({"magali", "neil"}):          "pfcloud",
+    # YENİ 28 Ağu 2026 — betsat2.cam üzerinden Cloudflare trademark host
+    # teyidiyle netleşti: VPS Dedicated LLC. betsat1.cam de aynı cluster'da
+    # görülüyor, henüz ayrıca teyit edilmedi ama muhtemelen aynı host.
+    frozenset({"bethany", "cosmin"}):       "netiface",
 }
 DEAD_DOMAIN = "__dead__"
 # ============================================================
