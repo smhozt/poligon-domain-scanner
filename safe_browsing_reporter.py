@@ -17,13 +17,13 @@ SAFE_BROWSING_API = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 # yapısı — tutarlılık için buraya da taşındı.
 BRANDS = {
     "superbetin": {
-        "active_domains": ["superbetin.com", "superbetin2097.com"],
+        "active_domains": ["superbetin.com", "superbetin2098.com"],
     },
     "betsat": {
-        "active_domains": ["betsat.com", "betsat1618.com"],
+        "active_domains": ["betsat.com", "betsat1619.com"],
     },
     "turkbet": {
-        "active_domains": ["turkbet.io", "759turkbet.com"],
+        "active_domains": ["turkbet.io", "760turkbet.com"],
     },
 }
 # ============================================================
