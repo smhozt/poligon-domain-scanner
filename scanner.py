@@ -185,6 +185,25 @@ async def send_telegram(message):
                 "text": message,
                 "parse_mode": "Markdown"
             })
+# ============================================================
+# HOMOGLYPH (RAKAM↔HARF) TYPOSQUAT ÜRETİCİ — YENİ (3 Eyl 2026)
+# superbetin2l00.com (rakam "1" → görsel olarak neredeyse ayırt
+# edilemeyen küçük harf "l") canlı, aktif bir credential-harvesting
+# phishing sitesi olarak bulundu — resmi domain'in (superbetin2100.com)
+# birebir homoglyph typosquat'ı. Aynı üretici betsat_scanner.py'ye de
+# eklendi. Sayının her "1" veya "0" hanesini TEK TEK (bir seferde bir
+# hane) değiştirip varyasyon üretir: 2100 → 2l00, 2100 → 21o0 (ayrı
+# varyasyonlar — gerçek saldırıda da tek hane değiştiriliyordu).
+# ============================================================
+def generate_homoglyph_number_variants(num):
+    s = str(num)
+    swap_map = {"1": "l", "0": "o"}
+    variants = []
+    for i, ch in enumerate(s):
+        if ch in swap_map:
+            variant = s[:i] + swap_map[ch] + s[i + 1:]
+            variants.append(variant)
+    return list(dict.fromkeys(variants))
 async def main():
     reported = load_reported()
     found = []
@@ -264,46 +283,31 @@ async def main():
     #
     # BUG FIX (13 Ağu 2026, betsat_scanner.py'deki aynı hatanın burada
     # tekrarı): Eskiden bu döngü sadece SUPERBETIN_GAPS + SUPERBETIN_RANGE
-    # (1975-3001) numaralarını tarıyordu. Şu an için güncel resmi numara
-    # (2090) bu aralığın içinde olduğu için kör nokta DEĞİL — ama resmi
-    # numara ileride 3001'in üzerine çıkarsa (HIGH_RANGE'e girerse) ya da
-    # 1975'in altına bir numaraya dönerse (ki bu marka geçmişinde daha
-    # önce olmuştu — 1813-1974 aralığı da eskiden resmiydi), aynı kör
-    # nokta betsat1612.cam vakasındaki gibi sessizce oluşur. Artık .cam
-    # için WHITELIST/GAPS/RANGE ayrımı yapılmadan TAM 1-9999 aralığı
-    # taranıyor — resmi numara hangi aralıkta olursa olsun kapsanıyor.
-    # (HIGH_RANGE'in tamamını, yani 30000'e kadarını .cam'e açmıyoruz —
-    # o kısım .com tarafında salt fraud-numaralandırma taraması için,
-    # gerçekçi resmi domain alanı hiçbir zaman oraya çıkmadı; 1-9999
-    # betsat_scanner.py ile tutarlı ve yeterli güvence payı sağlıyor.)
+    # (1975-3001) numaralarını tarıyordu. Artık .cam için WHITELIST/GAPS/
+    # RANGE ayrımı yapılmadan TAM 1-9999 aralığı taranıyor — resmi numara
+    # hangi aralıkta olursa olsun kapsanıyor.
     print("📷 Superbetin .cam TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
     for num in range(1, 10000):
         domains_to_scan.append((f"superbetin{num}.cam", "CAM-TLD-SWAP", set()))
-    # Bilinen/güncel resmi numaralar için ayrıca deposit-subdomain
-    # (yatirim/tr/m/payment/odeme) derin taraması. Ana domain artık
-    # yukarıdaki tam 1-9999 taramasında zaten kapsandığı için burada
-    # tekrar eklenmiyor — sadece subdomain'ler.
-    # "724" listede: resmi bir numara değil ama bu sezon boyunca
-    # aktörün en sık kullandığı sabit sayı (superbetingiris724.co,
-    # superbetinerisimadresin724.co gibi düzinelerce domainde görüldü).
-    # "2090" eklendi (13 Ağu 2026): güncel resmi numara.
-    CAM_DEPOSIT_CHECK_NUMBERS = [2077, 724, 2090]
-    CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
-    for onum in CAM_DEPOSIT_CHECK_NUMBERS:
-        for sub in CAM_DEPOSIT_SUBS:
-            domains_to_scan.append((f"{sub}.superbetin{onum}.cam", "CAM-TLD-SWAP-DEPOSIT-SUB", set()))
+    # CAM ÖNEK TARAMASI — YENİ (3 Eyl 2026): betsat_scanner.py'de olduğu
+    # gibi, .live tarafında zaten m-/tr-/www-/vip- (tireli ve tiresiz)
+    # önek taraması vardı, .cam tarafında hiç yoktu — asimetri kapatıldı.
+    print("🔗 Superbetin .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
+    CAM_PREFIXES = ["m-", "tr-", "www-", "vip-"]
+    CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    for num in range(100, 2501):
+        for prefix in CAM_PREFIXES:
+            domains_to_scan.append((f"{prefix}superbetin{num}.cam", "CAM-TLD-SWAP-PREFIX", set()))
+        for prefix in CAM_NOHYPHEN_PREFIXES:
+            domains_to_scan.append((f"{prefix}superbetin{num}.cam", "CAM-TLD-SWAP-PREFIX-NOHYPHEN", set()))
+    # NOT (3 Eyl 2026): Root domain (superbetin{num}.cam) bulunduktan
+    # sonra yatirim/tr/m/payment/odeme gibi deposit-subdomain'lerini
+    # AYRICA taramıyoruz artık — kaldırıldı (betsat_scanner.py'deki
+    # aynı gerekçe: bulunan her root zaten Telegram'a düşüyor, subdomain/
+    # deposit-akışı incelemesi elle yapılıyor; sabit sayı listesi de
+    # sürekli eskiyip stale kalıyordu — burada 2090 yazıyordu, güncel
+    # resmi domain çoktan 2100'e geçmişti).
     # ── 13. .LIVE TLD-SWAP TARAMASI — YENİ (23 Ağu 2026) ──
-    # m-superbetin1353.live vakası: bu domain hem .com/.cam/.co
-    # taramasında (TLD yok) hem de vip_scanner_v21.py'de (o script
-    # sayısal sıra üretmiyor, sadece güncel 3 resmi numarayı TLD-swap
-    # ediyor, 1353 gibi rastgele eski/fraud numaraları değil) kör
-    # noktaya düşüyordu. Aynı .cam bloğundaki mantık (WHITELIST/GAPS/
-    # RANGE ayrımı yapmadan tam 1-9999 aralığı) burada da uygulanıyor.
-    #
-    # Ayrıca .cam bloğunun aksine, gerçek vakada görülen "m-" gibi
-    # tireli ÖNEK de var (m-superbetin1353.live) — bu yüzden sadece
-    # bare "superbetinNNNN.live" değil, PREFIX-PATTERN'daki aynı önek
-    # listesiyle tireli ve tiresiz önekli haller de üretiliyor.
     print("🟢 Superbetin .live TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
     for num in range(1, 10000):
         domains_to_scan.append((f"superbetin{num}.live", "LIVE-TLD-SWAP", set()))
@@ -314,13 +318,16 @@ async def main():
             domains_to_scan.append((f"{prefix}superbetin{num}.live", "LIVE-TLD-SWAP-PREFIX", set()))
         for prefix in LIVE_NOHYPHEN_PREFIXES:
             domains_to_scan.append((f"{prefix}superbetin{num}.live", "LIVE-TLD-SWAP-PREFIX-NOHYPHEN", set()))
-    # Bilinen/güncel resmi numaralar için deposit-subdomain derin
-    # taraması (.cam bloğuyla aynı mantık).
-    LIVE_DEPOSIT_CHECK_NUMBERS = [2077, 724, 2090, 2094]
-    LIVE_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
-    for onum in LIVE_DEPOSIT_CHECK_NUMBERS:
-        for sub in LIVE_DEPOSIT_SUBS:
-            domains_to_scan.append((f"{sub}.superbetin{onum}.live", "LIVE-TLD-SWAP-DEPOSIT-SUB", set()))
+    # NOT (3 Eyl 2026): .cam ile aynı sebepten deposit-subdomain derin
+    # taraması burada da kaldırıldı — bkz. yukarıdaki not.
+    # HOMOGLYPH (RAKAM↔HARF) — .com/.cam/.live üçünde birden.
+    # bkz. generate_homoglyph_number_variants() tanımındaki not.
+    print("👁️ Homoglyph (1→l, 0→o) varyasyonları üretiliyor (.com/.cam/.live)...")
+    for num in range(1000, 3001):
+        for variant_num in generate_homoglyph_number_variants(num):
+            domains_to_scan.append((f"superbetin{variant_num}.com", "TYPO-HOMOGLYPH", set()))
+            domains_to_scan.append((f"superbetin{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH", set()))
+            domains_to_scan.append((f"superbetin{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH", set()))
     print(f"🚀 Toplam {len(domains_to_scan)} domain taranacak...")
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
@@ -339,6 +346,7 @@ async def main():
         )
         for item in found:
             icon = (
+                "👁️" if "HOMOGLYPH" in item["type"] else
                 "📷" if "CAM-TLD-SWAP" in item["type"] else
                 "🟢" if "LIVE-TLD-SWAP" in item["type"] else
                 "3️⃣" if item["type"] == "3HANE-TARAMA" else
