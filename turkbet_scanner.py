@@ -151,6 +151,25 @@ async def send_telegram(message):
                 "text": message,
                 "parse_mode": "Markdown"
             })
+# ============================================================
+# HOMOGLYPH (RAKAM↔HARF) TYPOSQUAT ÜRETİCİ — YENİ (3 Eyl 2026)
+# superbetin2l00.com (rakam "1" → görsel olarak neredeyse ayırt
+# edilemeyen küçük harf "l") canlı, aktif bir credential-harvesting
+# phishing sitesi olarak bulundu — resmi domain'in birebir homoglyph
+# typosquat'ı. Aynı üretici betsat_scanner.py ve superbetin_scanner.py'ye
+# de eklendi. Sayının her "1" veya "0" hanesini TEK TEK (bir seferde
+# bir hane) değiştirip varyasyon üretir: 761 → 76l, 761 → l61 (ayrı
+# varyasyonlar).
+# ============================================================
+def generate_homoglyph_number_variants(num):
+    s = str(num)
+    swap_map = {"1": "l", "0": "o"}
+    variants = []
+    for i, ch in enumerate(s):
+        if ch in swap_map:
+            variant = s[:i] + swap_map[ch] + s[i + 1:]
+            variants.append(variant)
+    return list(dict.fromkeys(variants))
 async def main():
     reported = load_reported()
     found = []
@@ -208,42 +227,52 @@ async def main():
     for num in range(700, 2001):
         domains_to_scan.append((f"{num}turkbet.co", "CO-TYPO", set()))
         domains_to_scan.append((f"turkbet{num}.co", "CO-TERS", set()))
-    # 9. DİĞER ALT TLD'LER
-    # v2 — 22 Tem 2026: "cam" eklendi. betsat1605.cam ve
-    # (öngörülen) superbetin2077.cam ile aynı fraud deseni —
-    # resmi domain birebir, sadece TLD değişiyor.
-    print("🌐 Turkbet alt TLD varyasyonları taranıyor...")
+    # 9. DİĞER ALT TLD'LER (vip/icu/net/org) — 700-2001 aralığı yeterli,
+    # bu TLD'lerde şimdiye kadar somut fraud görülmediği için genişletilmedi.
+    # NOT (3 Eyl 2026): .cam ve .live buradan ÇIKARILDI — artık kendi
+    # bölümlerinde (10 ve 12) betsat_scanner.py/superbetin_scanner.py ile
+    # tutarlı şekilde TAM 1-9999 aralığında taranıyorlar (bkz. aşağı).
+    print("🌐 Turkbet alt TLD varyasyonları taranıyor (vip/icu/net/org)...")
     for num in range(700, 2001):
-        for tld in ["vip", "icu", "live", "net", "org", "cam"]:
+        for tld in ["vip", "icu", "net", "org"]:
             domains_to_scan.append((f"{num}turkbet.{tld}", f"TURKBET-{tld.upper()}", set()))
             domains_to_scan.append((f"turkbet{num}.{tld}", f"TURKBET-{tld.upper()}-TERS", set()))
-    # 10. .CAM DEPOSIT-SUBDOMAIN KONTROLÜ (v2 — 22 Tem 2026)
-    # Resmi aktif numara için ANA domain (zaten yukarıdaki alt-TLD
-    # döngüsünde 700-2001 aralığında olduğu için taranıyor, burada
-    # tutarlılık/güvence için açıkça tekrar ekleniyor) ve
-    # yatirim/tr/m/payment/odeme subdomain'leri kontrol ediliyor —
-    # betsat1605.cam fraud'unda görülen "yatirim.betsat1605.cam/havale/" deseni.
-    # GÜNCELLENDİ (23 Ağu 2026): resmi domain 749 → 757 → 758'e değişti,
-    # liste güncellendi (eski 749 çıkarıldı, 758/757 eklendi).
-    print("📷 Turkbet .cam deposit-subdomain kontrolü üretiliyor...")
-    # "724" de eklendi (v3 — 05 Ağu 2026): resmi bir numara değil ama
-    # aktörün Superbetin tarafında en sık kullandığı sabit sayı — marka
-    # geçişi ihtimaline karşı önlem olarak Turkbet'e de eklendi.
-    CAM_DEPOSIT_CHECK_NUMBERS = [758, 757, 724]
-    CAM_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
-    for onum in CAM_DEPOSIT_CHECK_NUMBERS:
-        domains_to_scan.append((f"{onum}turkbet.cam", "CAM-TLD-SWAP", set()))
-        for sub in CAM_DEPOSIT_SUBS:
-            domains_to_scan.append((f"{sub}.{onum}turkbet.cam", "CAM-TLD-SWAP-DEPOSIT-SUB", set()))
-    # ── 11. .LIVE ÖNEKLİ (PREFIX) VARYASYONLAR — YENİ (23 Ağu 2026) ──
-    # Superbetin/Betsat tarafında m-superbetin1353.live gibi tireli
-    # önekli .live domainleri gerçek fraud olarak bulundu. Bare .live
-    # zaten 9. bölümdeki alt-TLD döngüsünde (700-2001, ileri+ters)
-    # taranıyor — ama önekli haller (m-758turkbet.live, mturkbet758.live
-    # gibi) hiç üretilmiyordu, çünkü önek bloğu (7/7b) sadece .com'a
-    # hardcode edilmişti. Diğer 5 alt-TLD'ye (vip/icu/net/org/cam)
-    # bilinçli olarak ÖNEK genişletmesi yapılmıyor — sadece somut fraud
-    # görülen .live için, kombinatoryal patlamayı önlemek adına.
+    # ── 10. .CAM TLD-SWAP TARAMASI — GÜNCELLENDİ (3 Eyl 2026) ──
+    # betsat_scanner.py / superbetin_scanner.py ile aynı mantığa
+    # getirildi: sabit sayı listesi yerine TAM 1-9999 aralığı, her iki
+    # yönde de (NUMturkbet.cam VE turkbetNUM.cam — turkbet761.com'un
+    # kendisi zaten ters-sıra bir typosquat olarak bulundu, format
+    # kararsız). Eski CAM_DEPOSIT_CHECK_NUMBERS = [758, 757, 724] listesi
+    # kaldırıldı — hem stale'di (resmi artık 761/760) hem de deposit-
+    # subdomain derin taraması (yatirim/tr/m/payment/odeme) gereksizdi,
+    # bulunan her root zaten elle inceleniyor.
+    print("📷 Turkbet .cam TLD-swap varyasyonları taranıyor (1-9999 tam aralık, iki yön)...")
+    for num in range(1, 10000):
+        domains_to_scan.append((f"{num}turkbet.cam", "CAM-TLD-SWAP", set()))
+        domains_to_scan.append((f"turkbet{num}.cam", "CAM-TLD-SWAP-TERS", set()))
+    # CAM ÖNEK TARAMASI — YENİ (3 Eyl 2026): .live tarafında zaten
+    # m-/tr-/www-/vip- (tireli ve tiresiz) önek taraması vardı, .cam
+    # tarafında hiç yoktu — asimetri kapatıldı (betsat/superbetin'de
+    # yapılan aynı düzeltme).
+    print("🔗 Turkbet .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
+    CAM_PREFIXES = ["m-", "tr-", "www-", "vip-"]
+    CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    for num in range(700, 2001):
+        for prefix in CAM_PREFIXES:
+            domains_to_scan.append((f"{prefix}{num}turkbet.cam", "CAM-PREFIX-PATTERN", set()))
+            domains_to_scan.append((f"{prefix}turkbet{num}.cam", "CAM-PREFIX-PATTERN-TERS", set()))
+        for prefix in CAM_NOHYPHEN_PREFIXES:
+            domains_to_scan.append((f"{prefix}{num}turkbet.cam", "CAM-PREFIX-NOHYPHEN", set()))
+            domains_to_scan.append((f"{prefix}turkbet{num}.cam", "CAM-PREFIX-NOHYPHEN-TERS", set()))
+    # ── 11. .LIVE TLD-SWAP TARAMASI — GÜNCELLENDİ (3 Eyl 2026) ──
+    # Eskiden bare .live taraması sadece 9. bölümdeki alt-TLD döngüsünde
+    # 700-2001 aralığındaydı — artık .cam ile tutarlı TAM 1-9999,
+    # her iki yönde de.
+    print("🟢 Turkbet .live TLD-swap varyasyonları taranıyor (1-9999 tam aralık, iki yön)...")
+    for num in range(1, 10000):
+        domains_to_scan.append((f"{num}turkbet.live", "LIVE-TLD-SWAP", set()))
+        domains_to_scan.append((f"turkbet{num}.live", "LIVE-TLD-SWAP-TERS", set()))
+    # ── 12. .LIVE ÖNEKLİ (PREFIX) VARYASYONLAR (23 Ağu 2026'dan beri var) ──
     print("🟢 Turkbet .live önekli varyasyonları üretiliyor...")
     LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-"]
     LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
@@ -254,13 +283,21 @@ async def main():
         for prefix in LIVE_NOHYPHEN_PREFIXES:
             domains_to_scan.append((f"{prefix}{num}turkbet.live", "LIVE-PREFIX-NOHYPHEN", set()))
             domains_to_scan.append((f"{prefix}turkbet{num}.live", "LIVE-PREFIX-NOHYPHEN-TERS", set()))
-    # .cam bloğuyla aynı mantık: bilinen/güncel resmi numaralar için
-    # deposit-subdomain derin taraması, .live için de.
-    LIVE_DEPOSIT_CHECK_NUMBERS = [758, 757, 724]
-    LIVE_DEPOSIT_SUBS = ["yatirim", "tr", "m", "payment", "odeme"]
-    for onum in LIVE_DEPOSIT_CHECK_NUMBERS:
-        for sub in LIVE_DEPOSIT_SUBS:
-            domains_to_scan.append((f"{sub}.{onum}turkbet.live", "LIVE-TLD-SWAP-DEPOSIT-SUB", set()))
+    # NOT (3 Eyl 2026): deposit-subdomain derin taraması (LIVE_DEPOSIT_
+    # CHECK_NUMBERS) burada da kaldırıldı — betsat/superbetin'deki aynı
+    # gerekçe: bulunan her root zaten elle inceleniyor, sabit sayı listesi
+    # sürekli eskiyip stale kalıyordu.
+    # HOMOGLYPH (RAKAM↔HARF) — .com/.cam/.live üçünde, iki yönde de.
+    # bkz. generate_homoglyph_number_variants() tanımındaki not.
+    print("👁️ Homoglyph (1→l, 0→o) varyasyonları üretiliyor (.com/.cam/.live, iki yön)...")
+    for num in range(700, 2001):
+        for variant_num in generate_homoglyph_number_variants(num):
+            domains_to_scan.append((f"{variant_num}turkbet.com", "TYPO-HOMOGLYPH", set()))
+            domains_to_scan.append((f"turkbet{variant_num}.com", "TYPO-HOMOGLYPH-TERS", set()))
+            domains_to_scan.append((f"{variant_num}turkbet.cam", "CAM-TLD-SWAP-HOMOGLYPH", set()))
+            domains_to_scan.append((f"turkbet{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH-TERS", set()))
+            domains_to_scan.append((f"{variant_num}turkbet.live", "LIVE-TLD-SWAP-HOMOGLYPH", set()))
+            domains_to_scan.append((f"turkbet{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH-TERS", set()))
     print(f"🚀 Toplam {len(domains_to_scan)} Turkbet domain taranacak...")
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
@@ -279,6 +316,7 @@ async def main():
         )
         for item in found:
             icon = (
+                "👁️" if "HOMOGLYPH" in item["type"] else
                 "🟢" if "LIVE" in item["type"] else
                 "📷" if "CAM" in item["type"] else
                 "5️⃣" if item["type"] == "TERS-5HANE" else
