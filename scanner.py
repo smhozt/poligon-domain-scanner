@@ -204,6 +204,28 @@ def generate_homoglyph_number_variants(num):
             variant = s[:i] + swap_map[ch] + s[i + 1:]
             variants.append(variant)
     return list(dict.fromkeys(variants))
+# ============================================================
+# ÇİFT HARF TYPOSQUAT ÜRETİCİ — YENİ (3 Eyl 2026)
+# betsat_scanner.py'de vardı, superbetin_scanner.py'de hiç yoktu — bu
+# bir kör noktaydı. superbettin2100.com VE superbettin2101.com ikisi
+# de bugün canlı, aktif phishing sitesi olarak elle bulundu; hiçbir
+# scanner bunları proaktif yakalayamıyordu ("superbettin" sadece
+# vip_scanner.py'nin BRAND_PREFIXES'inde var ama o sadece VIP_KEYWORDS
+# kelimeleriyle birleşiyor, çıplak sayıyla değil — .com zaten "sayısal
+# scanner'lar tarıyor" diye oradan kasıtlı çıkarılmıştı). "superbetin"
+# kelimesinin her harfini sırayla bir kez ikiye katlar (bbetsat gibi
+# değil "ssuperbetin", "suuperbetin", "superrbetin", "superbbetin",
+# "superbeetin", "superbettin", "superbetiin", "superbetinn" —
+# hepsini üretir), sonra tam sayısal aralıkla (1000-3001, dosyadaki
+# diğer typo bloklarıyla tutarlı) birleştirir.
+# ============================================================
+def generate_double_letter_variants(word):
+    variants = []
+    for i in range(len(word)):
+        doubled = word[:i + 1] + word[i] + word[i + 1:]
+        if doubled != word:
+            variants.append(doubled)
+    return list(dict.fromkeys(variants))
 async def main():
     reported = load_reported()
     found = []
@@ -328,6 +350,13 @@ async def main():
             domains_to_scan.append((f"superbetin{variant_num}.com", "TYPO-HOMOGLYPH", set()))
             domains_to_scan.append((f"superbetin{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH", set()))
             domains_to_scan.append((f"superbetin{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH", set()))
+    print("🔤 Çift harf typosquat (superbettin gibi) varyasyonları üretiliyor...")
+    double_letter_words = generate_double_letter_variants("superbetin")
+    print(f"    Üretilen kalıplar: {', '.join(double_letter_words)}")
+    for word in double_letter_words:
+        for num in range(1000, 3001):
+            domains_to_scan.append((f"{word}{num}.com", "TYPO-CIFT-HARF", set()))
+        domains_to_scan.append((f"{word}.com", "TYPO-CIFT-HARF-BARE", set()))
     print(f"🚀 Toplam {len(domains_to_scan)} domain taranacak...")
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
@@ -361,6 +390,7 @@ async def main():
                 "🧷" if "PREFIX-NOHYPHEN" in item["type"] else
                 "🔄" if item["type"] == "TERS-PATTERN" else
                 "🔤" if "SUPERBETSIN" in item["type"] else
+                "✌️" if "CIFT-HARF" in item["type"] else
                 "🔥"
             )
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
