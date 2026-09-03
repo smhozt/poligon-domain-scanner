@@ -359,6 +359,12 @@ CLUSTER_MAP = {
     # YENİ 28 Ağu 2026 — superbetingercek724.co üzerinden Cloudflare
     # trademark host teyidiyle netleşti: VPS Dedicated LLC (abuse@abusehandler.net)
     frozenset({"kelly", "kolton"}):         "netiface",
+    # YENİ 3 Eyl 2026 — betsatgirisburadan.top üzerinden Cloudflare
+    # trademark host teyidiyle netleşti: VPS Dedicated LLC
+    frozenset({"annabel", "razvan"}):       "netiface",
+    # YENİ 3 Eyl 2026 — superbetin-mobil2026.com üzerinden Cloudflare
+    # trademark host teyidiyle netleşti: VPS Dedicated LLC
+    frozenset({"marek", "simone"}):         "netiface",
     # YENİ 3 Eyl 2026 — superbetin-tr.net / superbetinresmi-tr.net / superbetintradres.com
     # üzerinden Cloudflare trademark host teyidiyle netleşti: VPS Dedicated LLC, US
     frozenset({"kinsley", "leonard"}):      "netiface",
