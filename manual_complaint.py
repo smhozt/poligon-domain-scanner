@@ -37,24 +37,24 @@ BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        # GÜNCELLENDİ 27 Ağu 2026 — aktif adres superbetin2098.com
-        "active_domains": ["superbetin.com", "superbetin2098.com"],
+        # GÜNCELLENDİ 3 Eyl 2026 — aktif adres superbetin2100.com (2098 → 2100)
+        "active_domains": ["superbetin.com", "superbetin2100.com"],
         "signature_email": "yardim@superbetin.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 27 Ağu 2026 — aktif adres betsat1619.com
-        "active_domains": ["betsat.com", "betsat1619.com"],
+        # GÜNCELLENDİ 3 Eyl 2026 — aktif adres betsat1620.com (1619 → 1620)
+        "active_domains": ["betsat.com", "betsat1620.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        # GÜNCELLENDİ 27 Ağu 2026 — aktif adres 760turkbet.com
-        "active_domains": ["turkbet.io", "760turkbet.com"],
+        # GÜNCELLENDİ 3 Eyl 2026 — aktif adres 761turkbet.com (760 → 761)
+        "active_domains": ["turkbet.io", "761turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
@@ -78,7 +78,9 @@ HOSTS = {
     "netiface":        {"name": "Netiface LLC / VPS Dedicated LLC",     "abuse": ["abuse@abusehandler.net", "abuse@vpsdedicated.net"]},
     "vpsdedicated_flashwisp": {"name": "VPS Dedicated LLC, US (flashwisp.com.ng)", "abuse": ["abuse@flashwisp.com.ng"]},
     "sollutium":       {"name": "Unnamed host (sollutium.com)", "abuse": ["abuse@sollutium.com"]},
-    "omegatech":       {"name": "Omegatech LTD",                        "abuse": ["abuse@pitline.net", "abuse@omegatech.sc"]},
+    # GÜNCELLENDİ 3 Eyl 2026 — betsat2620.com üzerinden Cloudflare host teyidiyle
+    # yeni abuse adresi eklendi: abuse@virtualine.org (önceki bilinen adreslerden farklı)
+    "omegatech":       {"name": "Omegatech LTD",                        "abuse": ["abuse@pitline.net", "abuse@omegatech.sc", "abuse@virtualine.org"]},
     "virtualsystems":  {"name": "Virtual Systems LLC",                  "abuse": ["abuse@wehostservers.com"]},
     # YENİ 25 Ağu 2026 — tr.betsatanasite-girisi.icu üzerinden Cloudflare trademark
     # host teyidiyle netleşti. Aynı isimdeki mevcut "virtualsystems" key'i
@@ -127,6 +129,15 @@ HOSTS = {
     "ipvendetta":      {"name": "IP Vendetta Inc.",                      "abuse": ["abuse@ipvendetta.com"]},
     "desi_josh_ambiguous": {"name": "SwissNet LLC / VPS Datacenter Ltd (belirsiz)", "abuse": ["abuse@swissnetwork.io", "abuse@private-data-center.com"]},
     "dayana_kurt_ambiguous": {"name": "Netiface LLC / VPS Dedicated LLC, US (flashwisp.com.ng) (belirsiz)", "abuse": ["abuse@abusehandler.net", "abuse@vpsdedicated.net", "abuse@flashwisp.com.ng"]},
+    # YENİ 3 Eyl 2026 — superbetin2561.com / superbetin2l00.com / superbetin2596.com /
+    # superbetin2598.com / superbetin2499.com üzerinden Cloudflare host teyidiyle
+    # ortaya çıktı: 3 farklı NS cluster'ı (amber/milan, marlowe/miguel, dawn/sterling)
+    # hepsi aynı KRNIC (Kore) genel abuse kontağına çıkıyor. Gerçek host henüz
+    # teyitsiz — irt@nic.or.kr sadece netblock'un genel IRT kontağı, muhtemelen
+    # tek bir fiziksel altyapı sağlayıcısı arkasında saklanıyor.
+    "krnic":           {"name": "KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz)", "abuse": ["irt@nic.or.kr"]},
+    # YENİ 3 Eyl 2026 — superbetin-gir2026.icu üzerinden Cloudflare host teyidiyle netleşti
+    "neoncore":        {"name": "Neon Core Network LLC",                 "abuse": ["abuse@neoncore.biz"]},
 }
 WEB_FORM_ONLY_REGISTRARS = {
     "fewmoretaps": {"display": "Trustname / Fewmoretaps OU", "form_url": "https://trustname.com/help/report-abuse"},
@@ -137,6 +148,11 @@ WEB_FORM_ONLY_REGISTRARS = {
     "dominet":     {"display": "Dominet (HK) / Alibaba Cloud", "form_url": "https://report.alibabacloud.com/#/reportCenter/home"},
     "gname":       {"display": "Gname.com Pte. Ltd.",         "form_url": "https://www.gname.com/abuse/category/2"},
     "digitalocean": {"display": "DigitalOcean LLC",           "form_url": "https://www.digitalocean.com/company/contact/#abuse"},
+    # YENİ 3 Eyl 2026 — bugün 3 domain için abuse-contact@sav.com'a atılan mailler
+    # hepsi "we do not take abuse reports via email" canned cevabı aldı. Sav.com
+    # aslında yalnızca web form kabul ediyor — önceki varsayım (email kabul ettiği)
+    # yanlıştı, geçmişte email ile atılan tüm Sav.com raporları işlenmemiş sayılmalı.
+    "sav.com":     {"display": "Sav.com, LLC",                "form_url": "https://abuse.sav.com/sav_com/phishing"},
 }
 def web_form_only_match(registrar_name):
     if not registrar_name:
@@ -175,13 +191,19 @@ CLUSTER_MAP = {
     frozenset({"luciane", "oswald"}):   "luciane_oswald_ambiguous",
     frozenset({"mimi", "sevki"}):       "mimi_sevki_ambiguous",
     frozenset({"ainsley", "tate"}):     "omegatech",
-    frozenset({"cruz", "hasslo"}):      "omegatech",
+    # DÜZELTİLDİ 3 Eyl 2026 — superbetingirisyap.icu üzerinden Cloudflare Phishing
+    # VE Trademark raporlarında ikisi de host olarak FrostyHosting'i teyit etti
+    # (eskiden yanlışlıkla omegatech idi)
+    frozenset({"cruz", "hasslo"}):      "frostyhosting",
     frozenset({"jeremy", "kay"}):       "jeremy_kay_ambiguous",
     frozenset({"aliza", "dean"}):       "netiface",
     frozenset({"chad", "lucy"}):        "netiface",
     frozenset({"cartman", "elma"}):     "virtualsystems",
     frozenset({"maya", "uriah"}):       "virtualsystems",
-    frozenset({"alexia", "burt"}):      "sollutium",
+    # DÜZELTİLDİ 3 Eyl 2026 — superbetin2100.cam ve superbetin2102.cam üzerinden
+    # Cloudflare Trademark host teyidiyle netleşti: Neon Core Network LLC
+    # (eskiden yanlışlıkla sollutium idi)
+    frozenset({"alexia", "burt"}):      "neoncore",
     frozenset({"kanye", "magnolia"}):   "omegatech",
     # GÜNCELLENDİ 20 Ağu 2026 — superbetin-orjinal.icu üzerinden Cloudflare'in host
     # teyit mailiyle netleşti: VPSDEDICATED-AS (VPS Dedicated LLC, US, flashwisp.com.ng),
@@ -334,6 +356,36 @@ CLUSTER_MAP = {
     # YENİ 28 Ağu 2026 — superbetingercek724.co üzerinden Cloudflare
     # trademark host teyidiyle netleşti: VPS Dedicated LLC (abuse@abusehandler.net)
     frozenset({"kelly", "kolton"}):         "netiface",
+    # YENİ 3 Eyl 2026 — superbetin-tr.net / superbetinresmi-tr.net / superbetintradres.com
+    # üzerinden Cloudflare trademark host teyidiyle netleşti: VPS Dedicated LLC, US
+    frozenset({"kinsley", "leonard"}):      "netiface",
+    # YENİ 3 Eyl 2026 — superbetin-canlisports.vip üzerinden Cloudflare trademark
+    # host teyidiyle netleşti: ColocaTel Inc.
+    frozenset({"nikon", "crystal"}):        "colocatel",
+    # YENİ 3 Eyl 2026 — superbetin2561.com / superbetin2l00.com / superbetin2596.com
+    # üzerinden Cloudflare host teyidiyle netleşti: KRNIC genel kontağı (irt@nic.or.kr).
+    # Gerçek host değil, sadece netblock'un genel IRT adresi — bkz. HOSTS["krnic"] notu.
+    frozenset({"amber", "milan"}):          "krnic",
+    frozenset({"marlowe", "miguel"}):       "krnic",
+    # YENİ 3 Eyl 2026 — superbetin2598.com üzerinden aynı KRNIC kontağına çıktı
+    # (amber/milan ve marlowe/miguel ile birlikte üçüncü cluster)
+    frozenset({"dawn", "sterling"}):        "krnic",
+    # YENİ 3 Eyl 2026 — superbetin2225.com üzerinden Cloudflare trademark host
+    # teyidiyle netleşti: SYNLINQ (Oliver Horscht)
+    frozenset({"jen", "mark"}):             "synlinq",
+    # YENİ 3 Eyl 2026 — superbetinadres.com (MERİTKİNG footer izi olan, çapraz-marka
+    # şablon reuse kanıtı) üzerinden Cloudflare trademark host teyidiyle netleşti:
+    # VPS Dedicated LLC, US
+    frozenset({"barbara", "terin"}):        "netiface",
+    # YENİ 3 Eyl 2026 — 2089superbetin.com (2099superbetin.com ile ters-numara
+    # kampanyası) üzerinden Cloudflare trademark host teyidiyle netleşti: SYNLINQ
+    frozenset({"mario", "priscilla"}):      "synlinq",
+    # YENİ 3 Eyl 2026 — betsatdirectgiris.live üzerinden Cloudflare trademark
+    # host teyidiyle netleşti: FrostyHosting
+    frozenset({"drake", "adaline"}):        "frostyhosting",
+    # YENİ 3 Eyl 2026 — superbetin-publicgiris.top üzerinden Cloudflare trademark
+    # host teyidiyle netleşti: ColocaTel Inc.
+    frozenset({"alla", "sean"}):            "colocatel",
 }
 DEAD_DOMAIN = "__dead__"
 # ============================================================
@@ -454,6 +506,10 @@ HOST_IP_KEYWORDS = [
     ("v-sys", "virtualsystems_vsys"),
     ("private-data-center", "vpsdatacenter"),
     ("vps datacenter", "vpsdatacenter"),
+    # YENİ 3 Eyl 2026
+    ("neoncore", "neoncore"),
+    ("neon core", "neoncore"),
+    ("krnic", "krnic"),
 ]
 async def resolve_host_via_ip(session, ip):
     try:
@@ -597,7 +653,9 @@ COMMON_PHISHING_PATHS = [
     "/payment/bank/nethavale/", "/payment/bank/otomonay/", "/payment/crypto/kriptopay/",
     "/paraylan/",
 ]
-COMMON_PHISHING_SUBDOMAINS = ["m", "tr", "www", "yatirim", "payment", "odeme", "cryptopay"]
+# GÜNCELLENDİ 3 Eyl 2026 — "payurus" eklendi: wwwbetsat1965.com, superbetin2216.com,
+# m-betsat1620.com üzerinde 3+ kez tekrarlayan ödeme subdomain paterni
+COMMON_PHISHING_SUBDOMAINS = ["m", "tr", "www", "yatirim", "payment", "odeme", "cryptopay", "payurus"]
 SUBDOMAIN_DEPOSIT_PATHS = ["/", "/havale/", "/crypto/", "/login.php"]
 URL_CHECK_TIMEOUT = aiohttp.ClientTimeout(total=4)
 URL_CHECK_CONCURRENCY = 30
