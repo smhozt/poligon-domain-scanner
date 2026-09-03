@@ -386,6 +386,17 @@ CLUSTER_MAP = {
     # YENİ 3 Eyl 2026 — superbetin-publicgiris.top üzerinden Cloudflare trademark
     # host teyidiyle netleşti: ColocaTel Inc.
     frozenset({"alla", "sean"}):            "colocatel",
+    # YENİ 3 Eyl 2026 — betsat2620.com / betsat-gunceladresiniz.icu üzerinden host
+    # zaten Evoxt olarak biliniyordu, panel çalıştırmasında gerçek NS çifti netleşti
+    # (bu eşleşme ilk script güncellemesinde sehven atlanmıştı)
+    frozenset({"fish", "watson"}):          "evoxt",
+    # YENİ 3 Eyl 2026 — superbetin2204.com panel çalıştırmasında gerçek NS çifti
+    # cass/shane çıktı (marlowe/miguel değil — önceki varsayım yanlıştı). Host
+    # zaten Cloudflare'in kendi raporundan KRNIC olarak biliniyordu.
+    frozenset({"cass", "shane"}):           "krnic",
+    # YENİ 3 Eyl 2026 — superbetin-gir2026.icu panel çalıştırmasında gerçek NS
+    # çifti ligia/major çıktı. Host zaten FranTech olarak biliniyordu.
+    frozenset({"ligia", "major"}):          "frantech",
 }
 DEAD_DOMAIN = "__dead__"
 # ============================================================
