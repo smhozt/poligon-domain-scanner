@@ -185,7 +185,10 @@ CLUSTER_MAP = {
     frozenset({"syeef", "tina"}):       "omegatech",
     frozenset({"isla", "nolan"}):       "omegatech",
     frozenset({"aisha", "langston"}):   "aisha_langston_ambiguous",
-    frozenset({"archer", "melissa"}):   "omegatech",
+    # DÜZELTİLDİ 3 Eyl 2026 — superbetin2228.com üzerinden Cloudflare
+    # Phishing VE Trademark raporlarında ikisi de host olarak SYNLINQ
+    # (Oliver Horscht) teyit etti (eskiden yanlışlıkla Omegatech idi)
+    frozenset({"archer", "melissa"}):   "synlinq",
     frozenset({"dane", "alice"}):       "omegatech",
     frozenset({"aleena", "tony"}):      "omegatech",
     frozenset({"luciane", "oswald"}):   "luciane_oswald_ambiguous",
