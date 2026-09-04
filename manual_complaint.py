@@ -328,6 +328,9 @@ CLUSTER_MAP = {
     # da aynı cluster'da (henüz ayrıca teyit edilmedi ama muhtemelen
     # aynı host).
     frozenset({"adelaide", "johnathan"}): "krnic",
+    # YENİ 4 Eyl 2026 — superbetin-guncelbaglanti.icu üzerinden
+    # Cloudflare trademark host teyidiyle netleşti: FrostyHosting
+    frozenset({"henrik", "nena"}):        "frostyhosting",
     # DÜZELTİLDİ 25 Ağu 2026 — m-superbetin2096.com üzerinden panel host tespiti
     # bunu "Evoxt Sdn. Bhd." olarak teyit etti (eskiden yanlışlıkla "netiface"
     # olarak eşleşiyordu, üzerine yazıldı)
