@@ -139,8 +139,12 @@ HOSTS = {
     # YENİ 3 Eyl 2026 — superbetin-gir2026.icu üzerinden Cloudflare host teyidiyle netleşti
     "neoncore":        {"name": "Neon Core Network LLC",                 "abuse": ["abuse@neoncore.biz"]},
     # YENİ 4 Eyl 2026 — superbetin-adresler-guncel.icu / superbetin-resmiadres.icu
-    # üzerinden Cloudflare host teyidiyle netleşti (deb/nash cluster, 4+ domain)
-    "techties":        {"name": "TechTies Inc.",                        "abuse": ["abuse@tech-ties.net"]},
+    # üzerinden Cloudflare host teyidiyle netleşti (deb/nash cluster, 4+ domain).
+    # DÜZELTME 4 Eyl 2026: Cloudflare'in verdiği "abuse@tech-ties.net" kalıcı
+    # olarak bounce etti (554, "does not meet delivery requirements") —
+    # TechTies'in kendi imprint sayfasındaki resmi abuse kontağı
+    # "noc@techties.net" (tiresiz domain) olarak düzeltildi.
+    "techties":        {"name": "TechTies Inc.",                        "abuse": ["noc@techties.net"]},
 }
 WEB_FORM_ONLY_REGISTRARS = {
     "fewmoretaps": {"display": "Trustname / Fewmoretaps OU", "form_url": "https://trustname.com/help/report-abuse"},
