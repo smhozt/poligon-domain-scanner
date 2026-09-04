@@ -307,6 +307,10 @@ CLUSTER_MAP = {
     frozenset({"cash", "macy"}):        "weridata",
     frozenset({"cortney", "denver"}):   "privatelayer",
     frozenset({"pedro", "susan"}):      "ipvendetta",
+    # YENİ 4 Eyl 2026 — superbetin2400.com üzerinden Cloudflare host
+    # teyidiyle (IP Vendetta Inc.) netleşti, panel çalıştırmasında
+    # gerçek NS çifti ortaya çıktı
+    frozenset({"kate", "razvan"}):      "ipvendetta",
     # DÜZELTİLDİ 25 Ağu 2026 — m-superbetin2096.com üzerinden panel host tespiti
     # bunu "Evoxt Sdn. Bhd." olarak teyit etti (eskiden yanlışlıkla "netiface"
     # olarak eşleşiyordu, üzerine yazıldı)
