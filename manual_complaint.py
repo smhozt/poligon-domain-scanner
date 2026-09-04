@@ -138,6 +138,9 @@ HOSTS = {
     "krnic":           {"name": "KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz)", "abuse": ["irt@nic.or.kr"]},
     # YENİ 3 Eyl 2026 — superbetin-gir2026.icu üzerinden Cloudflare host teyidiyle netleşti
     "neoncore":        {"name": "Neon Core Network LLC",                 "abuse": ["abuse@neoncore.biz"]},
+    # YENİ 4 Eyl 2026 — superbetin-adresler-guncel.icu / superbetin-resmiadres.icu
+    # üzerinden Cloudflare host teyidiyle netleşti (deb/nash cluster, 4+ domain)
+    "techties":        {"name": "TechTies Inc.",                        "abuse": ["abuse@tech-ties.net"]},
 }
 WEB_FORM_ONLY_REGISTRARS = {
     "fewmoretaps": {"display": "Trustname / Fewmoretaps OU", "form_url": "https://trustname.com/help/report-abuse"},
@@ -311,6 +314,11 @@ CLUSTER_MAP = {
     # teyidiyle (IP Vendetta Inc.) netleşti, panel çalıştırmasında
     # gerçek NS çifti ortaya çıktı
     frozenset({"kate", "razvan"}):      "ipvendetta",
+    # YENİ 4 Eyl 2026 — deb/nash cluster'ının host'u nihayet teyit edildi:
+    # TechTies Inc. (superbetin-adresler-guncel.icu, superbetin-resmiadres.icu
+    # üzerinden Cloudflare host teyidiyle netleşti; superbetin-gunceladresler.icu
+    # ve superbetin-adresler.icu de aynı cluster'da, aynı host)
+    frozenset({"deb", "nash"}):         "techties",
     # DÜZELTİLDİ 25 Ağu 2026 — m-superbetin2096.com üzerinden panel host tespiti
     # bunu "Evoxt Sdn. Bhd." olarak teyit etti (eskiden yanlışlıkla "netiface"
     # olarak eşleşiyordu, üzerine yazıldı)
