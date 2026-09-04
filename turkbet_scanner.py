@@ -206,7 +206,7 @@ async def main():
                 pass
     # 7. TİRELİ ÖNEKLER
     print("🔗 Tireli önek varyasyonları üretiliyor...")
-    PREFIXES = ["m-", "tr-", "www-", "vip-"]
+    PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
     for num in range(700, 2001):
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}{num}turkbet.com", "PREFIX-PATTERN", set()))
@@ -217,7 +217,7 @@ async def main():
     # noktaydı. Turkbet için de kapatılıyor (m749turkbet.com,
     # mturkbet749.com gibi).
     print("🔗 Tiresiz önek varyasyonları üretiliyor...")
-    NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
     for num in range(700, 2001):
         for prefix in NOHYPHEN_PREFIXES:
             domains_to_scan.append((f"{prefix}{num}turkbet.com", "PREFIX-NOHYPHEN-PATTERN", set()))
@@ -255,8 +255,8 @@ async def main():
     # tarafında hiç yoktu — asimetri kapatıldı (betsat/superbetin'de
     # yapılan aynı düzeltme).
     print("🔗 Turkbet .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
-    CAM_PREFIXES = ["m-", "tr-", "www-", "vip-"]
-    CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    CAM_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+    CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
     for num in range(700, 2001):
         for prefix in CAM_PREFIXES:
             domains_to_scan.append((f"{prefix}{num}turkbet.cam", "CAM-PREFIX-PATTERN", set()))
@@ -274,8 +274,8 @@ async def main():
         domains_to_scan.append((f"turkbet{num}.live", "LIVE-TLD-SWAP-TERS", set()))
     # ── 12. .LIVE ÖNEKLİ (PREFIX) VARYASYONLAR (23 Ağu 2026'dan beri var) ──
     print("🟢 Turkbet .live önekli varyasyonları üretiliyor...")
-    LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-"]
-    LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+    LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
     for num in range(700, 2001):
         for prefix in LIVE_PREFIXES:
             domains_to_scan.append((f"{prefix}{num}turkbet.live", "LIVE-PREFIX-PATTERN", set()))
