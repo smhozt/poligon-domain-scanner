@@ -1,0 +1,705 @@
+{
+  "request_id": "1cbb379b-ec09-4865-bb95-84f330921ccf",
+  "generated_at": "2026-09-04T10:20:01.810599+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "betsat-girisadresi.co",
+      "brand": "Betsat",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Sav.com LLC",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "walk",
+          "wilson"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Sav.com LLC [whois] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://abuse.sav.com/sav_com/phishing"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: walk, wilson"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin-adresler-guncel.icu",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "deb",
+          "nash"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (whois)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: deb, nash"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin-adresler.icu",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "deb",
+          "nash"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (whois)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: deb, nash"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin2678.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin2678.com/spor/",
+        "https://superbetin2678.com/casino/",
+        "https://superbetin2678.com/login.php",
+        "https://superbetin2678.com/paraylan/",
+        "https://superbetin2678.com/canli-bahis/",
+        "https://superbetin2678.com/spor/?mobile=1",
+        "https://payment.superbetin2678.com/havale/",
+        "https://payment.superbetin2678.com/crypto/",
+        "https://payment.superbetin2678.com/login.php",
+        "https://superbetin2678.com/payment/bank/otomonay/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "known",
+        "host_key": "krnic",
+        "host_name": "KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz)",
+        "cluster": "amber/milan",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin2676.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin2676.com/spor/",
+        "https://superbetin2676.com/casino/",
+        "https://superbetin2676.com/login.php",
+        "https://superbetin2676.com/paraylan/",
+        "https://superbetin2676.com/canli-bahis/",
+        "https://superbetin2676.com/spor/?mobile=1",
+        "https://payment.superbetin2676.com/havale/",
+        "https://payment.superbetin2676.com/crypto/",
+        "https://payment.superbetin2676.com/login.php",
+        "https://superbetin2676.com/payment/bank/otomonay/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "Sav.com, LLC",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "krnic",
+        "host_name": "KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz)",
+        "cluster": "amber/milan",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Sav.com, LLC [rdap] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://abuse.sav.com/sav_com/phishing"
+        },
+        {
+          "channel": "host",
+          "label": "Host (KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbettin2090.com",
+      "brand": "Superbetin",
+      "found_urls_count": 4,
+      "found_urls": [
+        "https://superbettin2090.com/login.php",
+        "https://www.superbettin2090.com/login.php",
+        "https://superbettin2090.com/spor/?mobile=1",
+        "https://superbettin2090.com/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "alexhost",
+        "host_name": "AlexHost SRL, MD",
+        "cluster": "burt/kiki",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [rdap] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://dynadot.com/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (AlexHost SRL, MD)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "2100superbetin.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://2100superbetin.com/spor/",
+        "https://2100superbetin.com/casino/",
+        "https://2100superbetin.com/login.php",
+        "https://2100superbetin.com/paraylan/",
+        "https://2100superbetin.com/canli-bahis/",
+        "https://2100superbetin.com/spor/?mobile=1",
+        "https://payment.2100superbetin.com/havale/",
+        "https://payment.2100superbetin.com/crypto/",
+        "https://payment.2100superbetin.com/login.php",
+        "https://2100superbetin.com/payment/bank/otomonay/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "adelaide",
+          "johnathan"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: adelaide, johnathan"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin2677.com",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "known",
+        "host_key": "krnic",
+        "host_name": "KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz)",
+        "cluster": "amber/milan",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
