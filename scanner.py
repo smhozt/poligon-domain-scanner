@@ -264,7 +264,7 @@ async def main():
         except:
             pass
     # 8. TİRELİ ÖNEKLER
-    PREFIXES = ["m-", "tr-", "www-", "vip-"]
+    PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
     for num in range(100, 1000):
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-SHORT", set()))
@@ -278,7 +278,7 @@ async def main():
     # aktif bir phishing domain olarak Cloudflare üzerinden bulundu,
     # kendi scanner'ımız onu yakalayamamıştı. Aynı boşluk Superbetin
     # için de var, kapatılıyor.
-    NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
     for num in range(100, 1000):
         for prefix in NOHYPHEN_PREFIXES:
             domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-NOHYPHEN-SHORT", set()))
@@ -315,8 +315,8 @@ async def main():
     # gibi, .live tarafında zaten m-/tr-/www-/vip- (tireli ve tiresiz)
     # önek taraması vardı, .cam tarafında hiç yoktu — asimetri kapatıldı.
     print("🔗 Superbetin .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
-    CAM_PREFIXES = ["m-", "tr-", "www-", "vip-"]
-    CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    CAM_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+    CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
     for num in range(100, 2501):
         for prefix in CAM_PREFIXES:
             domains_to_scan.append((f"{prefix}superbetin{num}.cam", "CAM-TLD-SWAP-PREFIX", set()))
@@ -333,8 +333,8 @@ async def main():
     print("🟢 Superbetin .live TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
     for num in range(1, 10000):
         domains_to_scan.append((f"superbetin{num}.live", "LIVE-TLD-SWAP", set()))
-    LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-"]
-    LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+    LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
     for num in range(100, 2501):
         for prefix in LIVE_PREFIXES:
             domains_to_scan.append((f"{prefix}superbetin{num}.live", "LIVE-TLD-SWAP-PREFIX", set()))
