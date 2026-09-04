@@ -257,12 +257,19 @@ async def main():
     for num in range(10000, 25001):
         domains_to_scan.append((f"{num}superbetin.com", "TERS-5HANE", set()))
     # 7. IDN SAHTE HARF
+    # GÜNCELLENDİ 4 Eyl 2026 — "ı" (Türkçe noktasız i, U+0131) eklendi.
+    # xn--superbetn2100-bbc.com (= superbetın2100.com) canlı bulundu —
+    # tam da resmi domain'in (2100) hedefi, sadece "í" (aksanlı i)
+    # deneniyordu, Türkçe "ı" hiç yoktu. Bu, özellikle Türk
+    # kullanıcıları hedefleyen bir homoglyph çünkü "ı" o dilde/fontta
+    # normal "i" ile neredeyse ayırt edilemiyor.
     for num in range(1000, 2501):
-        try:
-            puny = f"superbetín{num}.com".encode("idna").decode("utf-8")
-            domains_to_scan.append((puny, "IDN-SAHTE", set()))
-        except:
-            pass
+        for variant in [f"superbetín{num}.com", f"superbetın{num}.com"]:
+            try:
+                puny = variant.encode("idna").decode("utf-8")
+                domains_to_scan.append((puny, "IDN-SAHTE", set()))
+            except:
+                pass
     # 8. TİRELİ ÖNEKLER
     PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
     for num in range(100, 1000):
