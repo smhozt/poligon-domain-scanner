@@ -45,16 +45,16 @@ BRANDS = {
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 3 Eyl 2026 — aktif adres betsat1620.com (1619 → 1620)
-        "active_domains": ["betsat.com", "betsat1620.com"],
+        # GÜNCELLENDİ 3 Eyl 2026 (2) — aktif adres betsat1621.com (1620 → 1621)
+        "active_domains": ["betsat.com", "betsat1621.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        # GÜNCELLENDİ 3 Eyl 2026 — aktif adres 761turkbet.com (760 → 761)
-        "active_domains": ["turkbet.io", "761turkbet.com"],
+        # GÜNCELLENDİ 3 Eyl 2026 (2) — aktif adres 762turkbet.com (761 → 762)
+        "active_domains": ["turkbet.io", "762turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
