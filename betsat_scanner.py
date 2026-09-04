@@ -212,7 +212,7 @@ async def main():
             except:
                 pass
     print("🔗 Tireli önek (m-, tr- vb.) varyasyonları üretiliyor...")
-    PREFIXES = ["m-", "tr-", "www-", "vip-"]
+    PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
     for num in range(1000, 2501):
         for prefix in PREFIXES:
             domains_to_scan.append((f"{prefix}betsat{num}.com", "PREFIX-PATTERN", set()))
@@ -221,7 +221,7 @@ async def main():
     # yukarıdaki döngü sadece "m-betsat..." (tireli) üretiyordu, bu
     # kör noktaydı. Kapatılıyor.
     print("🔗 Tiresiz önek (mbetsat gibi) varyasyonları üretiliyor...")
-    NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
     for num in range(1000, 2501):
         for prefix in NOHYPHEN_PREFIXES:
             domains_to_scan.append((f"{prefix}betsat{num}.com", "PREFIX-NOHYPHEN-PATTERN", set()))
@@ -253,8 +253,8 @@ async def main():
     # tarafında hiç yoktu — asimetri kapatıldı, .live ile aynı kapsama
     # getirildi.
     print("🔗 Betsat .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
-    CAM_PREFIXES = ["m-", "tr-", "www-", "vip-"]
-    CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    CAM_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+    CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
     for num in range(1000, 2501):
         for prefix in CAM_PREFIXES:
             domains_to_scan.append((f"{prefix}betsat{num}.cam", "CAM-TLD-SWAP-PREFIX", set()))
@@ -286,8 +286,8 @@ async def main():
     print("🟢 Betsat .live TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
     for num in range(1, 10000):
         domains_to_scan.append((f"betsat{num}.live", "LIVE-TLD-SWAP", set()))
-    LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-"]
-    LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip"]
+    LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+    LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
     for num in range(1000, 2501):
         for prefix in LIVE_PREFIXES:
             domains_to_scan.append((f"{prefix}betsat{num}.live", "LIVE-TLD-SWAP-PREFIX", set()))
