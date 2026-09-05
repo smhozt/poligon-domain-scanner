@@ -145,6 +145,10 @@ HOSTS = {
     # TechTies'in kendi imprint sayfasındaki resmi abuse kontağı
     # "noc@techties.net" (tiresiz domain) olarak düzeltildi.
     "techties":        {"name": "TechTies Inc.",                        "abuse": ["noc@techties.net"]},
+    # YENİ 5 Eyl 2026 — superbetin2103.cam / yenisayfa-superbetin.vip
+    # üzerinden Cloudflare host teyidiyle netleşti
+    "ultahost":        {"name": "Ultahost, Inc.",                       "abuse": ["u-abuse@ultahost.com"]},
+    "ayosoft":         {"name": "Ayosoft Ltd",                          "abuse": ["abuse@dexdc.com"]},
 }
 WEB_FORM_ONLY_REGISTRARS = {
     "fewmoretaps": {"display": "Trustname / Fewmoretaps OU", "form_url": "https://trustname.com/help/report-abuse"},
