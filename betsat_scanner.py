@@ -54,7 +54,7 @@ BETSAT_WHITELIST = set([
     "betsat1680.com","betsat1681.com","betsat1682.com","betsat1683.com",
     "betsat1684.com","betsat1685.com","betsat1686.com","betsat1687.com",
     "betsat1688.com","betsat1690.com","betsat1691.com",
-    "betsat1692.com","betsat1693.com","betsat1695.com",
+    "betsat1692.com","betsat1693.com","betsat1695.com","betsat1717.com",
     "betsat1696.com","betsat1697.com","betsat1698.com","betsat1700.com","betsat1701.com","betsat1702.com",
     "betsat1704.com","betsat1705.com","betsat1706.com","betsat1707.com","betsat1708.com","betsat1709.com",
 ])
