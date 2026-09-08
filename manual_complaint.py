@@ -148,6 +148,12 @@ HOSTS = {
     # YENİ 5 Eyl 2026 — superbetin2103.cam / yenisayfa-superbetin.vip
     # üzerinden Cloudflare host teyidiyle netleşti
     "ultahost":        {"name": "Ultahost, Inc.",                       "abuse": ["u-abuse@ultahost.com"]},
+    # NOT 8 Eyl 2026: abuse@dexdc.com yenisayfa-superbetin.vip maili
+    # "spam classification" diye kalıcı reddetti (bounce). RIPE'ın kendi
+    # AS213737 kaydı da abuse contact olarak aynı adresi gösteriyor —
+    # yani bu adres doğru/resmi ama posta kutusu mailimizi kabul
+    # etmiyor, bilinen alternatif bir kanal (web form/Telegram) yok.
+    # TechTies ile aynı durum: e-posta ile güvenilir ulaşım yok.
     "ayosoft":         {"name": "Ayosoft Ltd",                          "abuse": ["abuse@dexdc.com"]},
 }
 WEB_FORM_ONLY_REGISTRARS = {
