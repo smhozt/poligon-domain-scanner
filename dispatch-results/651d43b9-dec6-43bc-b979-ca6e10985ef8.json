@@ -1,0 +1,288 @@
+{
+  "request_id": "651d43b9-dec6-43bc-b979-ca6e10985ef8",
+  "generated_at": "2026-09-08T16:10:41.520252+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "wwwsuperbetin2100.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://wwwsuperbetin2100.com/spor/",
+        "https://wwwsuperbetin2100.com/casino/",
+        "https://wwwsuperbetin2100.com/login.php",
+        "https://wwwsuperbetin2100.com/paraylan/",
+        "https://wwwsuperbetin2100.com/canli-bahis/",
+        "https://wwwsuperbetin2100.com/spor/?mobile=1",
+        "https://payment.wwwsuperbetin2100.com/havale/",
+        "https://payment.wwwsuperbetin2100.com/crypto/",
+        "https://payment.wwwsuperbetin2100.com/login.php",
+        "https://wwwsuperbetin2100.com/payment/bank/otomonay/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "known",
+        "host_key": "krnic",
+        "host_name": "KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz)",
+        "cluster": "adelaide/johnathan",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "fail",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin2206.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin2206.com/spor/",
+        "https://superbetin2206.com/casino/",
+        "https://superbetin2206.com/login.php",
+        "https://superbetin2206.com/paraylan/",
+        "https://m.superbetin2206.com/havale/",
+        "https://m.superbetin2206.com/crypto/",
+        "https://tr.superbetin2206.com/havale/",
+        "https://tr.superbetin2206.com/crypto/",
+        "https://m.superbetin2206.com/login.php",
+        "https://www.superbetin2206.com/havale/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "known",
+        "host_key": "evoxt",
+        "host_name": "Evoxt Sdn. Bhd.",
+        "cluster": "elmo/romina",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (Evoxt Sdn. Bhd.)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "fail",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "m-betsat1717.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://m-betsat1717.com/spor/",
+        "https://m-betsat1717.com/casino/",
+        "https://m-betsat1717.com/login.php",
+        "https://m-betsat1717.com/canli-bahis/",
+        "https://www.m-betsat1717.com/login.php",
+        "https://m-betsat1717.com/spor/?mobile=1",
+        "https://payurus.m-betsat1717.com/havale/",
+        "https://payurus.m-betsat1717.com/crypto/",
+        "https://payurus.m-betsat1717.com/login.php",
+        "https://m-betsat1717.com/modules/payments/deposit/"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "known",
+        "host_key": "evoxt",
+        "host_name": "Evoxt Sdn. Bhd.",
+        "cluster": "sreeni/zahir",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (Evoxt Sdn. Bhd.)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "fail",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": [
+          "TE4Uwca25Pi5G8kuYTjQ6MBayMZ9ECrsGh"
+        ]
+      },
+      "mule_correlations": []
+    }
+  ]
+}
