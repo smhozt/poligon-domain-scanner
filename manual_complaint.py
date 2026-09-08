@@ -341,6 +341,11 @@ CLUSTER_MAP = {
     # YENİ 4 Eyl 2026 — superbetin-guncelbaglanti.icu üzerinden
     # Cloudflare trademark host teyidiyle netleşti: FrostyHosting
     frozenset({"henrik", "nena"}):        "frostyhosting",
+    # YENİ 8 Eyl 2026 — üç cluster'ın host'u Cloudflare doğrudan host
+    # teyidiyle netleşti (daha önce unconfirmed idi)
+    frozenset({"meera", "trevor"}):        "netiface",
+    frozenset({"george", "jillian"}):      "netiface",
+    frozenset({"anna", "lennon"}):         "frostyhosting",
     # DÜZELTİLDİ 25 Ağu 2026 — m-superbetin2096.com üzerinden panel host tespiti
     # bunu "Evoxt Sdn. Bhd." olarak teyit etti (eskiden yanlışlıkla "netiface"
     # olarak eşleşiyordu, üzerine yazıldı)
