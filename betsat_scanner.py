@@ -54,7 +54,7 @@ BETSAT_WHITELIST = set([
     "betsat1680.com","betsat1681.com","betsat1682.com","betsat1683.com",
     "betsat1684.com","betsat1685.com","betsat1686.com","betsat1687.com",
     "betsat1688.com","betsat1690.com","betsat1691.com",
-    "betsat1692.com","betsat1693.com","betsat1695.com","betsat1717.com",
+    "betsat1692.com","betsat1693.com","betsat1695.com",
     "betsat1696.com","betsat1697.com","betsat1698.com","betsat1700.com","betsat1701.com","betsat1702.com",
     "betsat1704.com","betsat1705.com","betsat1706.com","betsat1707.com","betsat1708.com","betsat1709.com",
 ])
@@ -77,6 +77,36 @@ BETSAT_WHITELIST.update([
     "yonleniyoramp.com", "googlecdnservice.net",
     "supetbetingirisadresim.vip", "turkbetgirisadresim.vip", "betsatgirisadresim.vip",
 ])
+# YENİ 8 Eyl 2026 — registrar hesabındaki resmi domain listesinden
+# (390 domain) whitelist'te henüz olmayan 62 tanesi eklendi.
+BETSAT_WHITELIST.update([
+    "betsat.net", "betsat111111.com", "asjwu.com", "bs.belloatech.dev",
+    "copyrightbetsat.com", "koluwn.com", "officialbetsat.com", "tuamek.com",
+    "yteruo.com",
+    # 1710-9501 aralığı BETSAT_RANGE ile "YENİ" tipi olarak taranıyor —
+    # bu numaralar resmi kayıtlı olduğu için buraya elle eklenmesi şart,
+    # yoksa her taramada yanlış alarm (false positive) üretirler.
+    "betsat1712.com", "betsat1713.com", "betsat1714.com", "betsat1715.com",
+    "betsat1720.com",
+    "betsat1830.com", "betsat1831.com", "betsat1832.com", "betsat1833.com",
+    "betsat1834.com", "betsat1835.com", "betsat1836.com", "betsat1837.com",
+    "betsat1838.com", "betsat1839.com", "betsat1840.com", "betsat1842.com",
+    "betsat1843.com", "betsat1844.com", "betsat1845.com", "betsat1846.com",
+    "betsat1847.com", "betsat1848.com", "betsat1849.com", "betsat1850.com",
+    "betsat1851.com", "betsat1852.com", "betsat1853.com", "betsat1854.com",
+    "betsat1855.com", "betsat1856.com", "betsat1857.com", "betsat1858.com",
+    "betsat1859.com", "betsat1860.com", "betsat1861.com", "betsat1862.com",
+    "betsat1863.com", "betsat1864.com", "betsat1865.com", "betsat1866.com",
+    "betsat1867.com", "betsat1868.com", "betsat1869.com", "betsat1870.com",
+    "betsat1871.com", "betsat1872.com", "betsat1873.com", "betsat1874.com",
+    "betsat1875.com", "betsat1876.com", "betsat1877.com", "betsat1878.com",
+])
+# NOT (8 Eyl 2026): registrar listesinde betsat1232.com YOK — yani şirket
+# bu domain'i hiç almamış. Ama range(1167,1539) onu otomatik whitelist'e
+# ekliyor, dolayısıyla script bu numarayı hiç taramıyor. Biri bunu
+# kayıt aldırırsa (typosquat riski), fark edilmez. Düzeltme için bu
+# range'den 1232'yi çıkaran bir "exclude" seti eklenebilir — istersen
+# ayrı bir adımda yapalım, şimdilik sadece not.
 BETSAT_GAPS = [1542, 1547, 1552, 1560, 1561, 1564, 1566, 1572, 1574, 1576, 1592, 1594, 1627, 1649, 1659, 1660, 1671, 1676, 1679, 1689, 1694, 1699, 1703]
 BETSAT_RANGE = range(1710, 9501)
 REPORTED_FILE = "betsat_reported.json"
