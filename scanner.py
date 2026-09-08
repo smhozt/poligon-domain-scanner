@@ -106,6 +106,18 @@ SUPERBETIN_WHITELIST.update([
     "yonleniyoramp.com", "googlecdnservice.net",
     "supetbetingirisadresim.vip", "turkbetgirisadresim.vip", "betsatgirisadresim.vip",
 ])
+# YENİ 8 Eyl 2026 — registrar hesabındaki resmi domain listesinden
+# (331 domain) whitelist'te henüz olmayan 17 tanesi eklendi.
+SUPERBETIN_WHITELIST.update([
+    "copyrightsuperbetin.com", "eritmu.com", "mugweni.com", "officialsuperbetin.com",
+    "putiyo.com", "puyori.com", "sb.belloatech.dev", "superbetin.io",
+    "superbetinapp.com", "superbetin138.com",
+    # SUPERBETIN_RANGE(1975,3001) tarama bölgesinin içinde — whitelist'e
+    # elle eklenmezse her taramada yanlış alarm üretirler.
+    "superbetin1975.com", "superbetin1976.com", "superbetin1977.com",
+    "superbetin1978.com", "superbetin1979.com", "superbetin1981.com",
+    "superbetin2095.com",  # 2094 ile 2096 arasında unutulmuş, aynı bölgede
+])
 SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 3001)
 SUPERBETIN_HIGH_RANGE = range(3001, 30000)
