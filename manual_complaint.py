@@ -346,6 +346,9 @@ CLUSTER_MAP = {
     frozenset({"meera", "trevor"}):        "netiface",
     frozenset({"george", "jillian"}):      "netiface",
     frozenset({"anna", "lennon"}):         "frostyhosting",
+    # YENİ 8 Eyl 2026 — trbetsat-app.icu üzerinden Cloudflare host
+    # teyidiyle netleşti: VPS Dedicated LLC (flashwisp.com.ng varyantı)
+    frozenset({"andy", "elsa"}):            "vpsdedicated_flashwisp",
     # DÜZELTİLDİ 25 Ağu 2026 — m-superbetin2096.com üzerinden panel host tespiti
     # bunu "Evoxt Sdn. Bhd." olarak teyit etti (eskiden yanlışlıkla "netiface"
     # olarak eşleşiyordu, üzerine yazıldı)
