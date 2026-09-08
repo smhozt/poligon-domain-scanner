@@ -87,7 +87,7 @@ BETSAT_WHITELIST.update([
     # bu numaralar resmi kayıtlı olduğu için buraya elle eklenmesi şart,
     # yoksa her taramada yanlış alarm (false positive) üretirler.
     "betsat1712.com", "betsat1713.com", "betsat1714.com", "betsat1715.com",
-    "betsat1720.com",
+    "betsat1720.com", "betsat1717.com",
     "betsat1830.com", "betsat1831.com", "betsat1832.com", "betsat1833.com",
     "betsat1834.com", "betsat1835.com", "betsat1836.com", "betsat1837.com",
     "betsat1838.com", "betsat1839.com", "betsat1840.com", "betsat1842.com",
