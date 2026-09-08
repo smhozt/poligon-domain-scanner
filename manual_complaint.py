@@ -349,6 +349,10 @@ CLUSTER_MAP = {
     # YENİ 8 Eyl 2026 — trbetsat-app.icu üzerinden Cloudflare host
     # teyidiyle netleşti: VPS Dedicated LLC (flashwisp.com.ng varyantı)
     frozenset({"andy", "elsa"}):            "vpsdedicated_flashwisp",
+    # YENİ 8 Eyl 2026 — 1718betsat.com üzerinden Cloudflare host
+    # teyidiyle netleşti: IP Vendetta Inc. (daha önce betsat1729.com,
+    # 1718betsat.com, superbetin2259.com hepsi bu cluster'da unconfirmed'di)
+    frozenset({"carl", "jamie"}):           "ipvendetta",
     # DÜZELTİLDİ 25 Ağu 2026 — m-superbetin2096.com üzerinden panel host tespiti
     # bunu "Evoxt Sdn. Bhd." olarak teyit etti (eskiden yanlışlıkla "netiface"
     # olarak eşleşiyordu, üzerine yazıldı)
