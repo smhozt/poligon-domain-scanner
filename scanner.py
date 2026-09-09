@@ -3,6 +3,7 @@ import aiohttp
 import socket
 import concurrent.futures
 import os
+import sys
 import json
 from datetime import datetime, timezone, timedelta
 import gspread
@@ -123,7 +124,20 @@ SUPERBETIN_RANGE = range(1975, 3001)
 SUPERBETIN_HIGH_RANGE = range(3001, 30000)
 SUPERBETIM_RANGE = range(1000, 5151)
 SUPERBETIN_TIRELI_WHITELIST = {"superbetin-1828.com"}
-REPORTED_FILE = "reported.json"
+# ============================================================
+# İKİYE BÖLME (9 Eyl 2026) — script 50-55 dk sürüyordu (186.091 domain).
+# PART "a" veya "b" argümanıyla domain havuzunu ikiye ayırıp GitHub
+# Actions'ta 2 paralel job olarak çalıştırmak için. "all" (argümansız
+# çağrı, örn. workflow_dispatch ile elle test) eskisi gibi TÜMÜNÜ tarar.
+# Her PART kendi reported dosyasını kullanır — aynı anda çalışan iki
+# process aynı dosyaya yazmaya çalışıp git commit çakışması yaratmasın.
+# Gruplar HIGH-NUM/CAM-PREFIX/LIVE-PREFIX gibi en büyük bloklara göre
+# ~93.000/~93.000 dengelendi (bkz. devir notu).
+# ============================================================
+PART = sys.argv[1].lower() if len(sys.argv) > 1 else "all"
+if PART not in ("a", "b", "all"):
+    PART = "all"
+REPORTED_FILE = "reported.json" if PART == "all" else f"reported_{PART}.json"
 def load_reported():
     try:
         with open(REPORTED_FILE, "r") as f:
@@ -242,141 +256,115 @@ async def main():
     reported = load_reported()
     found = []
     domains_to_scan = []
-    # 1. SAYISAL DOMAİNLER
-    for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
-        domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
-    for num in range(1416, 1975):
-        domains_to_scan.append((f"superbetin{num}.com", "GAP-TARAMA", SUPERBETIN_WHITELIST))
-    for num in SUPERBETIN_HIGH_RANGE:
-        domains_to_scan.append((f"superbetin{num}.com", "HIGH-NUM", SUPERBETIN_WHITELIST))
-    # 1b. 3 HANELİ SAYILAR
-    for num in range(100, 1000):
-        domains_to_scan.append((f"superbetin{num}.com", "3HANE-TARAMA", SUPERBETIN_WHITELIST))
-    # 2. TARİH FORMATI
-    for num in range(100, 1000):
-        domains_to_scan.append((f"superbetin{num:04d}.com", "TARIH-FORMAT", set()))
-    # 3. TYPO-M
-    for num in SUPERBETIM_RANGE:
-        domains_to_scan.append((f"superbetim{num}.com", "TYPO-M", set()))
-    # 4b. TYPO-N
-    for num in range(1000, 3001):
-        domains_to_scan.append((f"superbetn{num}.com", "TYPO-N-EKSIK", set()))
-    # 5. TERS PATTERN 4 HANELİ
-    for num in range(1000, 3001):
-        domains_to_scan.append((f"{num}superbetin.com", "TERS-PATTERN", set()))
-        domains_to_scan.append((f"{num}superbetim.com", "TERS-PATTERN", set()))
-    # 6. TERS PATTERN 5 HANELİ
-    for num in range(10000, 25001):
-        domains_to_scan.append((f"{num}superbetin.com", "TERS-5HANE", set()))
-    # 7. IDN SAHTE HARF
-    # GÜNCELLENDİ 4 Eyl 2026 — "ı" (Türkçe noktasız i, U+0131) eklendi.
-    # xn--superbetn2100-bbc.com (= superbetın2100.com) canlı bulundu —
-    # tam da resmi domain'in (2100) hedefi, sadece "í" (aksanlı i)
-    # deneniyordu, Türkçe "ı" hiç yoktu. Bu, özellikle Türk
-    # kullanıcıları hedefleyen bir homoglyph çünkü "ı" o dilde/fontta
-    # normal "i" ile neredeyse ayırt edilemiyor.
-    for num in range(1000, 2501):
-        for variant in [f"superbetín{num}.com", f"superbetın{num}.com"]:
-            try:
-                puny = variant.encode("idna").decode("utf-8")
-                domains_to_scan.append((puny, "IDN-SAHTE", set()))
-            except:
-                pass
-    # 8. TİRELİ ÖNEKLER
-    PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
-    for num in range(100, 1000):
-        for prefix in PREFIXES:
-            domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-SHORT", set()))
-    for num in range(1000, 2501):
-        for prefix in PREFIXES:
-            domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-PATTERN", set()))
-    # 8b. TİRESİZ ÖNEKLER (v2 — 05 Ağu 2026)
-    # "m-superbetin2085.com" (tireli) zaten yukarıda taranıyor ama
-    # "msuperbetin2085.com" (tiresiz, bitişik) hiç üretilmiyordu — bu
-    # kör noktaydı. Betsat tarafında mbetsat1610.com (tiresiz) gerçek,
-    # aktif bir phishing domain olarak Cloudflare üzerinden bulundu,
-    # kendi scanner'ımız onu yakalayamamıştı. Aynı boşluk Superbetin
-    # için de var, kapatılıyor.
-    NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-    for num in range(100, 1000):
-        for prefix in NOHYPHEN_PREFIXES:
-            domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-NOHYPHEN-SHORT", set()))
-    for num in range(1000, 2501):
-        for prefix in NOHYPHEN_PREFIXES:
-            domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-NOHYPHEN-PATTERN", set()))
-    # 9. .CO TLD
-    for num in range(1800, 3001):
-        domains_to_scan.append((f"superbetin{num}.co", "CO-TYPO", set()))
-        domains_to_scan.append((f"{num}superbetin.co", "CO-TERS", set()))
-    # 10. TİRELİ SAYI PATTERN
-    for num in range(1800, 3001):
-        domain = f"superbetin-{num}.com"
-        if domain not in SUPERBETIN_TIRELI_WHITELIST:
-            domains_to_scan.append((domain, "TIRELI-SAYI", set()))
-    # 11. SUPERBETSIN TYPO
-    print("🔤 superbetsin typo pattern üretiliyor...")
-    for num in range(100, 1000):
-        domains_to_scan.append((f"superbetsin{num}.com", "SUPERBETSIN-3H", set()))
-    for num in range(1000, 3001):
-        domains_to_scan.append((f"superbetsin{num}.com", "SUPERBETSIN-4H", set()))
-    # ── 12. .CAM TLD-SWAP TARAMASI — GÜNCELLENDİ v3 (13 Ağu 2026) ──
-    # superbetin2090.cam gibi — sayı doğru/resmi, TLD farklı.
-    #
-    # BUG FIX (13 Ağu 2026, betsat_scanner.py'deki aynı hatanın burada
-    # tekrarı): Eskiden bu döngü sadece SUPERBETIN_GAPS + SUPERBETIN_RANGE
-    # (1975-3001) numaralarını tarıyordu. Artık .cam için WHITELIST/GAPS/
-    # RANGE ayrımı yapılmadan TAM 1-9999 aralığı taranıyor — resmi numara
-    # hangi aralıkta olursa olsun kapsanıyor.
-    print("📷 Superbetin .cam TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
-    for num in range(1, 10000):
-        domains_to_scan.append((f"superbetin{num}.cam", "CAM-TLD-SWAP", set()))
-    # CAM ÖNEK TARAMASI — YENİ (3 Eyl 2026): betsat_scanner.py'de olduğu
-    # gibi, .live tarafında zaten m-/tr-/www-/vip- (tireli ve tiresiz)
-    # önek taraması vardı, .cam tarafında hiç yoktu — asimetri kapatıldı.
-    print("🔗 Superbetin .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
-    CAM_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
-    CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-    for num in range(100, 2501):
-        for prefix in CAM_PREFIXES:
-            domains_to_scan.append((f"{prefix}superbetin{num}.cam", "CAM-TLD-SWAP-PREFIX", set()))
-        for prefix in CAM_NOHYPHEN_PREFIXES:
-            domains_to_scan.append((f"{prefix}superbetin{num}.cam", "CAM-TLD-SWAP-PREFIX-NOHYPHEN", set()))
-    # NOT (3 Eyl 2026): Root domain (superbetin{num}.cam) bulunduktan
-    # sonra yatirim/tr/m/payment/odeme gibi deposit-subdomain'lerini
-    # AYRICA taramıyoruz artık — kaldırıldı (betsat_scanner.py'deki
-    # aynı gerekçe: bulunan her root zaten Telegram'a düşüyor, subdomain/
-    # deposit-akışı incelemesi elle yapılıyor; sabit sayı listesi de
-    # sürekli eskiyip stale kalıyordu — burada 2090 yazıyordu, güncel
-    # resmi domain çoktan 2100'e geçmişti).
-    # ── 13. .LIVE TLD-SWAP TARAMASI — YENİ (23 Ağu 2026) ──
-    print("🟢 Superbetin .live TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
-    for num in range(1, 10000):
-        domains_to_scan.append((f"superbetin{num}.live", "LIVE-TLD-SWAP", set()))
-    LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
-    LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-    for num in range(100, 2501):
-        for prefix in LIVE_PREFIXES:
-            domains_to_scan.append((f"{prefix}superbetin{num}.live", "LIVE-TLD-SWAP-PREFIX", set()))
-        for prefix in LIVE_NOHYPHEN_PREFIXES:
-            domains_to_scan.append((f"{prefix}superbetin{num}.live", "LIVE-TLD-SWAP-PREFIX-NOHYPHEN", set()))
-    # NOT (3 Eyl 2026): .cam ile aynı sebepten deposit-subdomain derin
-    # taraması burada da kaldırıldı — bkz. yukarıdaki not.
-    # HOMOGLYPH (RAKAM↔HARF) — .com/.cam/.live üçünde birden.
-    # bkz. generate_homoglyph_number_variants() tanımındaki not.
-    print("👁️ Homoglyph (1→l, 0→o) varyasyonları üretiliyor (.com/.cam/.live)...")
-    for num in range(1000, 3001):
-        for variant_num in generate_homoglyph_number_variants(num):
-            domains_to_scan.append((f"superbetin{variant_num}.com", "TYPO-HOMOGLYPH", set()))
-            domains_to_scan.append((f"superbetin{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH", set()))
-            domains_to_scan.append((f"superbetin{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH", set()))
-    print("🔤 Çift harf typosquat (superbettin gibi) varyasyonları üretiliyor...")
-    double_letter_words = generate_double_letter_variants("superbetin")
-    print(f"    Üretilen kalıplar: {', '.join(double_letter_words)}")
-    for word in double_letter_words:
+    # ── GRUP A ────────────────────────────────────────────────
+    if PART in ("a", "all"):
+        # 1. SAYISAL DOMAİNLER (YENİ + HIGH-NUM)
+        for num in (SUPERBETIN_GAPS + list(SUPERBETIN_RANGE)):
+            domains_to_scan.append((f"superbetin{num}.com", "YENI", SUPERBETIN_WHITELIST))
+        for num in SUPERBETIN_HIGH_RANGE:
+            domains_to_scan.append((f"superbetin{num}.com", "HIGH-NUM", SUPERBETIN_WHITELIST))
+        # 2. TARİH FORMATI
+        for num in range(100, 1000):
+            domains_to_scan.append((f"superbetin{num:04d}.com", "TARIH-FORMAT", set()))
+        # 5. TERS PATTERN 4 HANELİ
         for num in range(1000, 3001):
-            domains_to_scan.append((f"{word}{num}.com", "TYPO-CIFT-HARF", set()))
-        domains_to_scan.append((f"{word}.com", "TYPO-CIFT-HARF-BARE", set()))
-    print(f"🚀 Toplam {len(domains_to_scan)} domain taranacak...")
+            domains_to_scan.append((f"{num}superbetin.com", "TERS-PATTERN", set()))
+            domains_to_scan.append((f"{num}superbetim.com", "TERS-PATTERN", set()))
+        # 6. TERS PATTERN 5 HANELİ
+        for num in range(10000, 25001):
+            domains_to_scan.append((f"{num}superbetin.com", "TERS-5HANE", set()))
+        # 8b. TİRESİZ ÖNEKLER
+        NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
+        for num in range(100, 1000):
+            for prefix in NOHYPHEN_PREFIXES:
+                domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-NOHYPHEN-SHORT", set()))
+        for num in range(1000, 2501):
+            for prefix in NOHYPHEN_PREFIXES:
+                domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-NOHYPHEN-PATTERN", set()))
+        # 10. TİRELİ SAYI PATTERN
+        for num in range(1800, 3001):
+            domain = f"superbetin-{num}.com"
+            if domain not in SUPERBETIN_TIRELI_WHITELIST:
+                domains_to_scan.append((domain, "TIRELI-SAYI", set()))
+        # 11. SUPERBETSIN TYPO
+        print("🔤 superbetsin typo pattern üretiliyor...")
+        for num in range(100, 1000):
+            domains_to_scan.append((f"superbetsin{num}.com", "SUPERBETSIN-3H", set()))
+        for num in range(1000, 3001):
+            domains_to_scan.append((f"superbetsin{num}.com", "SUPERBETSIN-4H", set()))
+        # HOMOGLYPH (RAKAM↔HARF) — .com/.cam/.live üçünde birden.
+        print("👁️ Homoglyph (1→l, 0→o) varyasyonları üretiliyor (.com/.cam/.live)...")
+        for num in range(1000, 3001):
+            for variant_num in generate_homoglyph_number_variants(num):
+                domains_to_scan.append((f"superbetin{variant_num}.com", "TYPO-HOMOGLYPH", set()))
+                domains_to_scan.append((f"superbetin{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH", set()))
+                domains_to_scan.append((f"superbetin{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH", set()))
+        # ÇİFT HARF TYPOSQUAT
+        print("🔤 Çift harf typosquat (superbettin gibi) varyasyonları üretiliyor...")
+        double_letter_words = generate_double_letter_variants("superbetin")
+        print(f"    Üretilen kalıplar: {', '.join(double_letter_words)}")
+        for word in double_letter_words:
+            for num in range(1000, 3001):
+                domains_to_scan.append((f"{word}{num}.com", "TYPO-CIFT-HARF", set()))
+            domains_to_scan.append((f"{word}.com", "TYPO-CIFT-HARF-BARE", set()))
+    # ── GRUP B ────────────────────────────────────────────────
+    if PART in ("b", "all"):
+        # 1c. GAP-TARAMA
+        for num in range(1416, 1975):
+            domains_to_scan.append((f"superbetin{num}.com", "GAP-TARAMA", SUPERBETIN_WHITELIST))
+        # 1b. 3 HANELİ SAYILAR
+        for num in range(100, 1000):
+            domains_to_scan.append((f"superbetin{num}.com", "3HANE-TARAMA", SUPERBETIN_WHITELIST))
+        # 3. TYPO-M
+        for num in SUPERBETIM_RANGE:
+            domains_to_scan.append((f"superbetim{num}.com", "TYPO-M", set()))
+        # 4b. TYPO-N
+        for num in range(1000, 3001):
+            domains_to_scan.append((f"superbetn{num}.com", "TYPO-N-EKSIK", set()))
+        # 7. IDN SAHTE HARF
+        for num in range(1000, 2501):
+            for variant in [f"superbetín{num}.com", f"superbetın{num}.com"]:
+                try:
+                    puny = variant.encode("idna").decode("utf-8")
+                    domains_to_scan.append((puny, "IDN-SAHTE", set()))
+                except:
+                    pass
+        # 8. TİRELİ ÖNEKLER
+        PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+        for num in range(100, 1000):
+            for prefix in PREFIXES:
+                domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-SHORT", set()))
+        for num in range(1000, 2501):
+            for prefix in PREFIXES:
+                domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-PATTERN", set()))
+        # 9. .CO TLD
+        for num in range(1800, 3001):
+            domains_to_scan.append((f"superbetin{num}.co", "CO-TYPO", set()))
+            domains_to_scan.append((f"{num}superbetin.co", "CO-TERS", set()))
+        # 12. .CAM TLD-SWAP TARAMASI
+        print("📷 Superbetin .cam TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
+        for num in range(1, 10000):
+            domains_to_scan.append((f"superbetin{num}.cam", "CAM-TLD-SWAP", set()))
+        print("🔗 Superbetin .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
+        CAM_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+        CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
+        for num in range(100, 2501):
+            for prefix in CAM_PREFIXES:
+                domains_to_scan.append((f"{prefix}superbetin{num}.cam", "CAM-TLD-SWAP-PREFIX", set()))
+            for prefix in CAM_NOHYPHEN_PREFIXES:
+                domains_to_scan.append((f"{prefix}superbetin{num}.cam", "CAM-TLD-SWAP-PREFIX-NOHYPHEN", set()))
+        # 13. .LIVE TLD-SWAP TARAMASI
+        print("🟢 Superbetin .live TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
+        for num in range(1, 10000):
+            domains_to_scan.append((f"superbetin{num}.live", "LIVE-TLD-SWAP", set()))
+        LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+        LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
+        for num in range(100, 2501):
+            for prefix in LIVE_PREFIXES:
+                domains_to_scan.append((f"{prefix}superbetin{num}.live", "LIVE-TLD-SWAP-PREFIX", set()))
+            for prefix in LIVE_NOHYPHEN_PREFIXES:
+                domains_to_scan.append((f"{prefix}superbetin{num}.live", "LIVE-TLD-SWAP-PREFIX-NOHYPHEN", set()))
+    print(f"🚀 [PART {PART.upper()}] Toplam {len(domains_to_scan)} domain taranacak...")
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
         async def bounded_scan(d, t, w):
@@ -386,9 +374,10 @@ async def main():
     save_reported(reported)
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
+    part_label = f" [{PART.upper()}]" if PART != "all" else ""
     if found:
         msg = (
-            f"🚨 *[ALARM] Aktif Sahte Domain!*\n"
+            f"🚨 *[ALARM]{part_label} Aktif Sahte Domain!*\n"
             f"🤖 `{repo}`\n"
             f"Taranan: `{len(domains_to_scan):,}` domain — Bulunan: `{len(found)}`\n"
         )
@@ -417,7 +406,7 @@ async def main():
         await send_telegram(msg)
     else:
         msg = (
-            f"✅ *[SUPERBETIN TARAMA] Temiz* — {now}\n"
+            f"✅ *[SUPERBETIN TARAMA]{part_label} Temiz* — {now}\n"
             f"🤖 `{repo}`\n"
             f"Taranan: `{len(domains_to_scan):,}` domain\n"
             f"Sahte domain bulunamadı."
