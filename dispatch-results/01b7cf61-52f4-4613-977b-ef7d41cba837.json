@@ -1,0 +1,100 @@
+{
+  "request_id": "01b7cf61-52f4-4613-977b-ef7d41cba837",
+  "generated_at": "2026-09-09T10:05:02.760877+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "superbetin2211.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin2211.com/spor/",
+        "https://superbetin2211.com/casino/",
+        "https://superbetin2211.com/login.php",
+        "https://superbetin2211.com/canli-bahis/",
+        "https://www.superbetin2211.com/login.php",
+        "https://superbetin2211.com/spor/?mobile=1",
+        "https://superbetin2211.com/modules/payments/deposit/?payment_type=105",
+        "https://superbetin2211.com/modules/payments/deposit/?payment_type=109",
+        "https://superbetin2211.com/modules/payments/deposit/?payment_type=117",
+        "https://superbetin2211.com/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "known",
+        "host_key": "synlinq",
+        "host_name": "SYNLINQ (Oliver Horscht)",
+        "cluster": "archer/melissa",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (SYNLINQ (Oliver Horscht))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
