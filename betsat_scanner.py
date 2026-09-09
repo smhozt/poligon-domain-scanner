@@ -1,6 +1,7 @@
 import asyncio
 import aiohttp
 import os
+import sys
 import json
 import socket
 import concurrent.futures
@@ -101,15 +102,24 @@ BETSAT_WHITELIST.update([
     "betsat1871.com", "betsat1872.com", "betsat1873.com", "betsat1874.com",
     "betsat1875.com", "betsat1876.com", "betsat1877.com", "betsat1878.com",
 ])
-# NOT (8 Eyl 2026): registrar listesinde betsat1232.com YOK — yani şirket
-# bu domain'i hiç almamış. Ama range(1167,1539) onu otomatik whitelist'e
-# ekliyor, dolayısıyla script bu numarayı hiç taramıyor. Biri bunu
-# kayıt aldırırsa (typosquat riski), fark edilmez. Düzeltme için bu
-# range'den 1232'yi çıkaran bir "exclude" seti eklenebilir — istersen
-# ayrı bir adımda yapalım, şimdilik sadece not.
+# NOT (8 Eyl 2026): registrar listesinde betsat1232.com YOK ama şirket
+# yıllar önce almış (muhtemelen farklı bir registrar hesabından, TR'de
+# bloklu) — bkz. devir notu, bilinçli olarak whitelist'te bırakıldı,
+# range(1167,1539) zaten kapsıyor.
 BETSAT_GAPS = [1542, 1547, 1552, 1560, 1561, 1564, 1566, 1572, 1574, 1576, 1592, 1594, 1627, 1649, 1659, 1660, 1671, 1676, 1679, 1689, 1694, 1699, 1703]
 BETSAT_RANGE = range(1710, 9501)
-REPORTED_FILE = "betsat_reported.json"
+# ============================================================
+# İKİYE BÖLME (9 Eyl 2026) — superbetin_scanner ile aynı yöntem.
+# 102.269 domain'i ~51k/~51k dengeli ikiye ayırıp GitHub Actions'ta
+# 2 paralel job olarak çalıştırmak için. PART "a"/"b" argümanıyla
+# seçilir; argümansız çağrı ("all") eskisi gibi TÜMÜNÜ tarar. Her
+# PART kendi reported dosyasını kullanır — paralel process'lerin aynı
+# dosyaya yazıp git commit çakışması yaratmasını önler.
+# ============================================================
+PART = sys.argv[1].lower() if len(sys.argv) > 1 else "all"
+if PART not in ("a", "b", "all"):
+    PART = "all"
+REPORTED_FILE = "betsat_reported.json" if PART == "all" else f"betsat_reported_{PART}.json"
 def load_reported():
     try:
         with open(REPORTED_FILE, "r") as f:
@@ -222,119 +232,78 @@ async def main():
     reported = load_reported()
     found = []
     domains_to_scan = []
-    for num in (BETSAT_GAPS + list(BETSAT_RANGE)):
-        domains_to_scan.append((f"betsat{num}.com", "YENI", BETSAT_WHITELIST))
-    for num in range(100, 1000):
-        domains_to_scan.append((f"betsat{num:04d}.com", "TARIH-FORMAT", set()))
-    for num in range(1000, 2501):
-        domains_to_scan.append((f"bestsat{num}.com", "TYPO-S", set()))
-        domains_to_scan.append((f"betsatm{num}.com", "TYPO-M", set()))
-        domains_to_scan.append((f"besat{num}.com", "TYPO-EKSİK-T", set()))
-        domains_to_scan.append((f"{num}bestsat.com", "TYPO-S-TERS", set()))
-    for num in range(1000, 2501):
-        domains_to_scan.append((f"{num}betsat.com", "TERS-PATTERN", set()))
-    print("🧬 Sahte harfli (IDN) varyasyonlar üretiliyor...")
-    for num in range(1000, 2501):
-        for variant in [f"bètsat{num}.com", f"betsát{num}.com"]:
-            try:
-                puny = variant.encode("idna").decode("utf-8")
-                domains_to_scan.append((puny, "IDN-SAHTE", set()))
-            except:
-                pass
-    print("🔗 Tireli önek (m-, tr- vb.) varyasyonları üretiliyor...")
-    PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
-    for num in range(1000, 2501):
-        for prefix in PREFIXES:
-            domains_to_scan.append((f"{prefix}betsat{num}.com", "PREFIX-PATTERN", set()))
-    # TİRESİZ ÖNEKLER (v2 — 05 Ağu 2026) — mbetsat1610.com (tiresiz,
-    # bitişik) gerçek, aktif bir phishing domain olarak bulundu ama
-    # yukarıdaki döngü sadece "m-betsat..." (tireli) üretiyordu, bu
-    # kör noktaydı. Kapatılıyor.
-    print("🔗 Tiresiz önek (mbetsat gibi) varyasyonları üretiliyor...")
-    NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-    for num in range(1000, 2501):
-        for prefix in NOHYPHEN_PREFIXES:
-            domains_to_scan.append((f"{prefix}betsat{num}.com", "PREFIX-NOHYPHEN-PATTERN", set()))
-    print("🌐 Betsat .co TLD varyasyonları taranıyor...")
-    for num in range(1000, 2501):
-        domains_to_scan.append((f"betsat{num}.co", "CO-TYPO", set()))
-        domains_to_scan.append((f"{num}betsat.co", "CO-TERS", set()))
-    # ── .cam TLD-swap taraması — GÜNCELLENDİ v3 (13 Ağu 2026) ───
-    # betsat1605.cam gibi — sayı doğru/resmi, TLD farklı. Fraud
-    # ağı bugün bunu birebir kopyaladı ve ayrıca "yatirim"
-    # (deposit) subdomain'i altında bank/crypto sayfaları açtı:
-    # yatirim.betsat1605.cam/havale/, yatirim.betsat1605.cam/crypto/
-    #
-    # BUG FIX (13 Ağu 2026): Eskiden bu döngü sadece BETSAT_GAPS +
-    # BETSAT_RANGE (1710-9501) numaralarını tarıyordu. Ama düşük
-    # numaralar (örn. 1612 — güncel resmi domain) bu aralığın DIŞINDA
-    # kalıyordu, çünkü BETSAT_WHITELIST'te "bilinen/resmi .com" olarak
-    # işaretliydi ve tarama listesine hiç girmiyordu. Sonuç: betsat1612.cam
-    # gibi TAM DA saldırganların hedefleyeceği (resmi/aktif numaranın TLD
-    # değiştirilmiş hali) bir domain kör noktadaydı. Artık .cam için
-    # WHITELIST/GAPS/RANGE ayrımı yapılmadan TAM 1-9999 aralığı taranıyor
-    # — bir sayı resmi olsa bile .cam versiyonu ayrıca kontrol edilmeli,
-    # çünkü riskli olan tam da odur.
-    print("📷 Betsat .cam TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
-    for num in range(1, 10000):
-        domains_to_scan.append((f"betsat{num}.cam", "CAM-TLD-SWAP", set()))
-    # CAM ÖNEK TARAMASI — YENİ (3 Eyl 2026): .live tarafında zaten
-    # m-/tr-/www-/vip- (tireli ve tiresiz) önek taraması vardı, .cam
-    # tarafında hiç yoktu — asimetri kapatıldı, .live ile aynı kapsama
-    # getirildi.
-    print("🔗 Betsat .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
-    CAM_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
-    CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-    for num in range(1000, 2501):
-        for prefix in CAM_PREFIXES:
-            domains_to_scan.append((f"{prefix}betsat{num}.cam", "CAM-TLD-SWAP-PREFIX", set()))
-        for prefix in CAM_NOHYPHEN_PREFIXES:
-            domains_to_scan.append((f"{prefix}betsat{num}.cam", "CAM-TLD-SWAP-PREFIX-NOHYPHEN", set()))
-    # HOMOGLYPH (RAKAM↔HARF) — .com/.cam/.live üçünde birden.
-    # bkz. generate_homoglyph_number_variants() tanımındaki not.
-    print("👁️ Homoglyph (1→l, 0→o) varyasyonları üretiliyor (.com/.cam/.live)...")
-    for num in range(1000, 2501):
-        for variant_num in generate_homoglyph_number_variants(num):
-            domains_to_scan.append((f"betsat{variant_num}.com", "TYPO-HOMOGLYPH", set()))
-            domains_to_scan.append((f"betsat{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH", set()))
-            domains_to_scan.append((f"betsat{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH", set()))
-    # NOT (3 Eyl 2026): Root domain (betsat{num}.cam) bulunduktan sonra
-    # yatirim/tr/m/payment/odeme gibi deposit-subdomain'lerini AYRICA
-    # taramıyoruz artık — kaldırıldı. Bulunan her root zaten Telegram'a
-    # düşüyor ve subdomain/deposit-akışı incelemesi elle (Semih tarafından)
-    # yapılıyor; otomatik subdomain taraması hem sabit numara listesinin
-    # sürekli eskiyip stale kalması sorununu taşıyordu hem de gereksiz
-    # ek sorgu hacmiydi.
-    # ── .live TLD-SWAP TARAMASI — YENİ (23 Ağu 2026) ──
-    # Superbetin tarafında m-superbetin1353.live vakası: bu tür
-    # domainler ne sayısal .com/.cam/.co taramasında (TLD yok) ne de
-    # vip_scanner_v21.py'de (sadece güncel resmi 3 numarayı TLD-swap
-    # ediyor, rastgele/eski fraud numaralarını değil) yakalanıyordu.
-    # Aynı kör nokta Betsat tarafında da var, .cam bloğuyla birebir
-    # aynı mantıkla (WHITELIST/GAPS/RANGE ayrımı yapmadan tam 1-9999
-    # aralık + tireli/tiresiz önekler) kapatılıyor.
-    print("🟢 Betsat .live TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
-    for num in range(1, 10000):
-        domains_to_scan.append((f"betsat{num}.live", "LIVE-TLD-SWAP", set()))
-    LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
-    LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-    for num in range(1000, 2501):
-        for prefix in LIVE_PREFIXES:
-            domains_to_scan.append((f"{prefix}betsat{num}.live", "LIVE-TLD-SWAP-PREFIX", set()))
-        for prefix in LIVE_NOHYPHEN_PREFIXES:
-            domains_to_scan.append((f"{prefix}betsat{num}.live", "LIVE-TLD-SWAP-PREFIX-NOHYPHEN", set()))
-    # NOT (3 Eyl 2026): .cam ile aynı sebepten deposit-subdomain derin
-    # taraması burada da kaldırıldı — bkz. yukarıdaki not.
-    # ── Çift harf typosquat (betsatt gibi) ─────────────────────
-    print("🔤 Çift harf typosquat (betsatt gibi) varyasyonları üretiliyor...")
-    double_letter_words = generate_double_letter_variants("betsat")
-    print(f"    Üretilen kalıplar: {', '.join(double_letter_words)}")
-    for word in double_letter_words:
+    # ── GRUP A ────────────────────────────────────────────────
+    if PART in ("a", "all"):
+        print("📷 Betsat .cam TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
+        for num in range(1, 10000):
+            domains_to_scan.append((f"betsat{num}.cam", "CAM-TLD-SWAP", set()))
+        print("🔗 Betsat .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
+        CAM_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+        CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
         for num in range(1000, 2501):
-            domains_to_scan.append((f"{word}{num}.com", "TYPO-CIFT-HARF", set()))
-        # bare (numarasız) hali de kontrol edilsin — betsatt.com gibi
-        domains_to_scan.append((f"{word}.com", "TYPO-CIFT-HARF-BARE", set()))
-    print(f"🚀 Toplam {len(domains_to_scan)} Betsat potansiyel domain taranacak...")
+            for prefix in CAM_PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.cam", "CAM-TLD-SWAP-PREFIX", set()))
+            for prefix in CAM_NOHYPHEN_PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.cam", "CAM-TLD-SWAP-PREFIX-NOHYPHEN", set()))
+        print("🔤 Çift harf typosquat (betsatt gibi) varyasyonları üretiliyor...")
+        double_letter_words = generate_double_letter_variants("betsat")
+        print(f"    Üretilen kalıplar: {', '.join(double_letter_words)}")
+        for word in double_letter_words:
+            for num in range(1000, 2501):
+                domains_to_scan.append((f"{word}{num}.com", "TYPO-CIFT-HARF", set()))
+            domains_to_scan.append((f"{word}.com", "TYPO-CIFT-HARF-BARE", set()))
+        print("🔗 Tiresiz önek (mbetsat gibi) varyasyonları üretiliyor...")
+        NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
+        for num in range(1000, 2501):
+            for prefix in NOHYPHEN_PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.com", "PREFIX-NOHYPHEN-PATTERN", set()))
+        for num in range(1000, 2501):
+            domains_to_scan.append((f"bestsat{num}.com", "TYPO-S", set()))
+            domains_to_scan.append((f"betsatm{num}.com", "TYPO-M", set()))
+            domains_to_scan.append((f"besat{num}.com", "TYPO-EKSİK-T", set()))
+            domains_to_scan.append((f"{num}bestsat.com", "TYPO-S-TERS", set()))
+        print("🌐 Betsat .co TLD varyasyonları taranıyor...")
+        for num in range(1000, 2501):
+            domains_to_scan.append((f"betsat{num}.co", "CO-TYPO", set()))
+            domains_to_scan.append((f"{num}betsat.co", "CO-TERS", set()))
+        for num in range(100, 1000):
+            domains_to_scan.append((f"betsat{num:04d}.com", "TARIH-FORMAT", set()))
+    # ── GRUP B ────────────────────────────────────────────────
+    if PART in ("b", "all"):
+        print("🟢 Betsat .live TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
+        for num in range(1, 10000):
+            domains_to_scan.append((f"betsat{num}.live", "LIVE-TLD-SWAP", set()))
+        LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+        LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
+        for num in range(1000, 2501):
+            for prefix in LIVE_PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.live", "LIVE-TLD-SWAP-PREFIX", set()))
+            for prefix in LIVE_NOHYPHEN_PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.live", "LIVE-TLD-SWAP-PREFIX-NOHYPHEN", set()))
+        for num in (BETSAT_GAPS + list(BETSAT_RANGE)):
+            domains_to_scan.append((f"betsat{num}.com", "YENI", BETSAT_WHITELIST))
+        print("🔗 Tireli önek (m-, tr- vb.) varyasyonları üretiliyor...")
+        PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+        for num in range(1000, 2501):
+            for prefix in PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.com", "PREFIX-PATTERN", set()))
+        print("👁️ Homoglyph (1→l, 0→o) varyasyonları üretiliyor (.com/.cam/.live)...")
+        for num in range(1000, 2501):
+            for variant_num in generate_homoglyph_number_variants(num):
+                domains_to_scan.append((f"betsat{variant_num}.com", "TYPO-HOMOGLYPH", set()))
+                domains_to_scan.append((f"betsat{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH", set()))
+                domains_to_scan.append((f"betsat{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH", set()))
+        print("🧬 Sahte harfli (IDN) varyasyonlar üretiliyor...")
+        for num in range(1000, 2501):
+            for variant in [f"bètsat{num}.com", f"betsát{num}.com"]:
+                try:
+                    puny = variant.encode("idna").decode("utf-8")
+                    domains_to_scan.append((puny, "IDN-SAHTE", set()))
+                except:
+                    pass
+        for num in range(1000, 2501):
+            domains_to_scan.append((f"{num}betsat.com", "TERS-PATTERN", set()))
+    print(f"🚀 [PART {PART.upper()}] Toplam {len(domains_to_scan)} Betsat potansiyel domain taranacak...")
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
         async def bounded_scan(d, t, w):
@@ -344,9 +313,10 @@ async def main():
     save_reported(reported)
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
+    part_label = f" [{PART.upper()}]" if PART != "all" else ""
     if found:
         msg = (
-            f"🚨 *[BETSAT ALARM] Aktif Sahte Domain!*\n"
+            f"🚨 *[BETSAT ALARM]{part_label} Aktif Sahte Domain!*\n"
             f"🤖 `{repo}`\n"
             f"Taranan: `{len(domains_to_scan):,}` domain — Bulunan: `{len(found)}`\n"
         )
@@ -368,7 +338,7 @@ async def main():
         await send_telegram(msg)
     else:
         msg = (
-            f"✅ *[BETSAT TARAMA] Temiz* — {now}\n"
+            f"✅ *[BETSAT TARAMA]{part_label} Temiz* — {now}\n"
             f"🤖 `{repo}`\n"
             f"Taranan: `{len(domains_to_scan):,}` domain\n"
             f"Sahte domain bulunamadı."
