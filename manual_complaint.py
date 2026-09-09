@@ -144,7 +144,19 @@ HOSTS = {
     # olarak bounce etti (554, "does not meet delivery requirements") —
     # TechTies'in kendi imprint sayfasındaki resmi abuse kontağı
     # "noc@techties.net" (tiresiz domain) olarak düzeltildi.
-    "techties":        {"name": "TechTies Inc.",                        "abuse": ["noc@techties.net"]},
+    # DÜZELTME 2 (9 Eyl 2026): "noc@techties.net" da bounce etti — ama bu
+    # sefer 554 değil, NXDOMAIN (techties.net domain'i DNS'te hiç yok,
+    # MX kaydı bulunamıyor). Yani imprint'ten çektiğimiz "düzeltme" aslında
+    # yanlış/güncel olmayan bilgiymiş. İKİ adres de (tech-ties.net VE
+    # techties.net) artık doğrulanmış şekilde çalışmıyor — TechTies için
+    # ELİMİZDE ÇALIŞAN HİÇBİR E-POSTA KANALI YOK. abuse listesi bilinçli
+    # olarak boş bırakıldı; script bu host için mail denemesin, bunun yerine
+    # panel/rapor "e-posta kanalı yok" diye işaretlemeli. Alternatif kanal
+    # (web form/Telegram) araştırılmadı, gerekirse elle yapılmalı.
+    "techties":        {"name": "TechTies Inc. (e-posta kanalı YOK — hem tech-ties.net hem techties.net doğrulanmış şekilde çalışmıyor)", "abuse": []},
+    # YENİ 9 Eyl 2026 — betsatguncelgiris.cam üzerinden Cloudflare host
+    # teyidiyle netleşti (coen/ursula cluster)
+    "avahost":         {"name": "AVA HOST SRL, MD",                      "abuse": ["abuse-alexhost@rnc.ro"]},
     # YENİ 5 Eyl 2026 — superbetin2103.cam / yenisayfa-superbetin.vip
     # üzerinden Cloudflare host teyidiyle netleşti
     "ultahost":        {"name": "Ultahost, Inc.",                       "abuse": ["u-abuse@ultahost.com"]},
@@ -356,6 +368,12 @@ CLUSTER_MAP = {
     # YENİ 8 Eyl 2026 — superbkisagiris.cam üzerinden Cloudflare host
     # teyidiyle netleşti: OVH SAS
     frozenset({"jihoon", "lauryn"}):        "ovh",
+    # YENİ 9 Eyl 2026 — betsat1718.cam üzerinden Cloudflare host
+    # teyidiyle netleşti: TechTies (e-posta kanalı yok, bkz. HOSTS notu)
+    frozenset({"edna", "lennon"}):           "techties",
+    # YENİ 9 Eyl 2026 — betsatguncelgiris.cam üzerinden Cloudflare host
+    # teyidiyle netleşti: AVA HOST SRL
+    frozenset({"coen", "ursula"}):           "avahost",
     # DÜZELTİLDİ 25 Ağu 2026 — m-superbetin2096.com üzerinden panel host tespiti
     # bunu "Evoxt Sdn. Bhd." olarak teyit etti (eskiden yanlışlıkla "netiface"
     # olarak eşleşiyordu, üzerine yazıldı)
