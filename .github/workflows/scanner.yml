@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  scan:
+  scan-a:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -25,29 +25,56 @@ jobs:
           python -m pip install --upgrade pip
           pip install aiohttp gspread google-auth
 
-      - name: Run Scanner
+      - name: Run Scanner (Part A)
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
           SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
-        run: python scanner.py
+        run: python scanner.py a
 
-      - name: Commit changes
+      - name: Commit changes (A)
         run: |
           git config --global user.name "GitHub Action Bot"
           git config --global user.email "action@github.com"
-          
-          # 1. Varsa yeni bulunanları hafızaya ekle
-          if [ -f reported.json ]; then
-            git add reported.json
+          if [ -f reported_a.json ]; then
+            git add reported_a.json
           fi
-          
-          # 2. Dashboard'u hemen burada güncelletiyoruz!
-          python update_dashboard.py
-          git add DASHBOARD.md
-          
-          # 3. İkisini birden GitHub'a kaydet
-          git commit -m "update: yeni leşler eklendi ve dashboard güncellendi [skip ci]" || echo "No changes to commit"
+          git commit -m "update: part A yeni leşler eklendi [skip ci]" || echo "No changes to commit"
+          git pull --rebase origin main
+          git push
+
+  scan-b:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install aiohttp gspread google-auth
+
+      - name: Run Scanner (Part B)
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+        run: python scanner.py b
+
+      - name: Commit changes (B)
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "action@github.com"
+          if [ -f reported_b.json ]; then
+            git add reported_b.json
+          fi
+          git commit -m "update: part B yeni leşler eklendi [skip ci]" || echo "No changes to commit"
           git pull --rebase origin main
           git push
