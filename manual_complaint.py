@@ -37,24 +37,24 @@ BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        # GÜNCELLENDİ 3 Eyl 2026 — aktif adres superbetin2100.com (2098 → 2100)
-        "active_domains": ["superbetin.com", "superbetin2100.com"],
+        # GÜNCELLENDİ 10 Eyl 2026 — aktif adres superbetin2101.com (2100 → 2101)
+        "active_domains": ["superbetin.com", "superbetin2101.com"],
         "signature_email": "yardim@superbetin.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 9 Eyl 2026 (5) — aktif adres betsat1720.com (1717 → 1720)
-        "active_domains": ["betsat.com", "betsat1720.com"],
+        # GÜNCELLENDİ 10 Eyl 2026 (6) — aktif adres betsat1830.com (1720 → 1830)
+        "active_domains": ["betsat.com", "betsat1830.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        # GÜNCELLENDİ 9 Eyl 2026 (4) — aktif adres 765turkbet.com (763 → 765)
-        "active_domains": ["turkbet.io", "765turkbet.com"],
+        # GÜNCELLENDİ 10 Eyl 2026 (5) — aktif adres 766turkbet.com (765 → 766)
+        "active_domains": ["turkbet.io", "766turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
