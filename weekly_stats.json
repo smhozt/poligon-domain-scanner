@@ -1,16 +1,16 @@
 {
-  "total_domains": 703,
+  "total_domains": 717,
   "by_brand": {
-    "superbetin": 467,
-    "betsat": 220,
-    "turkbet": 16
+    "superbetin": 476,
+    "betsat": 224,
+    "turkbet": 17
   },
   "by_source": {
-    "superbetin": 465,
-    "betsat": 222,
-    "turkbet": 16,
+    "superbetin": 474,
+    "betsat": 226,
+    "turkbet": 17,
     "google": 0
   },
-  "last_report": "07.09.2026",
-  "week": 37
+  "last_report": "14.09.2026",
+  "week": 38
 }
