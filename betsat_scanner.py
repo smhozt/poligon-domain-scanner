@@ -228,6 +228,22 @@ def generate_homoglyph_number_variants(num):
             variant = s[:i] + swap_map[ch] + s[i + 1:]
             variants.append(variant)
     return list(dict.fromkeys(variants))
+# ============================================================
+# EKLEME (RAKAM ÖNÜNE HARF) HOMOGLYPH ÜRETİCİ — YENİ (14 Eyl 2026)
+# betsatl1830.com canlı, aktif bir phishing sitesi olarak bulundu —
+# yukarıdaki generate_homoglyph_number_variants'tan FARKLI bir saldırı
+# deseni: mevcut hiçbir hane DEĞİŞTİRİLMİYOR, sayının BAŞINA yeni bir
+# "l" harfi EKLENİYOR (1830 → l1830, 4 haneden 5 haneye çıkıyor).
+# Görsel olarak "11830" ile karışıyor (l harfi 1 rakamına çok benziyor).
+# Sadece "l" ekleniyor — "1830" zaten "1" ile başladığı için "1l1830"
+# gibi bir şey değil, direkt "l1830". Diğer olası ekleme noktaları
+# (sona ekleme, "o" ekleme) henüz canlı örnekte görülmedi, bu yüzden
+# şimdilik sadece baş-ekleme "l" kapsanıyor — yeni örnek görülürse
+# genişletilir.
+# ============================================================
+def generate_leading_insert_homoglyph_variants(num):
+    s = str(num)
+    return [f"l{s}"]
 async def main():
     reported = load_reported()
     found = []
@@ -293,6 +309,12 @@ async def main():
                 domains_to_scan.append((f"betsat{variant_num}.com", "TYPO-HOMOGLYPH", set()))
                 domains_to_scan.append((f"betsat{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH", set()))
                 domains_to_scan.append((f"betsat{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH", set()))
+        print("👁️ Ekleme (baş-l) homoglyph varyasyonları üretiliyor (.com/.cam/.live)...")
+        for num in range(1000, 2501):
+            for variant_num in generate_leading_insert_homoglyph_variants(num):
+                domains_to_scan.append((f"betsat{variant_num}.com", "TYPO-HOMOGLYPH-INSERT", set()))
+                domains_to_scan.append((f"betsat{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH-INSERT", set()))
+                domains_to_scan.append((f"betsat{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH-INSERT", set()))
         print("🧬 Sahte harfli (IDN) varyasyonlar üretiliyor...")
         for num in range(1000, 2501):
             for variant in [f"bètsat{num}.com", f"betsát{num}.com"]:
