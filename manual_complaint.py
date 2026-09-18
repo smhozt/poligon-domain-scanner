@@ -45,8 +45,8 @@ BRANDS = {
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 17 Eyl 2026 (8) — aktif adres betsat1832.com (1831 → 1832)
-        "active_domains": ["betsat.com", "betsat1832.com"],
+        # GÜNCELLENDİ 18 Eyl 2026 — aktif adres betsat1833.com (1832 → 1833)
+        "active_domains": ["betsat.com", "betsat1833.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
