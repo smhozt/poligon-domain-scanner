@@ -101,10 +101,11 @@ HOSTS = {
     "colocatel":       {"name": "ColocaTel Inc.",                        "abuse": ["abuse@colocatel.com"]},
     "evoxt":           {"name": "Evoxt Sdn. Bhd.",                       "abuse": ["abuse@evoxt.com"]},
     "cloudzy":         {"name": "RouterHosting/Cloudzy",                 "abuse": ["abuse-reports@cloudzy.com"]},
-    # GÜNCELLENDİ 23 Eyl 2026 — superbetinresmiadresi.icu üzerinden Cloudflare host
-    # teyidiyle ikinci abuse adresi eklendi: abuse@koddos.com (abuse@koddos.net ile
-    # birlikte — .net'in hâlâ geçerli olup olmadığı teyitsiz, ikisine de gönderiliyor)
-    "koddos":          {"name": "KoDDoS / Amarutu Technology Ltd",       "abuse": ["abuse@koddos.net", "abuse@koddos.com"]},
+    # DÜZELTİLDİ 23 Eyl 2026 — superbetinresmiadresi.icu üzerinden abuse@koddos.com'a
+    # atılan mail KALICI OLARAK BOUNCE ETTİ (Mailer-Daemon, permanent error). Aynı
+    # domain için abuse@koddos.net'e atılan mail ise ticket sistemi üzerinden başarıyla
+    # işlendi (Ticket #878237, "Open"). abuse@koddos.com kaldırıldı — çalışmıyor.
+    "koddos":          {"name": "KoDDoS / Amarutu Technology Ltd",       "abuse": ["abuse@koddos.net"]},
     "pfcloud_vmheaven": {"name": "Pfcloud UG (vmheaven.io)",              "abuse": ["abuse@vmheaven.io"]},
     "gannon_nancy_ambiguous": {"name": "PLAY2GO INTERNATIONAL LIMITED / Omegatech LTD / SYNLINQ (belirsiz)", "abuse": ["abuse@play2go.cloud", "abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "play2go":         {"name": "PLAY2GO INTERNATIONAL LIMITED",         "abuse": ["abuse@play2go.cloud"]},
