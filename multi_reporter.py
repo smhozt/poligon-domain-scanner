@@ -37,24 +37,24 @@ BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        # GÜNCELLENDİ 25 Ağu 2026 — aktif adres superbetin2097.com
-        "active_domains": ["superbetin.com", "superbetin2097.com"],
+        # GÜNCELLENDİ 23 Eyl 2026 — aktif adres superbetin2106.com
+        "active_domains": ["superbetin.com", "superbetin2106.com"],
         "signature_email": "yardim@superbetin.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 25 Ağu 2026 — aktif adres betsat1618.com
-        "active_domains": ["betsat.com", "betsat1618.com"],
+        # GÜNCELLENDİ 23 Eyl 2026 — aktif adres betsat1834.com
+        "active_domains": ["betsat.com", "betsat1834.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        # GÜNCELLENDİ 25 Ağu 2026 — aktif adres 759turkbet.com
-        "active_domains": ["turkbet.io", "759turkbet.com"],
+        # GÜNCELLENDİ 23 Eyl 2026 — aktif adres 770turkbet.com
+        "active_domains": ["turkbet.io", "770turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
@@ -86,7 +86,7 @@ HOSTS = {
     # aynı şirket mi değil mi teyitsiz, karıştırmamak için bilerek ayrı key.
     "virtualsystems_vsys": {"name": "Virtual Systems LLC (v-sys.org)",  "abuse": ["abuse@v-sys.org"]},
     "blazedge":        {"name": "Blazedge",                             "abuse": ["abuse@blazedge.com"]},
-    "advin":           {"name": "Advin Services LLC",                   "abuse": ["anush@advinservers.com"]},
+    "advin":           {"name": "Advin Services LLC",                   "abuse": ["anush@advinservers.com", "abuse@advinservers.com"]},
     "swissnet":        {"name": "SwissNet LLC",                          "abuse": ["abuse@swissnetwork.io"]},
     "prq":             {"name": "PRQ VPN Network SE",                    "abuse": ["abuse@dcs.net"]},
     "fatcat_scrhost":  {"name": "FATCAT-AS / scrhost.com",               "abuse": ["info@scrhost.com"]},
@@ -96,7 +96,7 @@ HOSTS = {
     "colocatel":       {"name": "ColocaTel Inc.",                        "abuse": ["abuse@colocatel.com"]},
     "evoxt":           {"name": "Evoxt Sdn. Bhd.",                       "abuse": ["abuse@evoxt.com"]},
     "cloudzy":         {"name": "RouterHosting/Cloudzy",                 "abuse": ["abuse-reports@cloudzy.com"]},
-    "koddos":          {"name": "KoDDoS / Amarutu Technology Ltd",       "abuse": ["abuse@koddos.net"]},
+    "koddos":          {"name": "KoDDoS / Amarutu Technology Ltd",       "abuse": ["abuse@koddos.net", "abuse@koddos.com"]},
     "pfcloud_vmheaven": {"name": "Pfcloud UG (vmheaven.io)",              "abuse": ["abuse@vmheaven.io"]},
     "gannon_nancy_ambiguous": {"name": "PLAY2GO INTERNATIONAL LIMITED / Omegatech LTD / SYNLINQ (belirsiz)", "abuse": ["abuse@play2go.cloud", "abuse@pitline.net", "abuse@omegatech.sc", "abuse@ghostnet.de", "abuse@roeth-und-beck.de"]},
     "play2go":         {"name": "PLAY2GO INTERNATIONAL LIMITED",         "abuse": ["abuse@play2go.cloud"]},
@@ -127,6 +127,15 @@ HOSTS = {
     "ipvendetta":      {"name": "IP Vendetta Inc.",                      "abuse": ["abuse@ipvendetta.com"]},
     "desi_josh_ambiguous": {"name": "SwissNet LLC / VPS Datacenter Ltd (belirsiz)", "abuse": ["abuse@swissnetwork.io", "abuse@private-data-center.com"]},
     "dayana_kurt_ambiguous": {"name": "Netiface LLC / VPS Dedicated LLC, US (flashwisp.com.ng) (belirsiz)", "abuse": ["abuse@abusehandler.net", "abuse@vpsdedicated.net", "abuse@flashwisp.com.ng"]},
+    # YENİ 23 Eyl 2026 — direktgir724.icu, m-superbetin2107.com,
+    # tr-superbetin.yeniqirisler724.cfd üzerinden Cloudflare host teyidiyle netleşti
+    # (üçü de aynı host, aynı Gaziantep TR bölge profili)
+    "meric":           {"name": "Meric Internet Teknolojileri A.Ş.",     "abuse": ["abuses@resyst.com.tr"]},
+    # YENİ 23 Eyl 2026 — betsat1829.com üzerinden Cloudflare host teyidiyle netleşti
+    "ultahost":        {"name": "Ultahost, Inc.",                        "abuse": ["u-abuse@ultahost.com"]},
+    # YENİ 23 Eyl 2026 — superbetin2603.com / superbetin2526.com üzerinden Cloudflare
+    # host teyidiyle netleşti (Korea NIC abuse/IRT kontağı)
+    "krnic":           {"name": "Korea Network Information Center (IRT)", "abuse": ["irt@nic.or.kr"]},
 }
 WEB_FORM_ONLY_REGISTRARS = {
     "fewmoretaps": {"display": "Trustname / Fewmoretaps OU", "form_url": "https://trustname.com/help/report-abuse"},
@@ -307,6 +316,17 @@ CLUSTER_MAP = {
     # YENİ 25 Ağu 2026 — superbetin2208.com üzerinden Cloudflare trademark host
     # teyidiyle netleşti: AlexHost SRL, MD
     frozenset({"jim", "sneh"}):             "alexhost",
+    # YENİ 23 Eyl 2026 — direktgir724.icu, m-superbetin2107.com,
+    # tr-superbetin.yeniqirisler724.cfd Cloudflare host teyidiyle netleşti
+    # (üçü de Gaziantep, TR bölge profili — Meric Internet Teknolojileri A.Ş.)
+    frozenset({"elijah", "peaches"}):       "meric",                # direktgir724.icu
+    frozenset({"cody", "mary"}):            "meric",                # m-superbetin2107.com
+    frozenset({"celeste", "cris"}):         "meric",                # tr-superbetin.yeniqirisler724.cfd
+    # YENİ 23 Eyl 2026 — betsat1829.com üzerinden Cloudflare host teyidiyle netleşti
+    frozenset({"pat", "scott"}):            "ultahost",             # betsat1829.com
+    # YENİ 23 Eyl 2026 — superbetin2603.com / superbetin2526.com üzerinden
+    # Cloudflare host teyidiyle netleşti (Korea NIC abuse/IRT)
+    frozenset({"adelaide", "johnathan"}):   "krnic",                # superbetin2603.com / superbetin2526.com
 }
 DEAD_DOMAIN = "__dead__"
 # ============================================================
@@ -427,6 +447,12 @@ HOST_IP_KEYWORDS = [
     ("v-sys", "virtualsystems_vsys"),
     ("private-data-center", "vpsdatacenter"),
     ("vps datacenter", "vpsdatacenter"),
+    # YENİ 23 Eyl 2026
+    ("resyst", "meric"),
+    ("meric internet", "meric"),
+    ("ultahost", "ultahost"),
+    ("krnic", "krnic"),
+    ("nic.or.kr", "krnic"),
 ]
 async def resolve_host_via_ip(session, ip):
     try:
