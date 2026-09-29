@@ -45,16 +45,20 @@ BRANDS = {
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 23 Eyl 2026 — aktif adres betsat1834.com (1833 → 1834)
-        "active_domains": ["betsat.com", "betsat1834.com"],
+        # GÜNCELLENDİ 29 Eyl 2026 — aktif adres betsat1837.com (1834 → 1836 → 1837;
+        # OFFICIAL_DOMAINS.md ile teyitli, 28 Eyl 2026 rotasyonu)
+        "active_domains": ["betsat.com", "betsat1837.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        # GÜNCELLENDİ 23 Eyl 2026 — aktif adres 770turkbet.com (768 → 770)
-        "active_domains": ["turkbet.io", "770turkbet.com"],
+        # DİKKAT 29 Eyl 2026 — script'te 770turkbet.com yazıyordu, ama OFFICIAL_DOMAINS.md
+        # (bu dosya bugün 772turkbet.com diyor) ile ÇELİŞİYOR. Hangisi doğru netleşene
+        # kadar geçici olarak OFFICIAL_DOMAINS.md'ye göre 772'ye çekildi — TEYİT LAZIM,
+        # yanlışsa 770'e geri al.
+        "active_domains": ["turkbet.io", "772turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
@@ -160,6 +164,9 @@ HOSTS = {
     # olarak boş bırakıldı; script bu host için mail denemesin, bunun yerine
     # panel/rapor "e-posta kanalı yok" diye işaretlemeli. Alternatif kanal
     # (web form/Telegram) araştırılmadı, gerekirse elle yapılmalı.
+    # NOT 29 Eyl 2026 — bu boşluk hâlâ doğru: betsat1936.com üzerinden bugün gelen
+    # Cloudflare host disclosure'ı da yine sadece abuse@tech-ties.net'i gösterdi
+    # (ölü kanal), yeni/çalışan bir adres ortaya çıkmadı.
     "techties":        {"name": "TechTies Inc. (e-posta kanalı YOK — hem tech-ties.net hem techties.net doğrulanmış şekilde çalışmıyor)", "abuse": []},
     # YENİ 9 Eyl 2026 — betsatguncelgiris.cam üzerinden Cloudflare host
     # teyidiyle netleşti (coen/ursula cluster)
@@ -193,6 +200,16 @@ WEB_FORM_ONLY_REGISTRARS = {
     # aslında yalnızca web form kabul ediyor — önceki varsayım (email kabul ettiği)
     # yanlıştı, geçmişte email ile atılan tüm Sav.com raporları işlenmemiş sayılmalı.
     "sav.com":     {"display": "Sav.com, LLC",                "form_url": "https://abuse.sav.com/sav_com/phishing"},
+    # YENİ 29 Eyl 2026 — Trustname/Fewmoretaps'in (fewmoretaps key'i zaten mevcuttu)
+    # abuse ekibi bu oturumda #SPR-56380 vakasında (superbetin2226.com) çok yüksek
+    # bir kanıt standardı istedi: canlı ekran görüntüleri (login formu, ödeme sayfası,
+    # ana sayfa) + hangi forensic testlerin YAPILMADIĞI açık şekilde belirtilmesini
+    # talep etti (POST endpoint yakalama, credential-exfiltration testi, dosya
+    # hash'leri, VirusTotal/urlscan/Netcraft otomatik skorları). Diğer registrar/host'lara
+    # kıyasla EN katı inceleme standardı bu oturumda gözlendi — ileride Trustname'de
+    # kayıtlı bir domain'e rastlanırsa, sadece IBAN/URL değil, mümkünse gerçek ekran
+    # görüntüsü de hazırlanmalı; script bunu otomatik toplamıyor, elle eklenmeli.
+    "fewmoretaps": {"display": "Trustname / Fewmoretaps OU", "form_url": "https://trustname.com/help/report-abuse"},
 }
 def web_form_only_match(registrar_name):
     if not registrar_name:
@@ -385,10 +402,16 @@ CLUSTER_MAP = {
     # YENİ 9 Eyl 2026 — betsatguncelgiris.cam üzerinden Cloudflare host
     # teyidiyle netleşti: AVA HOST SRL
     frozenset({"coen", "ursula"}):           "avahost",
-    # DÜZELTİLDİ 25 Ağu 2026 — m-superbetin2096.com üzerinden panel host tespiti
-    # bunu "Evoxt Sdn. Bhd." olarak teyit etti (eskiden yanlışlıkla "netiface"
-    # olarak eşleşiyordu, üzerine yazıldı)
-    frozenset({"elmo", "romina"}):      "evoxt",
+    # DÜZELTİLDİ 29 Eyl 2026 — superbetin2500.com üzerinden BUGÜN, hem WHOIS
+    # hem de Cloudflare'in kendi disclosure maili (Report ID 52dcd0114e672ffe)
+    # host'u "IP Vendetta Inc." olarak teyit etti — "Evoxt" DEĞİL. 25 Ağu'daki
+    # önceki eşleşme (panel host tespiti, tek kaynak) muhtemelen yanlıştı veya
+    # bu NS çifti farklı zamanlarda farklı gerçek host'lara denk gelmiş olabilir
+    # (Cloudflare NS çiftleri hesaba özel sabit kimlikler değil, ~1600+ isimlik
+    # havuzdan zone bazında dağıtılıyor — aynı çift alakasız domainlere denk
+    # gelebilir). Cloudflare'in kendi disclosure'ı panel tahmininden daha güvenilir
+    # kaynak sayıldı, üzerine yazıldı.
+    frozenset({"elmo", "romina"}):      "ipvendetta",
     frozenset({"clayton", "jade"}):     "vpsdatacenter",
     frozenset({"nitin", "raina"}):      "colocatel",
     # YENİ 20 Ağu 2026 — betsat-uefa.icu teyidi
@@ -439,6 +462,14 @@ CLUSTER_MAP = {
     frozenset({"kelly", "kolton"}):         "netiface",
     # YENİ 3 Eyl 2026 — betsatgirisburadan.top üzerinden Cloudflare
     # trademark host teyidiyle netleşti: VPS Dedicated LLC
+    # TEYİT (29 Eyl 2026): betsat1902.com'da da AYNI çift (annabel/razvan) görüldü,
+    # ve bugün betsat1912.com için ayrıca host_cluster_reference.md'den bağımsız
+    # olarak da netiface/VPS Dedicated doğrulandı — bu eşleşme sağlam. NOT: bugün
+    # betsat1902.com elle superbetin2500.com + superbetin21006.com ile birlikte
+    # gruplanıp abuse@ipvendetta.com'a gönderildi — ama bu haritaya göre asıl
+    # doğru hedefi netiface (abuse@abusehandler.net / abuse@vpsdedicated.net) idi.
+    # O elle giden rapor muhtemelen yanlış host'a gitti, netiface'e de ayrıca
+    # gönderilmesi gerekebilir.
     frozenset({"annabel", "razvan"}):       "netiface",
     # YENİ 3 Eyl 2026 — superbetin-mobil2026.com üzerinden Cloudflare
     # trademark host teyidiyle netleşti: VPS Dedicated LLC
@@ -763,6 +794,12 @@ COMMON_PHISHING_PATHS = [
     "/payment/view/havale.php", "/payment/view/bitcoin.php",
     "/payment/bank/nethavale/", "/payment/bank/otomonay/", "/payment/crypto/kriptopay/",
     "/paraylan/",
+    # YENİ 29 Eyl 2026 — bu oturumda superbetin21006.com'da tekrarlayan bir
+    # ödeme-yakalama endpoint paterni görüldü, tek seferlik olmayabilir
+    "/__paraylan_havale",
+    # YENİ 29 Eyl 2026 — betsat1922.com üzerinde görülen versiyonlu deposit
+    # endpoint paterni (v2), betsat1921/1922'de tekrarladı
+    "/ma/deposit/v2/havale", "/ma/deposit/v2/crypto",
 ]
 # GÜNCELLENDİ 3 Eyl 2026 — "payurus" eklendi: wwwbetsat1965.com, superbetin2216.com,
 # m-betsat1620.com üzerinde 3+ kez tekrarlayan ödeme subdomain paterni
@@ -800,6 +837,19 @@ async def discover_phishing_urls(session, root_domain, max_results=10):
 # tıklandıktan sonra açılan alt sayfa) basit bir GET ile hiç
 # görünmeyebilir — bu durumda hiçbir şey bulunamaz, bu beklenen bir
 # sınırlamadır, ekran görüntüsünden elle eklemeye devam edilmeli.
+#
+# NOT 29 Eyl 2026 — bu oturumda İKİ farklı mule için IBAN VARYANTI (aynı
+# hesap gövdesi, farklı kontrol hanesi) elle tespit edildi:
+#   - superbetin2500.com mule'u: iki farklı IBAN, ikisi de gerçek kabul
+#     edildi (kullanıcı kararı — hangisi doğru netleşmedi, ikisi de
+#     kanıt paketine eklendi)
+#   - "Murat Elğay" mule'u: TR65...9150 08 (betsat1922.com) vs.
+#     TR22...9150 06 (betsat1921.com), aynı hesap gövdesi
+# Bu, otomatik regex/registry sisteminde bir KOD değişikliği gerektirmiyor
+# (IBAN_RE zaten her varyantı ayrı ayrı yakalayıp registry'e ekliyor,
+# ikisi de otomatik olarak "aynı domain grubu" içinde görünür) — sadece
+# rapor/panel tarafında hangi varyantın kullanılacağına dikkat edilmeli,
+# ikisi de gerçek olabilir, biri "yanlış" diye atılmamalı.
 # ============================================================
 MULE_REGISTRY_FILE = "mule_registry.json"
 IBAN_RE = re.compile(r'\bTR\d{24}\b')
