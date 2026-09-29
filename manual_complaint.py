@@ -37,27 +37,26 @@ BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        # GÜNCELLENDİ 23 Eyl 2026 — aktif adres superbetin2106.com (2103 → 2106)
-        "active_domains": ["superbetin.com", "superbetin2106.com"],
+        # GÜNCELLENDİ 29 Eyl 2026 — aktif adres superbetin2107.com (2103 → 2106 → 2107)
+        "active_domains": ["superbetin.com", "superbetin2107.com"],
         "signature_email": "yardim@superbetin.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 29 Eyl 2026 — aktif adres betsat1837.com (1834 → 1836 → 1837;
-        # OFFICIAL_DOMAINS.md ile teyitli, 28 Eyl 2026 rotasyonu)
-        "active_domains": ["betsat.com", "betsat1837.com"],
+        # GÜNCELLENDİ 29 Eyl 2026 — aktif adres betsat1838.com (1834 → 1836 → 1837 → 1838;
+        # OFFICIAL_DOMAINS.md ile teyitli, aynı gün İKİNCİ rotasyon — 1837 sadece 1 gün sürdü)
+        "active_domains": ["betsat.com", "betsat1838.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
     "turkbet": {
         "name": "Turkbet",
         "fixed_domain": "turkbet.io",
-        # DİKKAT 29 Eyl 2026 — script'te 770turkbet.com yazıyordu, ama OFFICIAL_DOMAINS.md
-        # (bu dosya bugün 772turkbet.com diyor) ile ÇELİŞİYOR. Hangisi doğru netleşene
-        # kadar geçici olarak OFFICIAL_DOMAINS.md'ye göre 772'ye çekildi — TEYİT LAZIM,
-        # yanlışsa 770'e geri al.
+        # DÜZELTİLDİ 29 Eyl 2026 — script'te 770turkbet.com yazıyordu (OFFICIAL_DOMAINS.md
+        # ile çelişiyordu, 772 diyordu). ARTIK TEYİTLİ: kullanıcının kendi elle gönderdiği
+        # bir abuse raporunda da resmi site 772turkbet.com olarak kullanılmış — 772 doğru.
         "active_domains": ["turkbet.io", "772turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
