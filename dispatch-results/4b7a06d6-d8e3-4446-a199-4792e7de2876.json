@@ -1,0 +1,89 @@
+{
+  "request_id": "4b7a06d6-d8e3-4446-a199-4792e7de2876",
+  "generated_at": "2026-09-30T17:04:54.357670+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "superbetin2151.com",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "Fewmoretaps OU d/b/a Trustname.com",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "mario_norah_ambiguous",
+        "host_name": "FranTech Solutions / VPS Dedicated LLC, US (belirsiz)",
+        "cluster": "mario/norah",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Fewmoretaps OU d/b/a Trustname.com [rdap] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://trustname.com/help/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (FranTech Solutions / VPS Dedicated LLC, US (belirsiz))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
