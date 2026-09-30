@@ -21,6 +21,7 @@ SMTP_USER = os.environ.get("SMTP_USER", "")
 SMTP_PASS = os.environ.get("SMTP_PASS", "")
 SAFE_BROWSING_API_KEY = os.environ.get("SAFE_BROWSING_API_KEY", "")
 SPAMHAUS_API_TOKEN = os.environ.get("SPAMHAUS_API_TOKEN", "")
+NETBEACON_API_KEY = os.environ.get("NETBEACON_API_KEY", "")
 INPUT_DOMAINS        = os.environ.get("INPUT_DOMAINS", "")
 INPUT_BRAND          = os.environ.get("INPUT_BRAND", "auto").strip().lower()
 INPUT_TARGETS        = os.environ.get("INPUT_TARGETS", "all").strip().lower()
@@ -1184,6 +1185,57 @@ async def report_spamhaus(session, domain, brand_key, found_urls):
     except Exception as e:
         print(f"    ⚠️ Spamhaus hatası ({domain}): {type(e).__name__}: {e}")
         return False
+async def report_netbeacon(session, domain, brand_key, found_urls):
+    # Şema kaynağı: kullanıcının kendi NetBeacon Reporter API (api.netbeacon.org) Swagger
+    # sayfasından 30 Eyl 2026'da paylaşılan gerçek ekran görüntüsü — uydurma değil.
+    # POST /submit/reports bir ARRAY bekliyor; "type": "phishing" için gerekli alanlar
+    # (Report + PhishingReport şemalarının birleşimi): type, date, url, description,
+    # attachments (boş liste kabul edilir), target (PhishingReport'a özel, zorunlu).
+    # ⚠️ Auth yöntemi Swagger sayfasında "API Key" olarak geçiyor ama header adı
+    # (Authorization: Bearer ... mu, X-API-Key: ... mu) ekran görüntüsünde belirtilmemişti.
+    # Spamhaus ile aynı Bearer-token varsayımıyla yazıldı — ilk canlı denemede 401/403
+    # dönerse, aşağıdaki headers satırını "X-API-Key": NETBEACON_API_KEY olarak değiştir.
+    if not NETBEACON_API_KEY:
+        print("    ⚠️ NetBeacon: NETBEACON_API_KEY eksik, atlandı")
+        return False
+    brand = BRANDS[brand_key]
+    target_url = found_urls[0] if found_urls else f"https://{domain}"
+    description = (
+        f"Phishing site impersonating {brand['name'].upper()} ({brand['fixed_domain']}), "
+        f"operated by Poligon Entertainment N.V. under Curaçao license OGL/2024/815/0653. "
+        f"Credential harvesting and/or fraudulent payment interception observed."
+    )
+    if found_urls:
+        description += " Evidence URLs: " + ", ".join(found_urls[:5])
+    if INPUT_NOTES:
+        description += f" Notes: {INPUT_NOTES}"
+    payload = [{
+        "type": "phishing",
+        "date": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "ongoing": True,
+        "url": target_url,
+        "description": description[:1000],
+        "target": brand["name"],
+        "attachments": [],
+    }]
+    try:
+        async with session.post(
+            "https://api.netbeacon.org/submit/reports",
+            json=payload,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {NETBEACON_API_KEY}",
+            },
+            timeout=aiohttp.ClientTimeout(total=15),
+        ) as resp:
+            if resp.status in (200, 201, 202, 204):
+                return True
+            body_snippet = (await resp.text())[:200]
+            print(f"    ⚠️ NetBeacon HTTP {resp.status} ({domain}) — yanıt: {body_snippet}")
+            return False
+    except Exception as e:
+        print(f"    ⚠️ NetBeacon hatası ({domain}): {type(e).__name__}: {e}")
+        return False
 async def send_telegram(message):
     async with aiohttp.ClientSession() as session:
         for chat_id in TELEGRAM_CHAT_IDS:
@@ -1231,7 +1283,7 @@ async def main():
         print("   Kasıtlı bir tekrar gönderim değilse, lütfen kontrol edin.")
         print("   Script yine de devam ediyor (bu bir engelleme değil, sadece bilgilendirme).")
     requested_targets = set(INPUT_TARGETS.split(","))
-    all_targets = {"nicenic", "host", "netcraft", "safebrowsing", "googlespam", "smartscreen", "spam404", "custom_email", "spamhaus", "apwg"}
+    all_targets = {"nicenic", "host", "netcraft", "safebrowsing", "googlespam", "smartscreen", "spam404", "custom_email", "spamhaus", "apwg", "netbeacon"}
     explicit_targets = {"compromise_notice"}
     if "all" in requested_targets:
         targets = all_targets | (requested_targets & explicit_targets)
@@ -1385,6 +1437,10 @@ async def main():
                 ok = send_apwg(domain, brand_key, found_urls)
                 print(f"  {'✅' if ok else '❌'} APWG")
                 _record("apwg", "APWG", ok)
+            if "netbeacon" in targets:
+                ok = await report_netbeacon(session, domain, brand_key, found_urls)
+                print(f"  {'✅' if ok else '❌'} NetBeacon")
+                _record("netbeacon", "NetBeacon", ok)
             append_to_reported_files(domain)
             status_str = "  ".join(
                 f"{'✅' if ok is True else '❌' if ok is False else '⚠️'} {name}"
