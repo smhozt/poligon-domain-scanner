@@ -37,8 +37,8 @@ BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        # GÜNCELLENDİ 29 Eyl 2026 — aktif adres superbetin2107.com (2103 → 2106 → 2107)
-        "active_domains": ["superbetin.com", "superbetin2107.com"],
+        # GÜNCELLENDİ 30 Eyl 2026 — aktif adres superbetin2108.com (2103 → 2106 → 2107 → 2108)
+        "active_domains": ["superbetin.com", "superbetin2108.com"],
         "signature_email": "yardim@superbetin.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
