@@ -17,7 +17,7 @@ on:
           - turkbet
         default: auto
       targets:
-        description: 'Hedefler (virgülle): nicenic,host,custom_email,netcraft,safebrowsing,googlespam,smartscreen,spam404,spamhaus,apwg veya "all". compromise_notice ayrı yazılmalı, "all" içine dahil değil (hacklenmiş 3. taraf site bildirimi için).'
+        description: 'Hedefler (virgülle): nicenic,host,custom_email,netcraft,safebrowsing,googlespam,smartscreen,spam404,spamhaus,apwg,netbeacon veya "all". compromise_notice ayrı yazılmalı, "all" içine dahil değil (hacklenmiş 3. taraf site bildirimi için).'
         required: true
         type: string
         default: all
@@ -64,6 +64,7 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           SAFE_BROWSING_API_KEY: ${{ secrets.SAFE_BROWSING_API_KEY }}
           SPAMHAUS_API_TOKEN: ${{ secrets.SPAMHAUS_API_TOKEN }}
+          NETBEACON_API_KEY: ${{ secrets.NETBEACON_API_KEY }}
           INPUT_DOMAINS: ${{ github.event.inputs.domains }}
           INPUT_BRAND: ${{ github.event.inputs.brand }}
           INPUT_TARGETS: ${{ github.event.inputs.targets }}
