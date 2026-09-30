@@ -1,0 +1,167 @@
+{
+  "request_id": "befd0b63-83a9-4a81-9556-e42cd64b11e8",
+  "generated_at": "2026-09-30T17:39:46.035414+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "kasboboru.com",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "fail",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin987.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin987.com/spor/",
+        "https://superbetin987.com/casino/",
+        "https://superbetin987.com/login.php",
+        "https://superbetin987.com/paraylan/",
+        "https://m.superbetin987.com/havale/",
+        "https://m.superbetin987.com/crypto/",
+        "https://tr.superbetin987.com/havale/",
+        "https://tr.superbetin987.com/crypto/",
+        "https://m.superbetin987.com/login.php",
+        "https://www.superbetin987.com/havale/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "fail",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsatmobilgirisi.com",
+      "brand": "Betsat",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "fail",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "ercabutik.com",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "fail",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "tr-superbetin.com",
+      "brand": "Superbetin",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "fail",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin2226.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin2226.com/spor/",
+        "https://superbetin2226.com/casino/",
+        "https://superbetin2226.com/login.php",
+        "https://superbetin2226.com/canli-bahis/",
+        "https://www.superbetin2226.com/login.php",
+        "https://superbetin2226.com/spor/?mobile=1",
+        "https://payurus.superbetin2226.com/havale/",
+        "https://payurus.superbetin2226.com/crypto/",
+        "https://payurus.superbetin2226.com/login.php",
+        "https://superbetin2226.com/modules/payments/deposit/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": null,
+      "host": null,
+      "channels": [
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "fail",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
