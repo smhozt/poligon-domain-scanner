@@ -46,6 +46,14 @@ on:
 # (mail gitti mi, hangi host bulundu vb.) gösteriyor.
 permissions:
   contents: write
+# Art arda tetiklenen koşular aynı anda git push yaparsa (biri push'larken
+# öbürü hâlâ eski HEAD'i tutuyorsa) "fetch first" ile reddediliyordu —
+# bu, koşuları paralel değil sırayla (kuyruğa alarak) çalıştırır.
+# cancel-in-progress:false — devam eden bir şikayet gönderimi asla iptal
+# edilmesin, sadece bir sonraki koşu onun bitmesini beklesin.
+concurrency:
+  group: manuel-sikayet-dispatch
+  cancel-in-progress: false
 jobs:
   dispatch-complaint:
     runs-on: ubuntu-latest
@@ -80,10 +88,30 @@ jobs:
           if [ -f "dispatch-results/${{ github.event.inputs.request_id }}.json" ]; then
             git config user.name "takedown-console-bot"
             git config user.email "actions@github.com"
-            git add "dispatch-results/${{ github.event.inputs.request_id }}.json"
+            # Script çalışırken reported.json / mule_registry.json / dead_domains
+            # gibi başka dosyaları da değiştiriyor (commit'lenmemiş halde kalıyorlardı).
+            # Bunlar working tree'yi kirletip "cannot pull with rebase: unstaged
+            # changes" hatasına yol açıyordu — artık hepsini tek commit'e alıyoruz.
+            git add -A
             git commit -m "Dispatch result: ${{ github.event.inputs.request_id }}" || echo "Commit edilecek değişiklik yok"
-            git pull --rebase origin ${{ github.ref_name }} || true
-            git push origin HEAD:${{ github.ref_name }}
+            # Push'u birkaç kez, her denemede taze fetch+rebase ile dene —
+            # concurrency kilidine rağmen kalabilecek nadir bir yarışı da tolere eder.
+            success=0
+            for i in 1 2 3 4 5; do
+              git fetch origin ${{ github.ref_name }}
+              if git rebase origin/${{ github.ref_name }} && git push origin HEAD:${{ github.ref_name }}; then
+                echo "✅ Push başarılı (deneme $i)"
+                success=1
+                break
+              fi
+              git rebase --abort 2>/dev/null || true
+              echo "⚠️ Push/rebase başarısız, tekrar deneniyor ($i/5)..."
+              sleep $((RANDOM % 5 + 2))
+            done
+            if [ "$success" != "1" ]; then
+              echo "::error::Sonuç dosyası 5 denemeden sonra da push edilemedi — panel bu sonucu göremeyecek."
+              exit 1
+            fi
           else
             echo "Sonuç dosyası bulunamadı, muhtemelen script erken hata verdi."
           fi
