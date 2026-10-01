@@ -1,0 +1,107 @@
+{
+  "request_id": "a454fad8-76f7-4017-bdb4-5d8cabb7cdc5",
+  "generated_at": "2026-10-01T11:54:30.867113+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "superbetin4914.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin4914.com/spor/",
+        "https://superbetin4914.com/casino/",
+        "https://superbetin4914.com/canli-bahis/",
+        "https://odeme.superbetin4914.com/havale/",
+        "https://superbetin4914.com/spor/?mobile=1",
+        "https://yatirim.superbetin4914.com/havale/",
+        "https://superbetin4914.com/",
+        "https://m.superbetin4914.com/",
+        "https://tr.superbetin4914.com/",
+        "https://www.superbetin4914.com/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "Gname.com Pte. Ltd.",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "byron",
+          "macy"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Gname.com Pte. Ltd. [rdap] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://www.gname.com/abuse/category/2"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: byron, macy"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
