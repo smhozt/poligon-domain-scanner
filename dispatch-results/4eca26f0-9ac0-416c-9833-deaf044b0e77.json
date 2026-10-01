@@ -1,0 +1,106 @@
+{
+  "request_id": "4eca26f0-9ac0-416c-9833-deaf044b0e77",
+  "generated_at": "2026-10-01T15:45:30.877558+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "betsat1935.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://betsat1935.com/spor/",
+        "https://betsat1935.com/casino/",
+        "https://betsat1935.com/login.php",
+        "https://betsat1935.com/paraylan/",
+        "https://m.betsat1935.com/havale/",
+        "https://m.betsat1935.com/crypto/",
+        "https://tr.betsat1935.com/havale/",
+        "https://tr.betsat1935.com/crypto/",
+        "https://m.betsat1935.com/login.php",
+        "https://www.betsat1935.com/havale/"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "Fewmoretaps OU d/b/a Trustname.com",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "netiface",
+        "host_name": "Netiface LLC / VPS Dedicated LLC",
+        "cluster": "annabel/razvan",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Fewmoretaps OU d/b/a Trustname.com [rdap] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://trustname.com/help/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (Netiface LLC / VPS Dedicated LLC)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
