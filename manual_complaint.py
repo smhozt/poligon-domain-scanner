@@ -58,7 +58,8 @@ BRANDS = {
         # DÜZELTİLDİ 29 Eyl 2026 — script'te 770turkbet.com yazıyordu (OFFICIAL_DOMAINS.md
         # ile çelişiyordu, 772 diyordu). ARTIK TEYİTLİ: kullanıcının kendi elle gönderdiği
         # bir abuse raporunda da resmi site 772turkbet.com olarak kullanılmış — 772 doğru.
-        "active_domains": ["turkbet.io", "772turkbet.com"],
+        # GÜNCELLENDİ 30 Eyl 2026 — aktif adres 773turkbet.com'a rotasyon yaptı (772 → 773)
+        "active_domains": ["turkbet.io", "773turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
@@ -384,7 +385,9 @@ CLUSTER_MAP = {
     # YENİ 8 Eyl 2026 — üç cluster'ın host'u Cloudflare doğrudan host
     # teyidiyle netleşti (daha önce unconfirmed idi)
     frozenset({"meera", "trevor"}):        "netiface",
-    frozenset({"george", "jillian"}):      "netiface",
+    # DÜZELTİLDİ 1 Eki 2026 — "netiface" yazıyordu ama betsat1924.com için Cloudflare'in
+    # kendi host-disclosure'ı (Trademark + Phishing, 2 ayrı rapor) IP Vendetta Inc. dedi.
+    frozenset({"george", "jillian"}):      "ipvendetta",
     frozenset({"anna", "lennon"}):         "frostyhosting",
     # YENİ 8 Eyl 2026 — trbetsat-app.icu üzerinden Cloudflare host
     # teyidiyle netleşti: VPS Dedicated LLC (flashwisp.com.ng varyantı)
@@ -459,7 +462,9 @@ CLUSTER_MAP = {
     frozenset({"chase", "kelly"}):          "vpsdedicated_flashwisp",
     # YENİ 28 Ağu 2026 — superbetingercek724.co üzerinden Cloudflare
     # trademark host teyidiyle netleşti: VPS Dedicated LLC (abuse@abusehandler.net)
-    frozenset({"kelly", "kolton"}):         "netiface",
+    # DÜZELTİLDİ 1 Eki 2026 — "netiface" yazıyordu ama 961turkbet.com için Cloudflare'in
+    # kendi host-disclosure'ı (Trademark + Phishing, 2 ayrı rapor) IP Vendetta Inc. dedi.
+    frozenset({"kelly", "kolton"}):         "ipvendetta",
     # YENİ 3 Eyl 2026 — betsatgirisburadan.top üzerinden Cloudflare
     # trademark host teyidiyle netleşti: VPS Dedicated LLC
     # TEYİT (29 Eyl 2026): betsat1902.com'da da AYNI çift (annabel/razvan) görüldü,
