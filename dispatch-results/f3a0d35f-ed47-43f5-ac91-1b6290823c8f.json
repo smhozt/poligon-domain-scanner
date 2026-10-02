@@ -1,0 +1,107 @@
+{
+  "request_id": "f3a0d35f-ed47-43f5-ac91-1b6290823c8f",
+  "generated_at": "2026-10-02T16:45:47.568324+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "betsatt1839.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://betsatt1839.com/spor/",
+        "https://betsatt1839.com/casino/",
+        "https://betsatt1839.com/login.php",
+        "https://betsatt1839.com/paraylan/",
+        "https://m.betsatt1839.com/havale/",
+        "https://m.betsatt1839.com/crypto/",
+        "https://tr.betsatt1839.com/havale/",
+        "https://tr.betsatt1839.com/crypto/",
+        "https://m.betsatt1839.com/login.php",
+        "https://www.betsatt1839.com/havale/"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Sav.com, LLC",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "lara",
+          "lou"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Sav.com, LLC [rdap] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://abuse.sav.com/sav_com/phishing"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: lara, lou"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
