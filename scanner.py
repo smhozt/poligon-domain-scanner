@@ -119,6 +119,10 @@ SUPERBETIN_WHITELIST.update([
     "superbetin1978.com", "superbetin1979.com", "superbetin1981.com",
     "superbetin2095.com",  # 2094 ile 2096 arasında unutulmuş, aynı bölgede
 ])
+# YENİ 5 Eki 2026 — yeni satın alınan superbetin2900-2950 (51 domain).
+# SUPERBETIN_RANGE(1975,3001) içinde — eklenmezse yanlış alarm üretir.
+for num in range(2900, 2951):
+    SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
 SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 3001)
 SUPERBETIN_HIGH_RANGE = range(3001, 30000)
@@ -278,7 +282,7 @@ async def main():
         for num in range(100, 1000):
             for prefix in NOHYPHEN_PREFIXES:
                 domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-NOHYPHEN-SHORT", set()))
-        for num in range(1000, 2501):
+        for num in range(1000, 3001):  # 5 Eki 2026: 2501 -> 3001
             for prefix in NOHYPHEN_PREFIXES:
                 domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-NOHYPHEN-PATTERN", set()))
         # 10. TİRELİ SAYI PATTERN
@@ -334,7 +338,7 @@ async def main():
         for num in range(100, 1000):
             for prefix in PREFIXES:
                 domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-SHORT", set()))
-        for num in range(1000, 2501):
+        for num in range(1000, 3001):  # 5 Eki 2026: 2501 -> 3001
             for prefix in PREFIXES:
                 domains_to_scan.append((f"{prefix}superbetin{num}.com", "PREFIX-PATTERN", set()))
         # 9. .CO TLD
@@ -348,7 +352,7 @@ async def main():
         print("🔗 Superbetin .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
         CAM_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
         CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-        for num in range(100, 2501):
+        for num in range(100, 3001):  # 5 Eki 2026: 2501 -> 3001
             for prefix in CAM_PREFIXES:
                 domains_to_scan.append((f"{prefix}superbetin{num}.cam", "CAM-TLD-SWAP-PREFIX", set()))
             for prefix in CAM_NOHYPHEN_PREFIXES:
@@ -359,7 +363,7 @@ async def main():
             domains_to_scan.append((f"superbetin{num}.live", "LIVE-TLD-SWAP", set()))
         LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
         LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-        for num in range(100, 2501):
+        for num in range(100, 3001):  # 5 Eki 2026: 2501 -> 3001
             for prefix in LIVE_PREFIXES:
                 domains_to_scan.append((f"{prefix}superbetin{num}.live", "LIVE-TLD-SWAP-PREFIX", set()))
             for prefix in LIVE_NOHYPHEN_PREFIXES:
