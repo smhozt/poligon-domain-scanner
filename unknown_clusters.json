@@ -132,7 +132,7 @@
   "superbetin2095.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-09-06T15:42:25.565286+03:00"
+    "detected_at": "2026-10-07T03:26:35.623538+03:00"
   },
   "17910superbetin.com": {
     "cluster": null,
@@ -152,7 +152,7 @@
   "superbet1100.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:46:05.448046+03:00"
+    "detected_at": "2026-10-07T03:26:24.933700+03:00"
   },
   "superbet1120.com": {
     "cluster": null,
@@ -312,7 +312,7 @@
   "superbetin2828.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:45:49.197346+03:00"
+    "detected_at": "2026-10-07T03:26:12.242964+03:00"
   },
   "superbetin232.com": {
     "cluster": null,
@@ -322,7 +322,7 @@
   "2118superbetin.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:46:10.642800+03:00"
+    "detected_at": "2026-10-07T03:26:29.335268+03:00"
   },
   "superbetin2200.com": {
     "cluster": null,
@@ -372,7 +372,7 @@
   "superbet1123.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:45:55.296528+03:00"
+    "detected_at": "2026-10-07T03:26:16.292256+03:00"
   },
   "superbetin2031.com": {
     "cluster": null,
@@ -492,7 +492,7 @@
   "superbetin2202.cam": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:45:47.171829+03:00"
+    "detected_at": "2026-10-07T03:26:10.228390+03:00"
   },
   "superbetin2245.com": {
     "cluster": null,
@@ -512,7 +512,7 @@
   "superbetin2221.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:45:44.970678+03:00"
+    "detected_at": "2026-10-07T03:26:08.192135+03:00"
   },
   "superbetin3018.com": {
     "cluster": null,
@@ -532,7 +532,7 @@
   "superbetin2097.cam": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:46:00.336892+03:00"
+    "detected_at": "2026-10-07T03:26:20.349825+03:00"
   },
   "superbetin2099.cam": {
     "cluster": null,
@@ -557,7 +557,7 @@
   "superbetin2599.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:46:02.405945+03:00"
+    "detected_at": "2026-10-07T03:26:22.924776+03:00"
   },
   "superbetin2561.com": {
     "cluster": null,
@@ -667,12 +667,12 @@
   "superbetin2205.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:45:42.945079+03:00"
+    "detected_at": "2026-10-07T03:26:06.179485+03:00"
   },
   "superbetin2598.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:46:12.687785+03:00"
+    "detected_at": "2026-10-07T03:26:31.344816+03:00"
   },
   "betsat1888.com": {
     "cluster": null,
@@ -692,7 +692,7 @@
   "superbeetin.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-02T03:34:51.203927+03:00"
+    "detected_at": "2026-10-07T03:26:33.597954+03:00"
   },
   "betsat-resmi-girisler.com": {
     "cluster": null,
@@ -727,7 +727,7 @@
   "rodriguescleaning.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:45:57.322807+03:00"
+    "detected_at": "2026-10-07T03:26:18.323565+03:00"
   },
   "visascdmxs.com": {
     "cluster": null,
@@ -752,7 +752,7 @@
   "betsat-guncel-tr.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:45:38.900651+03:00"
+    "detected_at": "2026-10-07T03:26:01.957229+03:00"
   },
   "superbetin-app.icu": {
     "cluster": null,
@@ -762,16 +762,26 @@
   "superbetin2242.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:45:40.916683+03:00"
+    "detected_at": "2026-10-07T03:26:04.075119+03:00"
   },
   "superbetin2605.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:45:53.270551+03:00"
+    "detected_at": "2026-10-07T03:26:14.282857+03:00"
   },
   "elektronikatir.pl": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T18:46:08.617009+03:00"
+    "detected_at": "2026-10-07T03:26:27.321210+03:00"
+  },
+  "giris-superbetin.live": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-07T03:26:37.931245+03:00"
+  },
+  "mcbradio.nl": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-07T03:26:46.985201+03:00"
   }
 }
