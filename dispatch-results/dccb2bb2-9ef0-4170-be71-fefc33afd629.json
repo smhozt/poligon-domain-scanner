@@ -1,0 +1,106 @@
+{
+  "request_id": "dccb2bb2-9ef0-4170-be71-fefc33afd629",
+  "generated_at": "2026-10-07T14:47:28.200632+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "superbetin2902.cam",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin2902.cam/spor/",
+        "https://superbetin2902.cam/casino/",
+        "https://superbetin2902.cam/login.php",
+        "https://superbetin2902.cam/paraylan/",
+        "https://m.superbetin2902.cam/havale/",
+        "https://m.superbetin2902.cam/crypto/",
+        "https://tr.superbetin2902.cam/havale/",
+        "https://tr.superbetin2902.cam/crypto/",
+        "https://m.superbetin2902.cam/login.php",
+        "https://www.superbetin2902.cam/havale/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "Spaceship, Inc.",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "evoxt",
+        "host_name": "Evoxt Sdn. Bhd.",
+        "cluster": "opal/ricardo",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Spaceship, Inc. [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (Evoxt Sdn. Bhd.)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
