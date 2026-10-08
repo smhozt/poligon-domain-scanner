@@ -1,0 +1,296 @@
+{
+  "request_id": "af404b63-a607-4378-9f04-5b85321a421c",
+  "generated_at": "2026-10-08T10:11:47.119098+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "betsat1950.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://betsat1950.com/spor/",
+        "https://betsat1950.com/casino/",
+        "https://betsat1950.com/login.php",
+        "https://betsat1950.com/paraylan/",
+        "https://m.betsat1950.com/havale/",
+        "https://m.betsat1950.com/crypto/",
+        "https://tr.betsat1950.com/havale/",
+        "https://tr.betsat1950.com/crypto/",
+        "https://m.betsat1950.com/login.php",
+        "https://www.betsat1950.com/havale/"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "anderson",
+          "annalise"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: anderson, annalise"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsat1426.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://betsat1426.com/spor/",
+        "https://betsat1426.com/casino/",
+        "https://betsat1426.com/login.php",
+        "https://betsat1426.com/canli-bahis/",
+        "https://betsat1426.com/ma/deposit/v2/crypto",
+        "https://betsat1426.com/payment/view/bitcoin.php",
+        "https://betsat1426.com/modules/payments/deposit/",
+        "https://betsat1426.com/payment/crypto/kriptopay/",
+        "https://betsat1426.com/modules/payments/deposit/?payment_type=105",
+        "https://betsat1426.com/modules/payments/deposit/?payment_type=109"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": true,
+      "registrar": {
+        "name": "Spaceship, Inc.",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "launch1",
+          "launch2"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Spaceship, Inc. [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: launch1, launch2"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsat-girisler.com",
+      "brand": "Betsat",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "walk",
+          "wilson"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [rdap] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://dynadot.com/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: walk, wilson"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
