@@ -102,6 +102,10 @@ BETSAT_WHITELIST.update([
     "betsat1871.com", "betsat1872.com", "betsat1873.com", "betsat1874.com",
     "betsat1875.com", "betsat1876.com", "betsat1877.com", "betsat1878.com",
 ])
+# YENİ 8 Eki 2026 — Semih'in kendi Betsat güncel giriş/rehber sitesi.
+BETSAT_WHITELIST.update([
+    "bahiskazani.com",
+])
 # NOT (8 Eyl 2026): registrar listesinde betsat1232.com YOK ama şirket
 # yıllar önce almış (muhtemelen farklı bir registrar hesabından, TR'de
 # bloklu) — bkz. devir notu, bilinçli olarak whitelist'te bırakıldı,
