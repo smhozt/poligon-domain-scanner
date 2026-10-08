@@ -1,0 +1,206 @@
+{
+  "request_id": "314cd24d-881b-4b43-9a52-1389a09918be",
+  "generated_at": "2026-10-08T17:26:51.051334+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "matratzen-tests.org",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://matratzen-tests.org/spor/",
+        "https://matratzen-tests.org/casino/",
+        "https://matratzen-tests.org/login.php",
+        "https://matratzen-tests.org/paraylan/",
+        "https://matratzen-tests.org/canli-bahis/",
+        "https://matratzen-tests.org/spor/?mobile=1",
+        "https://matratzen-tests.org/__paraylan_havale",
+        "https://matratzen-tests.org/ma/deposit/v2/havale",
+        "https://matratzen-tests.org/ma/deposit/v2/crypto",
+        "https://matratzen-tests.org/payment/bank/otomonay/"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "amy",
+          "jim"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://dynadot.com/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: amy, jim"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsat1842.cam",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://betsat1842.cam/spor/",
+        "https://betsat1842.cam/casino/",
+        "https://betsat1842.cam/login.php",
+        "https://betsat1842.cam/paraylan/",
+        "https://betsat1842.cam/canli-bahis/",
+        "https://betsat1842.cam/spor/?mobile=1",
+        "https://payment.betsat1842.cam/havale/",
+        "https://payment.betsat1842.cam/crypto/",
+        "https://betsat1842.cam/__paraylan_havale",
+        "https://payment.betsat1842.cam/login.php"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "krnic",
+        "host_name": "KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz)",
+        "cluster": "adelaide/johnathan",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://dynadot.com/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
