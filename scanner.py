@@ -121,8 +121,13 @@ SUPERBETIN_WHITELIST.update([
 ])
 # YENİ 5 Eki 2026 — yeni satın alınan superbetin2900-2950 (51 domain).
 # SUPERBETIN_RANGE(1975,3001) içinde — eklenmezse yanlış alarm üretir.
+# (2904 = 8 Eki 2026 itibarıyla güncel resmi adres; range içinde.)
 for num in range(2900, 2951):
     SUPERBETIN_WHITELIST.add(f"superbetin{num}.com")
+# YENİ 8 Eki 2026 — Semih'in kendi Betsat güncel giriş/rehber sitesi.
+SUPERBETIN_WHITELIST.update([
+    "bahiskazani.com",
+])
 SUPERBETIN_GAPS = [1825, 1879, 1911]
 SUPERBETIN_RANGE = range(1975, 3001)
 SUPERBETIN_HIGH_RANGE = range(3001, 30000)
