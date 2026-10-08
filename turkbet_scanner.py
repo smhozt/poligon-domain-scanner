@@ -76,6 +76,10 @@ TURKBET_WHITELIST.update([
     "yonleniyoramp.com", "googlecdnservice.net", "turkiyebet.net",
     "supetbetingirisadresim.vip", "turkbetgirisadresim.vip",
 ])
+# YENİ 8 Eki 2026 — Semih'in kendi Betsat güncel giriş/rehber sitesi.
+TURKBET_WHITELIST.update([
+    "bahiskazani.com",
+])
 TURKBET_RANGE = range(891, 5001)
 REPORTED_FILE = "turkbet_reported.json"
 def load_reported():
