@@ -38,17 +38,16 @@ BRANDS = {
     "superbetin": {
         "name": "Superbetin",
         "fixed_domain": "superbetin.com",
-        # GÜNCELLENDİ 30 Eyl 2026 — aktif adres superbetin2108.com (2103 → 2106 → 2107 → 2108)
-        "active_domains": ["superbetin.com", "superbetin2108.com"],
+        # GÜNCELLENDİ 9 Eki 2026 — aktif adres superbetin2904.com (… → 2108 → 2904)
+        "active_domains": ["superbetin.com", "superbetin2904.com"],
         "signature_email": "yardim@superbetin.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa1V2TXpJM2MyWjFSV0pRYW1OQ1IxcFVkbEJMZGxFOVBTSXNJblpoYkhWbElqb2lMMVpTUXpSbU5XdG9lbkJHVlZSak1EVlJWMmxLZHowOUlpd2liV0ZqSWpvaVpXTXdaak5rWW1NeVlURXlNR1F6WkRFNVlqVmxabVJoTkdWak5qZzBNRGt3WVRVMFpHUmtNakppTXpnMVlUUmpaVFJrTW1JelpEazJZalJrTWpJd1l5SXNJblJoWnlJNklpSjk="
     },
     "betsat": {
         "name": "Betsat",
         "fixed_domain": "betsat.com",
-        # GÜNCELLENDİ 29 Eyl 2026 — aktif adres betsat1838.com (1834 → 1836 → 1837 → 1838;
-        # OFFICIAL_DOMAINS.md ile teyitli, aynı gün İKİNCİ rotasyon — 1837 sadece 1 gün sürdü)
-        "active_domains": ["betsat.com", "betsat1838.com"],
+        # GÜNCELLENDİ 9 Eki 2026 — aktif adres betsat1842.com (… → 1838 → 1840 → 1842)
+        "active_domains": ["betsat.com", "betsat1842.com"],
         "signature_email": "support@betsat.com",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJamRoY1ZkVFdIWnJjbG95T1hkbWFVd3paRUZETWxFOVBTSXNJblpoYkhWbElqb2lSbmxvTVVzelJGRkhWMmh4ZVVFNGJIUkJLM2xoZHowOUlpd2liV0ZqSWpvaU1URmxZamhqTUdVMk1UZzBObUpoTmpkaU5tTXdNR0pqTmpkaFl6Z3pabVk0WVdFMVpUYzJabVF6T0dJeE5qVmtNV1E0WlRVM1pUWTJPV1JrWVdRM01pSXNJblJoWnlJNklpSjk="
     },
@@ -58,8 +57,8 @@ BRANDS = {
         # DÜZELTİLDİ 29 Eyl 2026 — script'te 770turkbet.com yazıyordu (OFFICIAL_DOMAINS.md
         # ile çelişiyordu, 772 diyordu). ARTIK TEYİTLİ: kullanıcının kendi elle gönderdiği
         # bir abuse raporunda da resmi site 772turkbet.com olarak kullanılmış — 772 doğru.
-        # GÜNCELLENDİ 30 Eyl 2026 — aktif adres 773turkbet.com'a rotasyon yaptı (772 → 773)
-        "active_domains": ["turkbet.io", "773turkbet.com"],
+        # GÜNCELLENDİ 9 Eki 2026 — aktif adres 777turkbet.com (… → 773 → 776 → 777)
+        "active_domains": ["turkbet.io", "777turkbet.com"],
         "signature_email": "support@turkbet.co",
         "license_url": "https://cert.cga.cw/certificate?id=ZXlKcGRpSTZJa3ROY2xoWFUyUTBWbXR1WkV0cGMzQndUek16Y1djOVBTSXNJblpoYkhWbElqb2lVRVZhVGsxWmJUSTNWV1ZCTnpkMGMySXJUVGQxZHowOUlpd2liV0ZqSWpvaU1EYzBZVGc1TmpCallUZzBZbVF3TlRRMVpHTTRNVEJrTkRBeE56WXpOemRsTlROaFkyVTBaR1JrWkdNNE1XWXdaR0ZsTVRBNU1HUTJOVFkxWmpJek5DSXNJblJoWnlJNklpSjk=",
         "signature_footer": (
@@ -948,7 +947,7 @@ def reporter_email_for(brand_key):
     return INPUT_REPORTER_EMAIL or BRANDS[brand_key]["signature_email"]
 def send_nicenic(domain, brand_key, found_urls):
     brand = BRANDS[brand_key]
-    subject = f"URGENT: Phishing Domain - {domain} - Immediate ClientHold Required"
+    subject = f"Phishing Domain - {domain} - ClientHold Request"
     body = f"""Dear NiceNIC Abuse Team,
 We are reporting a fraudulent domain registered through your services:
 Domain: {domain}
@@ -957,7 +956,7 @@ This domain is an active phishing site cloning our licensed brand ({brand['name'
 We are a licensed operator: {brand['fixed_domain']} is operated by Poligon Entertainment N.V., licensed by the Curaçao Gaming Authority under license OGL/2024/815/0653 (Company Number 132517). Status: Active.
 License verification: {brand['license_url']}
 Our official domains: {' / '.join(brand['active_domains'])}
-We urgently request:
+We request:
 1. Immediate ClientHold suspension of {domain}
 2. Investigation of all domains registered by the same registrant account
 Best regards,
@@ -973,11 +972,11 @@ def send_host_complaint(domain, brand_key, found_urls, host_key, cluster_pair, v
     if via_ip:
         cluster_label = "IP/WHOIS lookup"
         infra_phrase = "hosted on your infrastructure (identified via IP WHOIS lookup)"
-        subject = f"URGENT: Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted"
+        subject = f"Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted"
     else:
         cluster_label = "/".join(sorted(cluster_pair)) if cluster_pair else "manually confirmed hosting"
         infra_phrase = f"hosted on your infrastructure via the {cluster_label} nameserver cluster"
-        subject = f"URGENT: Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted ({cluster_label})"
+        subject = f"Active Phishing & Trademark Infringement — {domain} — {host['name']} Hosted ({cluster_label})"
     body = f"""Dear {host['name']} Abuse Team,
 We are writing on behalf of Poligon Entertainment N.V., the licensed operator of {brand['name']} (official: {' / '.join(brand['active_domains'])}), under Curaçao Gaming Authority license OGL/2024/815/0653.
 The domain {domain}, {infra_phrase}, is operating an active phishing site impersonating our licensed brand, using cloned graphics, trademarked layouts, and fake login/payment forms to deceive consumers.
@@ -996,7 +995,7 @@ def send_custom_email(domain, brand_key, found_urls):
     recipients = [e.strip() for e in INPUT_CUSTOM_EMAIL.split(",") if e.strip()]
     if not recipients:
         return False
-    subject = f"URGENT: Active Phishing / Trademark Infringement — {domain}"
+    subject = f"Active Phishing / Trademark Infringement — {domain}"
     body = f"""Dear Abuse Team,
 We are reporting an active phishing domain impersonating our licensed brand {brand['name']} (official: {' / '.join(brand['active_domains'])}), operated by Poligon Entertainment N.V. under Curaçao Gaming Authority license OGL/2024/815/0653.
 Domain: {domain}
@@ -1288,8 +1287,17 @@ async def main():
         print("   Kasıtlı bir tekrar gönderim değilse, lütfen kontrol edin.")
         print("   Script yine de devam ediyor (bu bir engelleme değil, sadece bilgilendirme).")
     requested_targets = set(INPUT_TARGETS.split(","))
-    all_targets = {"nicenic", "host", "netcraft", "safebrowsing", "googlespam", "smartscreen", "spam404", "custom_email", "spamhaus", "apwg", "netbeacon"}
-    explicit_targets = {"compromise_notice"}
+    all_targets = {"nicenic", "host", "netcraft", "safebrowsing", "googlespam", "smartscreen", "spam404", "custom_email", "spamhaus", "apwg"}
+    # DÜZELTİLDİ 1 Eki 2026 — "netbeacon" buradan "all"ın dışına alındı. Sebep:
+    # api.netbeacon.org/submit/reports'un PhishingReport şeması "email/headers/body"
+    # (alınan bir phishing E-POSTASININ başlıkları/gövdesi) bekliyor — yani bu API
+    # muhtemelen phishing DOMAIN/WEB SİTESİ bildirmek için değil, phishing MAİLİ
+    # bildirmek için. HTTP 200 dönüyor (script "✅" diyordu) ama "My Reports"
+    # panelinde (manuel web-form akışının gerçek kayıtları) HİÇBİR API submission'ı
+    # görünmüyor — yani muhtemelen registrar'a hiçbir şey ulaşmıyordu. Fonksiyon
+    # (report_netbeacon) koddan silinmedi, "netbeacon" hedefini elle yazarak hâlâ
+    # test edilebilir, ama "all" artık onu otomatik tetiklemiyor.
+    explicit_targets = {"compromise_notice", "netbeacon"}
     if "all" in requested_targets:
         targets = all_targets | (requested_targets & explicit_targets)
     else:
