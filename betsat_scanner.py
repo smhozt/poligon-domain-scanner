@@ -113,15 +113,17 @@ BETSAT_WHITELIST.update([
 BETSAT_GAPS = [1542, 1547, 1552, 1560, 1561, 1564, 1566, 1572, 1574, 1576, 1592, 1594, 1627, 1649, 1659, 1660, 1671, 1676, 1679, 1689, 1694, 1699, 1703]
 BETSAT_RANGE = range(1710, 9501)
 # ============================================================
-# İKİYE BÖLME (9 Eyl 2026) — superbetin_scanner ile aynı yöntem.
-# 102.269 domain'i ~51k/~51k dengeli ikiye ayırıp GitHub Actions'ta
-# 2 paralel job olarak çalıştırmak için. PART "a"/"b" argümanıyla
-# seçilir; argümansız çağrı ("all") eskisi gibi TÜMÜNÜ tarar. Her
-# PART kendi reported dosyasını kullanır — paralel process'lerin aynı
+# ÜÇE BÖLME (12 Eki 2026) — superbetin_scanner ile aynı yöntem.
+# Önceden ikiye bölünüyordu (A/B, 9 Eyl 2026). Şimdi PART "a"/"b"/"c"
+# argümanıyla seçilir; argümansız çağrı ("all") TÜMÜNÜ tarar.
+# Her PART kendi reported dosyasını kullanır — paralel process'lerin aynı
 # dosyaya yazıp git commit çakışması yaratmasını önler.
+#   a, b : eski gruplar (değişmedi)
+#   c    : YENİ — 5 haneli sayılar, resmi numaraya rakam ekleme, sayı x diğer TLD.
+#          Anahtar kelimeli domainler (betsat-bahis.com vb.) VIP scanner'ın işi.
 # ============================================================
 PART = sys.argv[1].lower() if len(sys.argv) > 1 else "all"
-if PART not in ("a", "b", "all"):
+if PART not in ("a", "b", "c", "all"):
     PART = "all"
 REPORTED_FILE = "betsat_reported.json" if PART == "all" else f"betsat_reported_{PART}.json"
 def load_reported():
@@ -191,11 +193,32 @@ async def scan_domain(session, domain, dtype, whitelist, reported, found):
     })
     reported.add(domain)
     print(f"[FOUND] {domain} ({ip})")
+# ============================================================
+# DÜZELTİLDİ 12 Eki 2026 — Telegram mesaj limiti 4096 karakter.
+# Eskiden tüm bulunanlar tek mesajda gidiyordu; çok domain bulununca
+# istek hata dönüyor, script de durumu kontrol etmediği için alarm
+# sessizce kayboluyordu (üstelik save_reported Telegram'dan ÖNCE
+# çalıştığından bulunan domainler "bildirildi" sayılıyordu). Artık
+# 3500 karakterlik parçalara bölünür, hata yazdırılır ve
+# save_reported Telegram'dan SONRA çağrılır.
+# ============================================================
 async def send_telegram(message):
+    chunks, cur = [], ""
+    for line in message.split("\n"):
+        if len(cur) + len(line) + 1 > 3500:
+            chunks.append(cur)
+            cur = ""
+        cur += line + "\n"
+    if cur.strip():
+        chunks.append(cur)
     async with aiohttp.ClientSession() as session:
         for chat_id in TELEGRAM_CHAT_IDS:
             url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-            await session.post(url, json={"chat_id": chat_id.strip(), "text": message, "parse_mode": "Markdown"})
+            for chunk in chunks:
+                async with session.post(url, json={"chat_id": chat_id.strip(), "text": chunk, "parse_mode": "Markdown"}) as r:
+                    if r.status != 200:
+                        print("Telegram hata:", r.status, await r.text())
+                await asyncio.sleep(0.5)
 # ============================================================
 # ÇİFT HARF TYPOSQUAT ÜRETİCİ — "betsatt" (çift t) gibi domainleri
 # yakalamak için. Kelimenin her harfini sırayla bir kez ikiye katlar:
@@ -248,6 +271,25 @@ def generate_homoglyph_number_variants(num):
 def generate_leading_insert_homoglyph_variants(num):
     s = str(num)
     return [f"l{s}"]
+# ============================================================
+# RAKAM EKLEME ÜRETİCİ — YENİ (12 Eki 2026)
+# betsat18842.com / betsat18843.com canlı phishing olarak bulundu:
+# resmi numaraya (1842, 1843) ARAYA/BAŞA/SONA tek bir RAKAM ekleniyor
+# (1842 → 18842). Tarama aralığı 9500'de bittiği için 5 haneli numaralar
+# hiç taranmıyordu; VIP scanner da 5 haneli betsat+sayı .com'ları
+# "sayısal scanner halleder" diye atlıyor — yani ikisi de görmüyordu.
+# ============================================================
+def generate_insert_digit_variants(num):
+    s = str(num)
+    out = set()
+    for i in range(len(s) + 1):
+        for d in "0123456789":
+            out.add(s[:i] + d + s[i:])
+    out.discard(s)
+    return sorted(out)
+# Resmi numara x diğer TLD taraması için (.cam/.live zaten 1-9999 tam taranıyor)
+OTHER_TLDS = ["org", "net", "vip", "top", "club", "online", "site", "icu", "fun",
+              "xyz", "info", "co", "cfd", "bet", "pro", "app"]
 async def main():
     reported = load_reported()
     found = []
@@ -329,6 +371,25 @@ async def main():
                     pass
         for num in range(1000, 2501):
             domains_to_scan.append((f"{num}betsat.com", "TERS-PATTERN", set()))
+    # ── GRUP C (YENİ 12 Eki 2026) ─────────────────────────────
+    # Sadece sayısal boşluklar. Anahtar kelimeli domainler VIP scanner'ın işi.
+    if PART in ("c", "all"):
+        print("🔢 5 haneli betsat10000-29999.com taranıyor...")
+        for num in range(10000, 30000):
+            domains_to_scan.append((f"betsat{num}.com", "FIVE-DIGIT", BETSAT_WHITELIST))
+        print("➕ Resmi numaraya rakam ekleme (1842 -> 18842 vb.)...")
+        insert_nums = set()
+        for n in range(1830, 1879):
+            insert_nums.update(generate_insert_digit_variants(n))
+        for v in sorted(insert_nums):
+            domains_to_scan.append((f"betsat{v}.com", "INSERT-DIGIT", BETSAT_WHITELIST))
+        print("🌍 betsat1700-2099 x diğer TLD (.vip .top .org ...) taranıyor...")
+        for n in range(1700, 2100):
+            for tld in OTHER_TLDS:
+                domains_to_scan.append((f"betsat{n}.{tld}", "NUMERIC-TLD-SWAP", BETSAT_WHITELIST))
+    # Tekrar edenleri at (paralel taramada aynı domain iki kez bulunmasın)
+    _seen = set()
+    domains_to_scan = [x for x in domains_to_scan if not (x[0] in _seen or _seen.add(x[0]))]
     print(f"🚀 [PART {PART.upper()}] Toplam {len(domains_to_scan)} Betsat potansiyel domain taranacak...")
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
@@ -336,11 +397,18 @@ async def main():
             async with semaphore:
                 await scan_domain(session, d, t, w, reported, found)
         await asyncio.gather(*[bounded_scan(d, t, w) for d, t, w in domains_to_scan])
-    save_reported(reported)
     now = datetime.now(TZ_SOFIA).strftime("%d.%m.%Y %H:%M")
     repo = os.environ.get("GITHUB_REPOSITORY", "smhozt/poligon-domain-scanner")
     part_label = f" [{PART.upper()}]" if PART != "all" else ""
     if found:
+        save_to_google_sheets(found)
+        # SEED modu: ilk çalıştırmada mevcut/park edilmiş domainleri Sheets'e yaz,
+        # Telegram'ı atla, hafızaya kaydet. Sheets'teki listeye bakıp bizim
+        # olanları BETSAT_WHITELIST'e ekle. Kullanım: SEED=1 python betsat_scanner.py c
+        if os.environ.get("SEED") == "1":
+            save_reported(reported)
+            print(f"SEED: {len(found)} domain Sheets'e yazildi, Telegram atlandi.")
+            return
         msg = (
             f"🚨 *[BETSAT ALARM]{part_label} Aktif Sahte Domain!*\n"
             f"🤖 `{repo}`\n"
@@ -351,6 +419,8 @@ async def main():
                 "👁️" if "HOMOGLYPH" in item["type"] else
                 "📷" if "CAM-TLD-SWAP" in item["type"] else
                 "🟢" if "LIVE-TLD-SWAP" in item["type"] else
+                "🔢" if item["type"] in ("FIVE-DIGIT", "INSERT-DIGIT") else
+                "🌍" if item["type"] == "NUMERIC-TLD-SWAP" else
                 "🌐" if "CO-" in item["type"] else
                 "🎭" if item["type"] == "IDN-SAHTE" else
                 "🔗" if item["type"] == "PREFIX-PATTERN" else
@@ -360,8 +430,8 @@ async def main():
                 "🔥"
             )
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
-        save_to_google_sheets(found)
         await send_telegram(msg)
+        save_reported(reported)
     else:
         msg = (
             f"✅ *[BETSAT TARAMA]{part_label} Temiz* — {now}\n"
@@ -370,6 +440,7 @@ async def main():
             f"Sahte domain bulunamadı."
         )
         await send_telegram(msg)
+        save_reported(reported)
         print("Temiz.")
 if __name__ == "__main__":
     asyncio.run(main())
