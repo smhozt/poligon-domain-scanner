@@ -1,0 +1,1454 @@
+{
+  "request_id": "97490b94-f938-403c-995d-f3e91e9ab559",
+  "generated_at": "2026-10-12T11:08:46.324044+03:00",
+  "notes": "",
+  "domains": [
+    {
+      "domain": "betsatim.com",
+      "brand": "Betsat",
+      "found_urls_count": 1,
+      "found_urls": [
+        "https://betsatim.com/"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "brady",
+          "sarah"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: brady, sarah"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsat18842.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://betsat18842.com/spor/",
+        "https://betsat18842.com/casino/",
+        "https://betsat18842.com/login.php",
+        "https://betsat18842.com/paraylan/",
+        "https://betsat18842.com/canli-bahis/",
+        "https://betsat18842.com/spor/?mobile=1",
+        "https://payment.betsat18842.com/havale/",
+        "https://payment.betsat18842.com/crypto/",
+        "https://betsat18842.com/__paraylan_havale",
+        "https://payment.betsat18842.com/login.php"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "known",
+        "host_key": "krnic",
+        "host_name": "KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz)",
+        "cluster": "amber/milan",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsat2025.vip",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://betsat2025.vip/spor/",
+        "https://betsat2025.vip/casino/",
+        "https://betsat2025.vip/login.php",
+        "https://betsat2025.vip/paraylan/",
+        "https://betsat2025.vip/canli-bahis/",
+        "https://betsat2025.vip/spor/?mobile=1",
+        "https://betsat2025.vip/__paraylan_havale",
+        "https://betsat2025.vip/ma/deposit/v2/havale",
+        "https://betsat2025.vip/ma/deposit/v2/crypto",
+        "https://betsat2025.vip/payment/bank/otomonay/"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": "nicenic@139.com",
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "malavika",
+          "thaddeus"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: malavika, thaddeus"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsat-girisi1.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://betsat-girisi1.com/spor/",
+        "https://betsat-girisi1.com/casino/",
+        "https://betsat-girisi1.com/login.php",
+        "https://betsat-girisi1.com/paraylan/",
+        "https://betsat-girisi1.com/canli-bahis/",
+        "https://betsat-girisi1.com/spor/?mobile=1",
+        "https://betsat-girisi1.com/__paraylan_havale",
+        "https://betsat-girisi1.com/ma/deposit/v2/havale",
+        "https://betsat-girisi1.com/ma/deposit/v2/crypto",
+        "https://betsat-girisi1.com/payment/bank/otomonay/"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Spaceship, Inc.",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "swissnet",
+        "host_name": "SwissNet LLC",
+        "cluster": "abdullah/liv",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Spaceship, Inc. [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (SwissNet LLC)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin-fast.vip",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin-fast.vip/spor/",
+        "https://superbetin-fast.vip/casino/",
+        "https://superbetin-fast.vip/login.php",
+        "https://superbetin-fast.vip/paraylan/",
+        "https://superbetin-fast.vip/canli-bahis/",
+        "https://superbetin-fast.vip/spor/?mobile=1",
+        "https://superbetin-fast.vip/__paraylan_havale",
+        "https://superbetin-fast.vip/ma/deposit/v2/havale",
+        "https://superbetin-fast.vip/ma/deposit/v2/crypto",
+        "https://superbetin-fast.vip/payment/bank/otomonay/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": "nicenic@139.com",
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "known",
+        "host_key": "alexhost",
+        "host_name": "AlexHost SRL, MD",
+        "cluster": "burt/kiki",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (AlexHost SRL, MD)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsat-resmi-giris.com",
+      "brand": "Betsat",
+      "found_urls_count": 2,
+      "found_urls": [
+        "https://betsat-resmi-giris.com/",
+        "https://www.betsat-resmi-giris.com/"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Spaceship, Inc.",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "hadlee",
+          "milan"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Spaceship, Inc. [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: hadlee, milan"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin93.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin93.com/spor/",
+        "https://superbetin93.com/casino/",
+        "https://superbetin93.com/login.php",
+        "https://superbetin93.com/paraylan/",
+        "https://www.superbetin93.com/havale/",
+        "https://www.superbetin93.com/crypto/",
+        "https://superbetin93.com/canli-bahis/",
+        "https://www.superbetin93.com/login.php",
+        "https://superbetin93.com/spor/?mobile=1",
+        "https://superbetin93.com/__paraylan_havale"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "craig",
+          "gracie"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: craig, gracie"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsat1742.com",
+      "brand": "Betsat",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://betsat1742.com/spor/",
+        "https://betsat1742.com/casino/",
+        "https://betsat1742.com/login.php",
+        "https://betsat1742.com/paraylan/",
+        "https://betsat1742.com/canli-bahis/",
+        "https://betsat1742.com/spor/?mobile=1",
+        "https://payment.betsat1742.com/havale/",
+        "https://payment.betsat1742.com/crypto/",
+        "https://betsat1742.com/__paraylan_havale",
+        "https://payment.betsat1742.com/login.php"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "known",
+        "host_key": "krnic",
+        "host_name": "KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz)",
+        "cluster": "cass/shane",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (KRNIC (South Korea, netblock genel kontağı — gerçek host teyitsiz))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetin2435.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetin2435.com/spor/",
+        "https://superbetin2435.com/casino/",
+        "https://superbetin2435.com/login.php",
+        "https://superbetin2435.com/paraylan/",
+        "https://m.superbetin2435.com/havale/",
+        "https://m.superbetin2435.com/crypto/",
+        "https://tr.superbetin2435.com/havale/",
+        "https://tr.superbetin2435.com/crypto/",
+        "https://m.superbetin2435.com/login.php",
+        "https://www.superbetin2435.com/havale/"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "evoxt",
+        "host_name": "Evoxt Sdn. Bhd.",
+        "cluster": "opal/ricardo",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [rdap] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://dynadot.com/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (Evoxt Sdn. Bhd.)",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsatgiris1.online",
+      "brand": "Betsat",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Dynadot Inc",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "walk",
+          "wilson"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot Inc [whois] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://dynadot.com/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: walk, wilson"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsat1883.com",
+      "brand": "Betsat",
+      "found_urls_count": 0,
+      "found_urls": [],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Gransy, s.r.o.",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "known",
+        "host_key": "mario_norah_ambiguous",
+        "host_name": "FranTech Solutions / VPS Dedicated LLC, US (belirsiz)",
+        "cluster": "mario/norah",
+        "source": "ns_cluster"
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Gransy, s.r.o. [rdap]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (FranTech Solutions / VPS Dedicated LLC, US (belirsiz))",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetinofficial.com",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetinofficial.com/spor/",
+        "https://superbetinofficial.com/casino/",
+        "https://superbetinofficial.com/login.php",
+        "https://superbetinofficial.com/paraylan/",
+        "https://www.superbetinofficial.com/havale/",
+        "https://www.superbetinofficial.com/crypto/",
+        "https://superbetinofficial.com/canli-bahis/",
+        "https://www.superbetinofficial.com/login.php",
+        "https://superbetinofficial.com/spor/?mobile=1",
+        "https://superbetinofficial.com/__paraylan_havale"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NICENIC INTERNATIONAL GROUP CO., LIMITED",
+        "email": null,
+        "source": "rdap",
+        "is_nicenic": true
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "elle",
+          "yew"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "ok",
+          "detail": "Registrar teyitli (rdap)"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: elle, yew"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetgol.top",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetgol.top/spor/",
+        "https://superbetgol.top/casino/",
+        "https://superbetgol.top/login.php",
+        "https://superbetgol.top/paraylan/",
+        "https://www.superbetgol.top/havale/",
+        "https://www.superbetgol.top/crypto/",
+        "https://superbetgol.top/canli-bahis/",
+        "https://www.superbetgol.top/login.php",
+        "https://superbetgol.top/spor/?mobile=1",
+        "https://superbetgol.top/__paraylan_havale"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Namecheap Inc.",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "carrera",
+          "cosmin"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Namecheap Inc. [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: carrera, cosmin"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "betsat-guncel-girisi.top",
+      "brand": "Betsat",
+      "found_urls_count": 2,
+      "found_urls": [
+        "https://betsat-guncel-girisi.top/",
+        "https://www.betsat-guncel-girisi.top/"
+      ],
+      "reporter_email": "support@betsat.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "Dynadot LLC",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "elsa",
+          "kellen"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: Dynadot LLC [whois] — ⚠️ SADECE WEB FORM kabul ediyor, email gönderilmemeli: https://dynadot.com/report-abuse"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: elsa, kellen"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    },
+    {
+      "domain": "superbetfut.club",
+      "brand": "Superbetin",
+      "found_urls_count": 10,
+      "found_urls": [
+        "https://superbetfut.club/spor/",
+        "https://superbetfut.club/casino/",
+        "https://superbetfut.club/login.php",
+        "https://superbetfut.club/paraylan/",
+        "https://www.superbetfut.club/havale/",
+        "https://www.superbetfut.club/crypto/",
+        "https://superbetfut.club/canli-bahis/",
+        "https://www.superbetfut.club/login.php",
+        "https://superbetfut.club/spor/?mobile=1",
+        "https://superbetfut.club/__paraylan_havale"
+      ],
+      "reporter_email": "yardim@superbetin.com",
+      "already_reported_before": false,
+      "registrar": {
+        "name": "NameCheap, Inc.",
+        "email": null,
+        "source": "whois",
+        "is_nicenic": false
+      },
+      "host": {
+        "status": "unknown_cluster",
+        "cluster": null,
+        "observed_ns": [
+          "magnolia",
+          "vicky"
+        ]
+      },
+      "channels": [
+        {
+          "channel": "nicenic",
+          "label": "NiceNIC",
+          "status": "skip",
+          "detail": "Gerçek registrar: NameCheap, Inc. [whois]"
+        },
+        {
+          "channel": "host",
+          "label": "Host (cluster tespit edilemedi)",
+          "status": "skip",
+          "detail": "Gözlemlenen NS: magnolia, vicky"
+        },
+        {
+          "channel": "netcraft",
+          "label": "Netcraft",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "safebrowsing",
+          "label": "Safe Browsing",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "googlespam",
+          "label": "Google Spam",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "smartscreen",
+          "label": "SmartScreen",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spam404",
+          "label": "Spam404",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "spamhaus",
+          "label": "Spamhaus",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "apwg",
+          "label": "APWG",
+          "status": "ok",
+          "detail": null
+        },
+        {
+          "channel": "netbeacon",
+          "label": "NetBeacon",
+          "status": "ok",
+          "detail": null
+        }
+      ],
+      "mule_detected": {
+        "ibans": [],
+        "wallets": []
+      },
+      "mule_correlations": []
+    }
+  ]
+}
