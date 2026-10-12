@@ -1,70 +1,131 @@
 import asyncio
 import aiohttp
-import socket
-import concurrent.futures
 import os
 import sys
 import json
+import socket
+import concurrent.futures
 from datetime import datetime, timezone, timedelta
 import gspread
 from google.oauth2.service_account import Credentials
 TZ_SOFIA = timezone(timedelta(hours=3))
-executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_IDS = os.environ["TELEGRAM_CHAT_IDS"].split(",")
 GCP_CREDENTIALS = os.environ.get("GCP_CREDENTIALS")
 SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=500)
 # ============================================================
-# TURKBET WHİTELİST — Bizim domainlerimiz
-# NOT: Turkbet'in domain formatı [num]turkbet.com (sayı önde!)
-# Resmi güncel adres: 777turkbet.com
-# SADELEŞTİRİLDİ 12 Eki 2026: eski dosyadaki üç ayrı liste (726/727,
-# range(488,600), range(600,700) ve 700-890 elle yazılmış girdiler)
-# birleşince tam olarak 488-890 aralığıydı; aynı küme tek range ile
-# yazıldı.
-# DİKKAT 12 Eki 2026: 876turkbet.com bu aralığın içinde ama bizim
-# DEĞİL — aktif phishing (login.php + deposit sayfaları, Cloudflare
-# raporları 10 Eki). Beyaz listedeki 778-890 arası numaraların hangileri
-# gerçekten bizim, registrar listesiyle doğrulanmalı (Betsat'ta
-# 8 Eyl 2026'da yapılan iş). Doğrulanana kadar GRUP C'deki WL-CHECK
-# bu numaraları beyaz liste OLMADAN tarar.
+# BETSAT WHİTELİST — Bizim domainlerimiz
 # ============================================================
-TURKBET_WHITELIST = set([
-    "turkbet.com",
-    *[f"{num}turkbet.com" for num in range(488, 891)],
+BETSAT_WHITELIST = set([
+    "betsat.com",
+    "betsat1539.com","betsat1540.com","betsat1541.com","betsat1543.com",
+    "betsat1544.com","betsat1545.com","betsat1546.com","betsat1548.com",
+    "betsat1549.com","betsat1550.com","betsat1551.com","betsat1553.com",
+    "betsat1554.com","betsat1555.com","betsat1556.com","betsat1557.com",
+    "betsat1558.com","betsat1559.com","betsat1562.com","betsat1563.com",
+    "betsat1565.com","betsat1567.com","betsat1568.com","betsat1569.com","betsat1570.com",
+    "betsat1571.com","betsat1573.com","betsat1575.com",
+    "betsat1577.com","betsat1578.com",
+    "betsat1579.com","betsat1580.com","betsat1581.com","betsat1582.com",
+    "betsat1583.com","betsat1584.com","betsat1585.com","betsat1586.com",
+    "betsat1587.com","betsat1588.com","betsat1589.com","betsat1590.com",
+    "betsat1591.com","betsat1593.com",
+    "betsat1595.com","betsat1596.com","betsat1597.com","betsat1598.com",
+    "betsat1599.com","betsat1600.com","betsat1601.com","betsat1602.com",
+    "betsat1603.com","betsat1604.com","betsat1605.com","betsat1606.com",
+    "betsat1607.com","betsat1608.com","betsat1609.com","betsat1610.com",
+    "betsat1611.com","betsat1612.com","betsat1613.com","betsat1614.com",
+    "betsat1615.com","betsat1616.com","betsat1617.com","betsat1618.com",
+    "betsat1619.com","betsat1620.com","betsat1621.com","betsat1622.com",
+    "betsat1623.com","betsat1624.com","betsat1625.com","betsat1626.com",
+    "betsat1628.com","betsat1629.com","betsat1630.com",
+    "betsat1631.com","betsat1632.com","betsat1633.com","betsat1634.com",
+    "betsat1635.com","betsat1636.com","betsat1637.com","betsat1638.com",
+    "betsat1639.com","betsat1640.com","betsat1641.com","betsat1642.com",
+    "betsat1643.com","betsat1644.com","betsat1645.com","betsat1646.com",
+    "betsat1647.com","betsat1648.com","betsat1650.com",
+    "betsat1651.com","betsat1652.com","betsat1653.com","betsat1654.com",
+    "betsat1655.com","betsat1656.com","betsat1657.com","betsat1658.com",
+    "betsat1661.com","betsat1662.com","betsat1663.com",
+    "betsat1664.com","betsat1665.com","betsat1666.com","betsat1667.com",
+    "betsat1668.com","betsat1669.com","betsat1670.com","betsat1672.com",
+    "betsat1672.com","betsat1673.com","betsat1674.com","betsat1675.com",
+    "betsat1677.com","betsat1678.com",
+    "betsat1680.com","betsat1681.com","betsat1682.com","betsat1683.com",
+    "betsat1684.com","betsat1685.com","betsat1686.com","betsat1687.com",
+    "betsat1688.com","betsat1690.com","betsat1691.com",
+    "betsat1692.com","betsat1693.com","betsat1695.com",
+    "betsat1696.com","betsat1697.com","betsat1698.com","betsat1700.com","betsat1701.com","betsat1702.com",
+    "betsat1704.com","betsat1705.com","betsat1706.com","betsat1707.com","betsat1708.com","betsat1709.com",
 ])
-TURKBET_WHITELIST.discard("876turkbet.com")
-TURKBET_WHITELIST.update([
-    "turkbet.cam", "soloturkbet.com", "asyaturkbet.com", "turkbetturkiye.com",
-    "turkbet2026.net", "turkbetcanli.com", "turkbet.es", "turkbet2026.com",
-    "turkbetgir.com", "turkbet.info", "turkbetborsa.com", "turkbetsitesi.com",
-    "turkbetspor.com", "turkbetbayilik.com", "turkbetik.com", "turkbetsson.com",
-    "hititturkbet.com", "turkbetyeniadres.com", "turkbet-girisi.com",
-    "turkbetgirisin.co", "turkbetadresi.me", "turkbet.cx", "turkbetyeni.site",
-    "turkbetadresim.com", "turkbettr.com", "turkbetadres.io", "turkbetguncel.com",
-    "turkbetgunceladresi.com", "turkbetgirisi.co", "turkbetgo.com", "turk-bets.com",
-    "trturkbet.com", "turkbetadresim.co", "turkbetgiris.pro", "turkgirisim.com",
-    "yonleniyoramp.com", "googlecdnservice.net", "turkiyebet.net",
-    "supetbetingirisadresim.vip", "turkbetgirisadresim.vip",
+for num in range(1167, 1539):
+    BETSAT_WHITELIST.add(f"betsat{num}.com")
+BETSAT_WHITELIST.update([
+    "betsatgiris1.com", "betsatturkiye.com", "betsatresmigiris.com",
+    "betsatguncelgiris2026.com", "betsatyenigiris2026.com", "betsat-bahis.site",
+    "betsatbahis.info", "betsatrs.com", "betsatdestek.com", "betsatur.com",
+    "cubetsat.com", "nobetsat.com", "betsatadres.com", "betsation.com",
+    "betsatan.com", "betsatcasino.net", "betsatyeniadresi.com",
+    "betsatgirisadresi.xyz", "betsat-giris.org", "betsatonlinecasino.com",
+    "betsat.mobi", "muhtesembetsat.com", "betsatgiris.online", "mobilbetsat.com",
+    "betsatofficial.com", "betsat.tv", "betsatgunceladresi.com", "betsat-giris.com",
+    "betsathizligiris.com", "betsatgunceladresi.com", "betsatgirisadresim.com",
+    "betsatmobilgiris.com", "betsatamp.top", "betsatonline.com",
+    "betsatonlinegiris.com", "betsat.xyz", "betsat.pro", "betsatgiris.casino",
+    "betsatadresi.io", "betsattr.net", "betsatguncel.me", "betsat-girisim.com",
+    "betsatgirisim.co", "betsat.co", "girisbetsat.top",
+    "yonleniyoramp.com", "googlecdnservice.net",
+    "supetbetingirisadresim.vip", "turkbetgirisadresim.vip", "betsatgirisadresim.vip",
+])
+# YENİ 8 Eyl 2026 — registrar hesabındaki resmi domain listesinden
+# (390 domain) whitelist'te henüz olmayan 62 tanesi eklendi.
+BETSAT_WHITELIST.update([
+    "betsat.net", "betsat111111.com", "asjwu.com", "bs.belloatech.dev",
+    "copyrightbetsat.com", "koluwn.com", "officialbetsat.com", "tuamek.com",
+    "yteruo.com",
+    # 1710-9501 aralığı BETSAT_RANGE ile "YENİ" tipi olarak taranıyor —
+    # bu numaralar resmi kayıtlı olduğu için buraya elle eklenmesi şart,
+    # yoksa her taramada yanlış alarm (false positive) üretirler.
+    "betsat1712.com", "betsat1713.com", "betsat1714.com", "betsat1715.com",
+    "betsat1720.com", "betsat1717.com",
+    "betsat1830.com", "betsat1831.com", "betsat1832.com", "betsat1833.com",
+    "betsat1834.com", "betsat1835.com", "betsat1836.com", "betsat1837.com",
+    "betsat1838.com", "betsat1839.com", "betsat1840.com", "betsat1842.com",
+    "betsat1843.com", "betsat1844.com", "betsat1845.com", "betsat1846.com",
+    "betsat1847.com", "betsat1848.com", "betsat1849.com", "betsat1850.com",
+    "betsat1851.com", "betsat1852.com", "betsat1853.com", "betsat1854.com",
+    "betsat1855.com", "betsat1856.com", "betsat1857.com", "betsat1858.com",
+    "betsat1859.com", "betsat1860.com", "betsat1861.com", "betsat1862.com",
+    "betsat1863.com", "betsat1864.com", "betsat1865.com", "betsat1866.com",
+    "betsat1867.com", "betsat1868.com", "betsat1869.com", "betsat1870.com",
+    "betsat1871.com", "betsat1872.com", "betsat1873.com", "betsat1874.com",
+    "betsat1875.com", "betsat1876.com", "betsat1877.com", "betsat1878.com",
 ])
 # YENİ 8 Eki 2026 — Semih'in kendi Betsat güncel giriş/rehber sitesi.
-TURKBET_WHITELIST.update([
+BETSAT_WHITELIST.update([
     "bahiskazani.com",
 ])
-TURKBET_RANGE = range(891, 5001)
+# NOT (8 Eyl 2026): registrar listesinde betsat1232.com YOK ama şirket
+# yıllar önce almış (muhtemelen farklı bir registrar hesabından, TR'de
+# bloklu) — bkz. devir notu, bilinçli olarak whitelist'te bırakıldı,
+# range(1167,1539) zaten kapsıyor.
+BETSAT_GAPS = [1542, 1547, 1552, 1560, 1561, 1564, 1566, 1572, 1574, 1576, 1592, 1594, 1627, 1649, 1659, 1660, 1671, 1676, 1679, 1689, 1694, 1699, 1703]
+BETSAT_RANGE = range(1710, 9501)
 # ============================================================
-# ÜÇE BÖLME (12 Eki 2026) — betsat_scanner ile aynı yöntem.
-# PART "a"/"b"/"c" argümanıyla seçilir; argümansız çağrı ("all") TÜMÜNÜ tarar.
-# Her PART kendi reported dosyasını kullanır (git commit çakışması olmasın).
-#   a : .com sayılar (standart, tarih, typo, ters, 5 haneli, IDN, önekler) + .co + vip/icu/net/org
-#   b : .cam (tam 1-9999 + önekler) / .live tam 1-9999 / homoglyph
-#   c : YENİ — 5001-9999 .com, 778-890 WL-CHECK, sayı x 16 diğer TLD, 5 haneli 25001-39999
-#       + .live önekli varyasyonlar (yük dengesi için buraya taşındı)
+# ÜÇE BÖLME (12 Eki 2026) — superbetin_scanner ile aynı yöntem.
+# Önceden ikiye bölünüyordu (A/B, 9 Eyl 2026). Şimdi PART "a"/"b"/"c"
+# argümanıyla seçilir; argümansız çağrı ("all") TÜMÜNÜ tarar.
+# Her PART kendi reported dosyasını kullanır — paralel process'lerin aynı
+# dosyaya yazıp git commit çakışması yaratmasını önler.
+#   a, b : eski gruplar (değişmedi)
+#   c    : YENİ — 5 haneli sayılar, resmi numaraya rakam ekleme, sayı x diğer TLD.
+#          Anahtar kelimeli domainler (betsat-bahis.com vb.) VIP scanner'ın işi.
 # ============================================================
 PART = sys.argv[1].lower() if len(sys.argv) > 1 else "all"
 if PART not in ("a", "b", "c", "all"):
     PART = "all"
-REPORTED_FILE = "turkbet_reported.json" if PART == "all" else f"turkbet_reported_{PART}.json"
+REPORTED_FILE = "betsat_reported.json" if PART == "all" else f"betsat_reported_{PART}.json"
 def load_reported():
     try:
         with open(REPORTED_FILE, "r") as f:
@@ -94,9 +155,12 @@ def save_to_google_sheets(found_items):
     except Exception as e:
         print(f"Sheets hatasi: {e}")
 async def check_dns_native(domain, retries=2):
-    # v2 — 31 Tem 2026: retry eklendi (betsat_scanner.py ile aynı fix —
-    # bkz. betsat2610.com vakası). Tek deneme geçici DNS hatalarında
-    # domainleri sessizce kaçırıyordu.
+    # v2 — 31 Tem 2026: retry eklendi. 500 concurrent worker ile binlerce
+    # domain aynı anda DNS sorgusu atınca bazı sorgular geçici paket
+    # kaybı/timeout yüzünden tek seferde başarısız oluyordu — ve tek
+    # deneme başarısız olunca domain sessizce atlanıp bir daha
+    # denenmiyordu (betsat2610.com'un ilk taramada kaçırılıp ikinci
+    # taramada bulunması bu yüzdendi). Artık 2 deneme yapılıyor.
     loop = asyncio.get_running_loop()
     for attempt in range(retries):
         try:
@@ -131,11 +195,12 @@ async def scan_domain(session, domain, dtype, whitelist, reported, found):
     print(f"[FOUND] {domain} ({ip})")
 # ============================================================
 # DÜZELTİLDİ 12 Eki 2026 — Telegram mesaj limiti 4096 karakter.
-# Çok domain bulununca tek mesaj hata dönüyor, script de durumu
-# kontrol etmediği için alarm sessizce kayboluyordu (üstelik
-# save_reported Telegram'dan ÖNCE çalışıyordu). Artık 3500
-# karakterlik parçalara bölünür, hata yazdırılır ve save_reported
-# Telegram'dan SONRA çağrılır.
+# Eskiden tüm bulunanlar tek mesajda gidiyordu; çok domain bulununca
+# istek hata dönüyor, script de durumu kontrol etmediği için alarm
+# sessizce kayboluyordu (üstelik save_reported Telegram'dan ÖNCE
+# çalıştığından bulunan domainler "bildirildi" sayılıyordu). Artık
+# 3500 karakterlik parçalara bölünür, hata yazdırılır ve
+# save_reported Telegram'dan SONRA çağrılır.
 # ============================================================
 async def send_telegram(message):
     chunks, cur = [], ""
@@ -155,14 +220,31 @@ async def send_telegram(message):
                         print("Telegram hata:", r.status, await r.text())
                 await asyncio.sleep(0.5)
 # ============================================================
+# ÇİFT HARF TYPOSQUAT ÜRETİCİ — "betsatt" (çift t) gibi domainleri
+# yakalamak için. Kelimenin her harfini sırayla bir kez ikiye katlar:
+# bbetsat, beetsat, bettsat, betssat, betsaat, betsatt — hepsini üretir.
+# Gerçek fraud'da gördüğümüz "betsatt1599.com" (çift t) bu setin
+# içinde otomatik olarak çıkıyor (i=5 konumunda).
+# ============================================================
+def generate_double_letter_variants(word):
+    variants = []
+    for i in range(len(word)):
+        doubled = word[:i + 1] + word[i] + word[i + 1:]
+        if doubled != word:
+            variants.append(doubled)
+    return list(dict.fromkeys(variants))  # sırayı koru, tekrarları at
+# ============================================================
 # HOMOGLYPH (RAKAM↔HARF) TYPOSQUAT ÜRETİCİ — YENİ (3 Eyl 2026)
-# superbetin2l00.com (rakam "1" → görsel olarak neredeyse ayırt
-# edilemeyen küçük harf "l") canlı, aktif bir credential-harvesting
-# phishing sitesi olarak bulundu — resmi domain'in birebir homoglyph
-# typosquat'ı. Aynı üretici betsat_scanner.py ve superbetin_scanner.py'ye
-# de eklendi. Sayının her "1" veya "0" hanesini TEK TEK (bir seferde
-# bir hane) değiştirip varyasyon üretir: 761 → 76l, 761 → l61 (ayrı
-# varyasyonlar).
+# Superbetin tarafında superbetin2l00.com (rakam "1" → görsel olarak
+# neredeyse ayırt edilemeyen küçük harf "l") canlı, aktif bir
+# credential-harvesting phishing sitesi olarak bulundu — resmi
+# domain'in (superbetin2100.com) birebir homoglyph typosquat'ı.
+# Betsat tarafında henüz görülmedi ama aynı saldırı ağı (Safepays,
+# aynı şablon) her iki markayı da hedeflediği için aynı kör nokta
+# burada da var. Double-letter üretici gibi, sayının her "1" veya "0"
+# hanesini TEK TEK (bir seferde bir hane) değiştirip varyasyon üretir:
+# 1620 → l620, 1620 → 162o (iki ayrı varyasyon, ikisi birden değil —
+# gerçek saldırıda da tek hane değiştiriliyordu).
 # ============================================================
 def generate_homoglyph_number_variants(num):
     s = str(num)
@@ -173,160 +255,142 @@ def generate_homoglyph_number_variants(num):
             variant = s[:i] + swap_map[ch] + s[i + 1:]
             variants.append(variant)
     return list(dict.fromkeys(variants))
-# Sayı x diğer TLD taraması için (.cam/.live zaten 1-9999 tam taranıyor)
-# co/vip/icu/net/org GRUP A'da zaten 700-2000 taranıyor; çift alarm olmasın diye burada yok.
-OTHER_TLDS = ["top", "club", "online", "site", "fun", "xyz", "info", "cfd", "bet", "pro", "app"]
+# ============================================================
+# EKLEME (RAKAM ÖNÜNE HARF) HOMOGLYPH ÜRETİCİ — YENİ (14 Eyl 2026)
+# betsatl1830.com canlı, aktif bir phishing sitesi olarak bulundu —
+# yukarıdaki generate_homoglyph_number_variants'tan FARKLI bir saldırı
+# deseni: mevcut hiçbir hane DEĞİŞTİRİLMİYOR, sayının BAŞINA yeni bir
+# "l" harfi EKLENİYOR (1830 → l1830, 4 haneden 5 haneye çıkıyor).
+# Görsel olarak "11830" ile karışıyor (l harfi 1 rakamına çok benziyor).
+# Sadece "l" ekleniyor — "1830" zaten "1" ile başladığı için "1l1830"
+# gibi bir şey değil, direkt "l1830". Diğer olası ekleme noktaları
+# (sona ekleme, "o" ekleme) henüz canlı örnekte görülmedi, bu yüzden
+# şimdilik sadece baş-ekleme "l" kapsanıyor — yeni örnek görülürse
+# genişletilir.
+# ============================================================
+def generate_leading_insert_homoglyph_variants(num):
+    s = str(num)
+    return [f"l{s}"]
+# ============================================================
+# RAKAM EKLEME ÜRETİCİ — YENİ (12 Eki 2026)
+# betsat18842.com / betsat18843.com canlı phishing olarak bulundu:
+# resmi numaraya (1842, 1843) ARAYA/BAŞA/SONA tek bir RAKAM ekleniyor
+# (1842 → 18842). Tarama aralığı 9500'de bittiği için 5 haneli numaralar
+# hiç taranmıyordu; VIP scanner da 5 haneli betsat+sayı .com'ları
+# "sayısal scanner halleder" diye atlıyor — yani ikisi de görmüyordu.
+# ============================================================
+def generate_insert_digit_variants(num):
+    s = str(num)
+    out = set()
+    for i in range(len(s) + 1):
+        for d in "0123456789":
+            out.add(s[:i] + d + s[i:])
+    out.discard(s)
+    return sorted(out)
+# Resmi numara x diğer TLD taraması için (.cam/.live zaten 1-9999 tam taranıyor, .co GRUP A'da 1000-2500)
+OTHER_TLDS = ["org", "net", "vip", "top", "club", "online", "site", "icu", "fun",
+              "xyz", "info", "cfd", "bet", "pro", "app"]
 async def main():
     reported = load_reported()
     found = []
     domains_to_scan = []
     # ── GRUP A ────────────────────────────────────────────────
     if PART in ("a", "all"):
-        # 1. STANDART TURKBET SAYILARI
-        for num in list(TURKBET_RANGE):
-            domains_to_scan.append((f"{num}turkbet.com", "YENI", TURKBET_WHITELIST))
-        # 2. TARİH FORMATI
+        print("📷 Betsat .cam TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
+        for num in range(1, 10000):
+            domains_to_scan.append((f"betsat{num}.cam", "CAM-TLD-SWAP", set()))
+        print("🔗 Betsat .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
+        CAM_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+        CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
+        for num in range(1000, 2501):
+            for prefix in CAM_PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.cam", "CAM-TLD-SWAP-PREFIX", set()))
+            for prefix in CAM_NOHYPHEN_PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.cam", "CAM-TLD-SWAP-PREFIX-NOHYPHEN", set()))
+        print("🔤 Çift harf typosquat (betsatt gibi) varyasyonları üretiliyor...")
+        double_letter_words = generate_double_letter_variants("betsat")
+        print(f"    Üretilen kalıplar: {', '.join(double_letter_words)}")
+        for word in double_letter_words:
+            for num in range(1000, 2501):
+                domains_to_scan.append((f"{word}{num}.com", "TYPO-CIFT-HARF", set()))
+            domains_to_scan.append((f"{word}.com", "TYPO-CIFT-HARF-BARE", set()))
+        print("🔗 Tiresiz önek (mbetsat gibi) varyasyonları üretiliyor...")
+        NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
+        for num in range(1000, 2501):
+            for prefix in NOHYPHEN_PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.com", "PREFIX-NOHYPHEN-PATTERN", set()))
+        for num in range(1000, 2501):
+            domains_to_scan.append((f"bestsat{num}.com", "TYPO-S", set()))
+            domains_to_scan.append((f"betsatm{num}.com", "TYPO-M", set()))
+            domains_to_scan.append((f"besat{num}.com", "TYPO-EKSİK-T", set()))
+            domains_to_scan.append((f"{num}bestsat.com", "TYPO-S-TERS", set()))
+        print("🌐 Betsat .co TLD varyasyonları taranıyor...")
+        for num in range(1000, 2501):
+            domains_to_scan.append((f"betsat{num}.co", "CO-TYPO", set()))
+            domains_to_scan.append((f"{num}betsat.co", "CO-TERS", set()))
         for num in range(100, 1000):
-            domains_to_scan.append((f"{num:04d}turkbet.com", "TARIH-FORMAT", set()))
-            domains_to_scan.append((f"turkbet{num:04d}.com", "TARIH-TERS", set()))
-        # 3. TYPO VARYASYONLARI
-        for num in range(700, 2001):
-            domains_to_scan.append((f"turkbet{num}.com", "TYPO-TERS", set()))
-            domains_to_scan.append((f"{num}trkbet.com", "TYPO-U-EKSIK", set()))
-            domains_to_scan.append((f"{num}turkbetm.com", "TYPO-M", set()))
-            domains_to_scan.append((f"m{num}turkbet.com", "TYPO-M-ON", set()))
-        # 4. TERS PATTERN 4 HANELİ
-        print("🔄 4 haneli ters pattern üretiliyor...")
-        for num in range(700, 2001):
-            domains_to_scan.append((f"{num}turkbet.com", "TERS-PATTERN", TURKBET_WHITELIST))
-        # 5. TERS PATTERN 5 HANELİ
-        print("5️⃣ 5 haneli ters pattern üretiliyor...")
-        for num in range(10000, 25001):
-            domains_to_scan.append((f"{num}turkbet.com", "TERS-5HANE", set()))
-        # 6. IDN SAHTE HARF
+            domains_to_scan.append((f"betsat{num:04d}.com", "TARIH-FORMAT", set()))
+    # ── GRUP B ────────────────────────────────────────────────
+    if PART in ("b", "all"):
+        print("🟢 Betsat .live TLD-swap varyasyonları taranıyor (1-9999 tam aralık)...")
+        for num in range(1, 10000):
+            domains_to_scan.append((f"betsat{num}.live", "LIVE-TLD-SWAP", set()))
+        LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+        LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
+        for num in range(1000, 2501):
+            for prefix in LIVE_PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.live", "LIVE-TLD-SWAP-PREFIX", set()))
+            for prefix in LIVE_NOHYPHEN_PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.live", "LIVE-TLD-SWAP-PREFIX-NOHYPHEN", set()))
+        for num in (BETSAT_GAPS + list(BETSAT_RANGE)):
+            domains_to_scan.append((f"betsat{num}.com", "YENI", BETSAT_WHITELIST))
+        print("🔗 Tireli önek (m-, tr- vb.) varyasyonları üretiliyor...")
+        PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
+        for num in range(1000, 2501):
+            for prefix in PREFIXES:
+                domains_to_scan.append((f"{prefix}betsat{num}.com", "PREFIX-PATTERN", set()))
+        print("👁️ Homoglyph (1→l, 0→o) varyasyonları üretiliyor (.com/.cam/.live)...")
+        for num in range(1000, 2501):
+            for variant_num in generate_homoglyph_number_variants(num):
+                domains_to_scan.append((f"betsat{variant_num}.com", "TYPO-HOMOGLYPH", set()))
+                domains_to_scan.append((f"betsat{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH", set()))
+                domains_to_scan.append((f"betsat{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH", set()))
+        print("👁️ Ekleme (baş-l) homoglyph varyasyonları üretiliyor (.com/.cam/.live)...")
+        for num in range(1000, 2501):
+            for variant_num in generate_leading_insert_homoglyph_variants(num):
+                domains_to_scan.append((f"betsat{variant_num}.com", "TYPO-HOMOGLYPH-INSERT", set()))
+                domains_to_scan.append((f"betsat{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH-INSERT", set()))
+                domains_to_scan.append((f"betsat{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH-INSERT", set()))
         print("🧬 Sahte harfli (IDN) varyasyonlar üretiliyor...")
-        for num in range(700, 2001):
-            for variant in [f"{num}türkbet.com", f"{num}turkbét.com"]:
+        for num in range(1000, 2501):
+            for variant in [f"bètsat{num}.com", f"betsát{num}.com"]:
                 try:
                     puny = variant.encode("idna").decode("utf-8")
                     domains_to_scan.append((puny, "IDN-SAHTE", set()))
                 except:
                     pass
-        # 7. TİRELİ ÖNEKLER
-        print("🔗 Tireli önek varyasyonları üretiliyor...")
-        PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
-        for num in range(700, 2001):
-            for prefix in PREFIXES:
-                domains_to_scan.append((f"{prefix}{num}turkbet.com", "PREFIX-PATTERN", set()))
-                domains_to_scan.append((f"{prefix}turkbet{num}.com", "PREFIX-PATTERN-TERS", set()))
-        # 7b. TİRESİZ ÖNEKLER (v2 — 05 Ağu 2026) — mbetsat1610.com (tiresiz,
-        # bitişik) gerçek, aktif bir phishing domain olarak bulundu ama
-        # yukarıdaki döngü sadece tireli "m-..." üretiyordu, bu kör
-        # noktaydı. Turkbet için de kapatılıyor (m749turkbet.com,
-        # mturkbet749.com gibi).
-        print("🔗 Tiresiz önek varyasyonları üretiliyor...")
-        NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-        for num in range(700, 2001):
-            for prefix in NOHYPHEN_PREFIXES:
-                domains_to_scan.append((f"{prefix}{num}turkbet.com", "PREFIX-NOHYPHEN-PATTERN", set()))
-                domains_to_scan.append((f"{prefix}turkbet{num}.com", "PREFIX-NOHYPHEN-PATTERN-TERS", set()))
-        # 8. .CO TLD
-        print("🌐 Turkbet .co TLD varyasyonları taranıyor...")
-        for num in range(700, 2001):
-            domains_to_scan.append((f"{num}turkbet.co", "CO-TYPO", set()))
-            domains_to_scan.append((f"turkbet{num}.co", "CO-TERS", set()))
-        # 9. DİĞER ALT TLD'LER (vip/icu/net/org) — 700-2001 aralığı.
-        # NOT (3 Eyl 2026): .cam ve .live buradan ÇIKARILDI — artık kendi
-        # bölümlerinde (10 ve 11) TAM 1-9999 aralığında taranıyorlar.
-        # Daha fazla TLD (top/club/online/site/info/fun...) GRUP C'de.
-        print("🌐 Turkbet alt TLD varyasyonları taranıyor (vip/icu/net/org)...")
-        for num in range(700, 2001):
-            for tld in ["vip", "icu", "net", "org"]:
-                domains_to_scan.append((f"{num}turkbet.{tld}", f"TURKBET-{tld.upper()}", set()))
-                domains_to_scan.append((f"turkbet{num}.{tld}", f"TURKBET-{tld.upper()}-TERS", set()))
-    # ── GRUP B ────────────────────────────────────────────────
-    if PART in ("b", "all"):
-        # ── 10. .CAM TLD-SWAP TARAMASI — GÜNCELLENDİ (3 Eyl 2026) ──
-        # betsat_scanner.py / superbetin_scanner.py ile aynı mantık:
-        # TAM 1-9999 aralığı, her iki yönde de (NUMturkbet.cam VE
-        # turkbetNUM.cam).
-        print("📷 Turkbet .cam TLD-swap varyasyonları taranıyor (1-9999 tam aralık, iki yön)...")
-        for num in range(1, 10000):
-            domains_to_scan.append((f"{num}turkbet.cam", "CAM-TLD-SWAP", set()))
-            domains_to_scan.append((f"turkbet{num}.cam", "CAM-TLD-SWAP-TERS", set()))
-        # CAM ÖNEK TARAMASI — YENİ (3 Eyl 2026)
-        print("🔗 Turkbet .cam önek (m-, tr- vb. + tiresiz) varyasyonları taranıyor...")
-        CAM_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
-        CAM_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-        for num in range(700, 2001):
-            for prefix in CAM_PREFIXES:
-                domains_to_scan.append((f"{prefix}{num}turkbet.cam", "CAM-PREFIX-PATTERN", set()))
-                domains_to_scan.append((f"{prefix}turkbet{num}.cam", "CAM-PREFIX-PATTERN-TERS", set()))
-            for prefix in CAM_NOHYPHEN_PREFIXES:
-                domains_to_scan.append((f"{prefix}{num}turkbet.cam", "CAM-PREFIX-NOHYPHEN", set()))
-                domains_to_scan.append((f"{prefix}turkbet{num}.cam", "CAM-PREFIX-NOHYPHEN-TERS", set()))
-        # ── 11. .LIVE TLD-SWAP TARAMASI — GÜNCELLENDİ (3 Eyl 2026) ──
-        print("🟢 Turkbet .live TLD-swap varyasyonları taranıyor (1-9999 tam aralık, iki yön)...")
-        for num in range(1, 10000):
-            domains_to_scan.append((f"{num}turkbet.live", "LIVE-TLD-SWAP", set()))
-            domains_to_scan.append((f"turkbet{num}.live", "LIVE-TLD-SWAP-TERS", set()))
-        # NOT (3 Eyl 2026): deposit-subdomain derin taraması (LIVE_DEPOSIT_
-        # CHECK_NUMBERS) kaldırıldı — bulunan her root zaten elle inceleniyor.
-        # HOMOGLYPH (RAKAM↔HARF) — .com/.cam/.live üçünde, iki yönde de.
-        print("👁️ Homoglyph (1→l, 0→o) varyasyonları üretiliyor (.com/.cam/.live, iki yön)...")
-        for num in range(700, 2001):
-            for variant_num in generate_homoglyph_number_variants(num):
-                domains_to_scan.append((f"{variant_num}turkbet.com", "TYPO-HOMOGLYPH", set()))
-                domains_to_scan.append((f"turkbet{variant_num}.com", "TYPO-HOMOGLYPH-TERS", set()))
-                domains_to_scan.append((f"{variant_num}turkbet.cam", "CAM-TLD-SWAP-HOMOGLYPH", set()))
-                domains_to_scan.append((f"turkbet{variant_num}.cam", "CAM-TLD-SWAP-HOMOGLYPH-TERS", set()))
-                domains_to_scan.append((f"{variant_num}turkbet.live", "LIVE-TLD-SWAP-HOMOGLYPH", set()))
-                domains_to_scan.append((f"turkbet{variant_num}.live", "LIVE-TLD-SWAP-HOMOGLYPH-TERS", set()))
+        for num in range(1000, 2501):
+            domains_to_scan.append((f"{num}betsat.com", "TERS-PATTERN", set()))
     # ── GRUP C (YENİ 12 Eki 2026) ─────────────────────────────
-    # Anahtar kelimeli domainler (turkbet-giris.com, turkbetgir.net vb.) VIP scanner'ın işi.
+    # Sadece sayısal boşluklar. Anahtar kelimeli domainler VIP scanner'ın işi.
     if PART in ("c", "all"):
-        # 1. 4 haneli 5001-9999 .com — eski aralık 5000'de bitiyordu.
-        # Resmi 777'ye tek rakam eklenince 7777, 5777, 7177... oluşuyor ve
-        # çoğu bu aralığa düşüyordu.
-        print("4️⃣ 4 haneli 5001-9999 .com taranıyor...")
-        for num in range(5001, 10000):
-            domains_to_scan.append((f"{num}turkbet.com", "FOUR-DIGIT-HIGH", TURKBET_WHITELIST))
-        # 2. WL-CHECK: 778-890 aralığı beyaz listede ama hepsi bizim değil
-        # (876turkbet.com phishing çıktı). Beyaz liste OLMADAN taranır; ilk
-        # çalıştırmayı SEED=1 ile yapıp Sheets'teki listeyi registrar listesiyle karşılaştır.
-        print("🧪 778-890 WL-CHECK (beyaz listesiz) taranıyor...")
-        for num in range(778, 891):
-            domains_to_scan.append((f"{num}turkbet.com", "WL-CHECK", set()))
-        # 3. Sayı x diğer TLD — .vip .top .org .net .club ... (iki yön).
-        print("🌍 Turkbet 700-1099 x diğer TLD taranıyor (iki yön)...")
-        for num in range(700, 1100):
+        print("🔢 5 haneli betsat10000-29999.com taranıyor...")
+        for num in range(10000, 30000):
+            domains_to_scan.append((f"betsat{num}.com", "FIVE-DIGIT", BETSAT_WHITELIST))
+        print("➕ Resmi numaraya rakam ekleme (1842 -> 18842 vb.)...")
+        insert_nums = set()
+        for n in range(1830, 1879):
+            insert_nums.update(generate_insert_digit_variants(n))
+        for v in sorted(insert_nums):
+            domains_to_scan.append((f"betsat{v}.com", "INSERT-DIGIT", BETSAT_WHITELIST))
+        print("🌍 betsat1700-2099 x diğer TLD (.vip .top .org ...) taranıyor...")
+        for n in range(1700, 2100):
             for tld in OTHER_TLDS:
-                domains_to_scan.append((f"{num}turkbet.{tld}", "NUMERIC-TLD-SWAP", set()))
-                domains_to_scan.append((f"turkbet{num}.{tld}", "NUMERIC-TLD-SWAP-TERS", set()))
-        # 4. 5 haneli genişletme: 25001-39999.
-        print("5️⃣ 5 haneli 25001-39999 taranıyor...")
-        for num in range(25001, 40000):
-            domains_to_scan.append((f"{num}turkbet.com", "TERS-5HANE-HIGH", set()))
-        # ── 12. .LIVE ÖNEKLİ (PREFIX) VARYASYONLAR (23 Ağu 2026'dan beri var) ──
-        print("🟢 Turkbet .live önekli varyasyonları üretiliyor...")
-        LIVE_PREFIXES = ["m-", "tr-", "www-", "vip-", "n-"]
-        LIVE_NOHYPHEN_PREFIXES = ["m", "tr", "www", "vip", "n"]
-        for num in range(700, 2001):
-            for prefix in LIVE_PREFIXES:
-                domains_to_scan.append((f"{prefix}{num}turkbet.live", "LIVE-PREFIX-PATTERN", set()))
-                domains_to_scan.append((f"{prefix}turkbet{num}.live", "LIVE-PREFIX-PATTERN-TERS", set()))
-            for prefix in LIVE_NOHYPHEN_PREFIXES:
-                domains_to_scan.append((f"{prefix}{num}turkbet.live", "LIVE-PREFIX-NOHYPHEN", set()))
-                domains_to_scan.append((f"{prefix}turkbet{num}.live", "LIVE-PREFIX-NOHYPHEN-TERS", set()))
-    # Tekrar edenleri at (paralel taramada aynı domain iki kez bulunmasın).
-    # Sıra korunur: aynı domain hem YENI (beyaz listeli) hem WL-CHECK (beyaz listesiz)
-    # olarak üretilirse, WL-CHECK sürümü korunur.
-    _best = {}
-    for d, t, w in domains_to_scan:
-        if d not in _best or (_best[d][2] and not w):
-            _best[d] = (d, t, w)
-    domains_to_scan = list(_best.values())
-    print(f"🚀 [PART {PART.upper()}] Toplam {len(domains_to_scan)} Turkbet domain taranacak...")
+                domains_to_scan.append((f"betsat{n}.{tld}", "NUMERIC-TLD-SWAP", BETSAT_WHITELIST))
+    # Tekrar edenleri at (paralel taramada aynı domain iki kez bulunmasın)
+    _seen = set()
+    domains_to_scan = [x for x in domains_to_scan if not (x[0] in _seen or _seen.add(x[0]))]
+    print(f"🚀 [PART {PART.upper()}] Toplam {len(domains_to_scan)} Betsat potansiyel domain taranacak...")
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=500)) as session:
         semaphore = asyncio.Semaphore(500)
         async def bounded_scan(d, t, w):
@@ -339,29 +403,30 @@ async def main():
     if found:
         save_to_google_sheets(found)
         # SEED modu: ilk çalıştırmada mevcut/park edilmiş domainleri Sheets'e yaz,
-        # Telegram'ı atla, hafızaya kaydet. Kullanım: SEED=1 python turkbet_scanner.py c
+        # Telegram'ı atla, hafızaya kaydet. Sheets'teki listeye bakıp bizim
+        # olanları BETSAT_WHITELIST'e ekle. Kullanım: SEED=1 python betsat_scanner.py c
         if os.environ.get("SEED") == "1":
             save_reported(reported)
             print(f"SEED: {len(found)} domain Sheets'e yazildi, Telegram atlandi.")
             return
         msg = (
-            f"🚨 *[TURKBET ALARM]{part_label} Aktif Sahte Domain!*\n"
+            f"🚨 *[BETSAT ALARM]{part_label} Aktif Sahte Domain!*\n"
             f"🤖 `{repo}`\n"
             f"Taranan: `{len(domains_to_scan):,}` domain — Bulunan: `{len(found)}`\n"
         )
         for item in found:
             icon = (
                 "👁️" if "HOMOGLYPH" in item["type"] else
-                "🧪" if item["type"] == "WL-CHECK" else
-                "🌍" if "NUMERIC-TLD-SWAP" in item["type"] else
-                "🟢" if "LIVE" in item["type"] else
-                "📷" if "CAM" in item["type"] else
-                "5️⃣" if "5HANE" in item["type"] else
-                "4️⃣" if item["type"] == "FOUR-DIGIT-HIGH" else
-                "🌐" if "CO-" in item["type"] or "TURKBET-" in item["type"] else
+                "📷" if "CAM-TLD-SWAP" in item["type"] else
+                "🟢" if "LIVE-TLD-SWAP" in item["type"] else
+                "🔢" if item["type"] in ("FIVE-DIGIT", "INSERT-DIGIT") else
+                "🌍" if item["type"] == "NUMERIC-TLD-SWAP" else
+                "🌐" if "CO-" in item["type"] else
                 "🎭" if item["type"] == "IDN-SAHTE" else
-                "🔗" if "PREFIX" in item["type"] else
-                "🔄" if "TERS" in item["type"] else
+                "🔗" if item["type"] == "PREFIX-PATTERN" else
+                "🧷" if "PREFIX-NOHYPHEN" in item["type"] else
+                "🔄" if item["type"] == "TERS-PATTERN" else
+                "✌️" if "CIFT-HARF" in item["type"] else
                 "🔥"
             )
             msg += f"{icon} `{item['domain']}` ({item['status']})\n"
@@ -369,7 +434,7 @@ async def main():
         save_reported(reported)
     else:
         msg = (
-            f"✅ *[TURKBET TARAMA]{part_label} Temiz* — {now}\n"
+            f"✅ *[BETSAT TARAMA]{part_label} Temiz* — {now}\n"
             f"🤖 `{repo}`\n"
             f"Taranan: `{len(domains_to_scan):,}` domain\n"
             f"Sahte domain bulunamadı."
