@@ -287,9 +287,9 @@ def generate_insert_digit_variants(num):
             out.add(s[:i] + d + s[i:])
     out.discard(s)
     return sorted(out)
-# Resmi numara x diğer TLD taraması için (.cam/.live zaten 1-9999 tam taranıyor)
+# Resmi numara x diğer TLD taraması için (.cam/.live zaten 1-9999 tam taranıyor, .co GRUP A'da 1000-2500)
 OTHER_TLDS = ["org", "net", "vip", "top", "club", "online", "site", "icu", "fun",
-              "xyz", "info", "co", "cfd", "bet", "pro", "app"]
+              "xyz", "info", "cfd", "bet", "pro", "app"]
 async def main():
     reported = load_reported()
     found = []
