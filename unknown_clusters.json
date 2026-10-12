@@ -42,7 +42,7 @@
   "superbet1001.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-08-30T17:20:17.446958+03:00"
+    "detected_at": "2026-10-12T21:45:32.962704+03:00"
   },
   "superbet1116.com": {
     "cluster": null,
@@ -97,7 +97,7 @@
   "superbet1118.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T04:41:16.714784+03:00"
+    "detected_at": "2026-10-12T21:45:52.446747+03:00"
   },
   "superbetin2134.com": {
     "cluster": null,
@@ -112,7 +112,7 @@
   "superbetin8300.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-09-06T15:42:15.235567+03:00"
+    "detected_at": "2026-10-12T21:46:02.798509+03:00"
   },
   "superbetin1825.com": {
     "cluster": null,
@@ -232,7 +232,7 @@
   "superbet1107.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-09-05T15:29:34.756041+03:00"
+    "detected_at": "2026-10-12T21:46:00.716005+03:00"
   },
   "superbet1125.com": {
     "cluster": null,
@@ -472,7 +472,7 @@
   "msuperbetin1832.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-08T03:46:53.191519+03:00"
+    "detected_at": "2026-10-12T21:45:44.237825+03:00"
   },
   "2095superbetin.com": {
     "cluster": null,
@@ -527,7 +527,7 @@
   "superbetin726.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-09-08T02:19:43.154297+03:00"
+    "detected_at": "2026-10-12T21:45:58.631558+03:00"
   },
   "superbetin2097.cam": {
     "cluster": null,
@@ -567,7 +567,7 @@
   "superbetin2101.cam": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-09-08T16:24:39.669128+03:00"
+    "detected_at": "2026-10-12T21:46:04.811731+03:00"
   },
   "superbetin2596.com": {
     "cluster": null,
@@ -637,7 +637,7 @@
   "superbetin175o.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-12T03:16:32.938340+03:00"
+    "detected_at": "2026-10-12T21:45:36.131681+03:00"
   },
   "superbetin17l4.com": {
     "cluster": null,
@@ -667,12 +667,12 @@
   "superbetin2598.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-07T03:26:31.344816+03:00"
+    "detected_at": "2026-10-12T21:45:50.364388+03:00"
   },
   "betsat1888.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-01T03:25:05.126084+03:00"
+    "detected_at": "2026-10-12T21:46:10.916651+03:00"
   },
   "superbetin-tr.cam": {
     "cluster": null,
@@ -707,7 +707,7 @@
   "obmenyat-kriptovalyutu-onlajn.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-02T03:35:13.429554+03:00"
+    "detected_at": "2026-10-12T21:46:08.906742+03:00"
   },
   "rivieramusical.it": {
     "cluster": null,
@@ -747,7 +747,7 @@
   "betsat-guncel-tr.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-07T03:26:01.957229+03:00"
+    "detected_at": "2026-10-12T21:46:06.822193+03:00"
   },
   "superbetin-app.icu": {
     "cluster": null,
@@ -762,7 +762,7 @@
   "superbetin2605.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-07T03:26:14.282857+03:00"
+    "detected_at": "2026-10-12T21:45:46.272837+03:00"
   },
   "elektronikatir.pl": {
     "cluster": null,
@@ -868,5 +868,35 @@
     "cluster": null,
     "status": "unrecognized",
     "detected_at": "2026-10-12T03:17:10.395701+03:00"
+  },
+  "mobilsuperbetin.com": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-12T21:45:38.167125+03:00"
+  },
+  "superbetin-nope.vip": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-12T21:45:40.194384+03:00"
+  },
+  "betsattorjinalgiris.vip": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-12T21:45:42.202591+03:00"
+  },
+  "superbetin-later.vip": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-12T21:45:48.281365+03:00"
+  },
+  "superbetin-tekgiris.com": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-12T21:45:54.530569+03:00"
+  },
+  "superbetingercek724.vip": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-12T21:45:56.548073+03:00"
   }
 }
