@@ -34,6 +34,8 @@ TURKBET_WHITELIST = set([
     *[f"{num}turkbet.com" for num in range(488, 891)],
 ])
 TURKBET_WHITELIST.discard("876turkbet.com")
+# 12 Eki 2026 — Semih doğruladı: 878turkbet.com de sahtecinin (bizim değil).
+TURKBET_WHITELIST.discard("878turkbet.com")
 TURKBET_WHITELIST.update([
     "turkbet.cam", "soloturkbet.com", "asyaturkbet.com", "turkbetturkiye.com",
     "turkbet2026.net", "turkbetcanli.com", "turkbet.es", "turkbet2026.com",
@@ -106,12 +108,28 @@ async def check_dns_native(domain, retries=2):
             if attempt < retries - 1:
                 await asyncio.sleep(0.3)
     return False, ""
+# YENİ 12 Eki 2026 — WL-CHECK ilk koşusunda 51 domain çıktı; 49'u 825-873 arası
+# ardışık blok ve hepsi 162.255.119.x / 192.64.119.x (Namecheap park/yönlendirme
+# aralığı) IP'sinde = bizim toplu kaydımız. Bu IP'lerdeki WL-CHECK sonuçları artık
+# sessiz geçilir. DİKKAT: "reported" hafızasına EKLENMEZ ve hafızadaki eski kayıt
+# yok sayılır; yani bu domainlerden biri sonradan başka IP'ye (hijack/phishing)
+# dönerse yine yakalanır. Park dışı IP'de alarm bir kez (domain@IP-önek) gider.
+NAMECHEAP_PARK_PREFIXES = ("162.255.119.", "192.64.119.")
 async def scan_domain(session, domain, dtype, whitelist, reported, found):
-    if domain in whitelist or domain in reported:
+    if domain in whitelist:
+        return
+    if dtype != "WL-CHECK" and domain in reported:
         return
     dns_ok, ip = await check_dns_native(domain)
     if not dns_ok:
         return
+    if dtype == "WL-CHECK":
+        if ip.startswith(NAMECHEAP_PARK_PREFIXES):
+            return
+        _wl_key = f"{domain}@{'.'.join(ip.split('.')[:2])}"
+        if _wl_key in reported:
+            return
+        reported.add(_wl_key)
     http_ok, code = False, 0
     try:
         async with session.get(f"http://{domain}", timeout=5, allow_redirects=True) as resp:
