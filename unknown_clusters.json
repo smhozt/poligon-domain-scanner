@@ -2,7 +2,7 @@
   "superbet1119.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-09T04:01:55.441074+03:00"
+    "detected_at": "2026-10-14T17:24:36.058570+03:00"
   },
   "tr-superbetin1751.com": {
     "cluster": null,
@@ -257,7 +257,7 @@
   "superbet1124.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-06T04:41:18.744364+03:00"
+    "detected_at": "2026-10-14T17:23:59.957850+03:00"
   },
   "superbet1112.com": {
     "cluster": null,
@@ -312,7 +312,7 @@
   "superbetin2828.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-12T03:17:04.221107+03:00"
+    "detected_at": "2026-10-14T17:24:28.450756+03:00"
   },
   "superbetin232.com": {
     "cluster": null,
@@ -352,7 +352,7 @@
   "superbet1136.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-08T03:46:15.378545+03:00"
+    "detected_at": "2026-10-14T17:23:55.871232+03:00"
   },
   "superbetin2122.com": {
     "cluster": null,
@@ -572,7 +572,7 @@
   "superbetin2596.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-12T03:16:47.696892+03:00"
+    "detected_at": "2026-10-14T17:24:34.014322+03:00"
   },
   "superbetin175l.com": {
     "cluster": null,
@@ -762,7 +762,7 @@
   "superbetin2605.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-14T03:11:01.160518+03:00"
+    "detected_at": "2026-10-14T17:24:30.480967+03:00"
   },
   "elektronikatir.pl": {
     "cluster": null,
@@ -898,5 +898,45 @@
     "cluster": null,
     "status": "unrecognized",
     "detected_at": "2026-10-14T03:11:11.333620+03:00"
+  },
+  "betsatt1843.com": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-14T17:23:57.917291+03:00"
+  },
+  "betsatgir.fun": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-14T17:24:10.792108+03:00"
+  },
+  "gir-superbetin.com": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-14T17:24:12.909103+03:00"
+  },
+  "co2quota.org": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-14T17:24:18.260281+03:00"
+  },
+  "superbetins-giris.vip": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-14T17:24:20.276983+03:00"
+  },
+  "betsat-1834.vip": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-14T17:24:22.295436+03:00"
+  },
+  "sdolending.com": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-14T17:24:24.368425+03:00"
+  },
+  "superbetin3905.com": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-14T17:24:26.408714+03:00"
   }
 }
