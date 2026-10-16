@@ -266,14 +266,57 @@ WHITELIST_DOMAINS = {
     "optimobet.com", "casino.guru", "gamblersanonymous.org",
 }
 
-# Turkbet'in kayıtlı (registrar listesinde olan) kendi domainleri: 517-824turkbet.com + diğerleri.
-# 825+ listede yok, bilerek eklenmedi.
-WHITELIST_DOMAINS.update(f"{num}turkbet.com" for num in range(517, 825))
-WHITELIST_DOMAINS.update([
-    "copyrightturkbet.com", "officialturkbet.com",
-    "likerto.com", "lilikom.com", "putukma.com", "tuklida.com",
-    "tb.belloatech.dev",
-])
+# ============================================================
+# BİZİM DOMAİNLERİMİZ — superbetin / betsat / turkbet / vip scanner
+# whitelist'lerinin birleşimi (16 Eki 2026). Elle düzenleme: scanner
+# whitelist'leri değişince yeniden üretilir. Alt alanlar is_whitelisted()
+# içindeki sonek eşleşmesiyle zaten kapsanıyor.
+# Turkbet 825-890 bilerek YOK (sahiplik doğrulanmadı; 876 ve 878 sahte).
+# ============================================================
+_OWN_SUPERBETIN_NUMS = [
+    (138, 138), (724, 724), (1239, 1415), (1560, 1560), (1700, 1824), (1826, 1878),
+    (1880, 1910), (1912, 1979), (1981, 1981), (2052, 2057), (2060, 2077), (2082, 2085),
+    (2087, 2088), (2090, 2104), (2106, 2109), (2111, 2111), (2114, 2115), (2117, 2121),
+    (2124, 2124), (2126, 2133), (2136, 2136), (2138, 2148), (2150, 2150), (2369, 2369),
+    (2900, 2950),
+]
+_OWN_BETSAT_NUMS = [
+    (1167, 1541), (1543, 1546), (1548, 1551), (1553, 1559), (1562, 1563), (1565, 1565),
+    (1567, 1571), (1573, 1573), (1575, 1575), (1577, 1591), (1593, 1593), (1595, 1626),
+    (1628, 1648), (1650, 1658), (1661, 1670), (1672, 1675), (1677, 1678), (1680, 1688),
+    (1690, 1693), (1695, 1698), (1700, 1702), (1704, 1709), (1712, 1715), (1717, 1717),
+    (1720, 1720), (1830, 1840), (1842, 1878), (111111, 111111),
+]
+_OWN_TURKBET_NUMS = [
+    (488, 824),
+]
+_OWN_OTHER = [
+    "asjwu.com", "betsat.net", "betsatgir.com", "betsatgir.info", "betsatgiris12.co",
+    "betsatgiris12.com", "betsatgiris12.online", "betsatgiryeni.com", "betsatgiryeni.info",
+    "betsatgiryeni.net", "betsatguncel.co", "betsatguncel.info", "betsatguncel.net",
+    "betsatguncel1.co", "betsatguncelgir.com", "betsatguncelgir.info", "betsatguncelgir.net",
+    "bs.belloatech.dev", "copyrightbetsat.com", "copyrightsuperbetin.com",
+    "copyrightturkbet.com", "eritmu.com", "koluwn.com", "likerto.com", "lilikom.com",
+    "mugweni.com", "officialbetsat.com", "officialsuperbetin.com", "officialturkbet.com",
+    "putiyo.com", "putukma.com", "puyori.com", "sb.belloatech.dev", "superbetin-1828.com",
+    "superbetin-giris-guncel.co", "superbetin-giris-guncel.vip", "superbetin-giris-yeni.co",
+    "superbetin-giris-yeni.vip", "superbetin.io", "superbetinapp.com",
+    "superbetingiris-yeni.co", "superbetingiris-yeni.com", "superbetingiris-yeni.info",
+    "superbetingiris-yeni.net", "superbetinguncel.com", "superbetinguncel.info",
+    "superbetinguncel.net", "superbetinguncelgir.com", "superbetinguncelgir.net",
+    "superbetinyeni.info", "superbetinyeni.net", "tb.belloatech.dev", "tuamek.com",
+    "tuklida.com", "turkbet.com", "turkbetcasino.net", "turkiyebet.info", "turkiyebet.org",
+    "turkiyebetgiris.com", "turkiyebetgiris.info", "turkiyebetgiris.net",
+    "turkiyebetgiris.org", "turkiyebetgirisyeni.com", "turkiyebetgirisyeni.info",
+    "turkiyebetgirisyeni.net", "yteruo.com",
+]
+for _a, _b in _OWN_SUPERBETIN_NUMS:
+    WHITELIST_DOMAINS.update(f"superbetin{_n}.com" for _n in range(_a, _b + 1))
+for _a, _b in _OWN_BETSAT_NUMS:
+    WHITELIST_DOMAINS.update(f"betsat{_n}.com" for _n in range(_a, _b + 1))
+for _a, _b in _OWN_TURKBET_NUMS:
+    WHITELIST_DOMAINS.update(f"{_n}turkbet.com" for _n in range(_a, _b + 1))
+WHITELIST_DOMAINS.update(_OWN_OTHER)
 
 # Yeni affiliate domainleri ekle (www + m + bare)
 WHITELIST_DOMAINS.update(NEW_AFFILIATES)
