@@ -89,10 +89,6 @@ WHITELIST_DOMAINS = {
     "superbetin1834.com",
     "betsat1578.com", "730turkbet.com",
     "betsat1577.com", "728turkbet.com",
-    # GÜNCEL resmi (16 Eki 2026)
-    "superbetin2907.com", "betsat1844.com", "778turkbet.com",
-    # yakın zamanda emekli resmi (16 Eki 2026'ya kadar)
-    "superbetin2906.com", "betsat1843.com",
     # GÜNCEL resmi (5 Eki 2026)
     "superbetin2111.com", "betsat1838.com", "773turkbet.com",
     # ── Superbetin SEO / Affiliate ───────────────────────────
@@ -265,15 +261,6 @@ WHITELIST_DOMAINS = {
     "bojoko.com", "casinocity.com", "lcb.org",
     "optimobet.com", "casino.guru", "gamblersanonymous.org",
 }
-
-# Turkbet'in kayıtlı (registrar listesinde olan) kendi domainleri: 517-824turkbet.com + diğerleri.
-# 825+ listede yok, bilerek eklenmedi.
-WHITELIST_DOMAINS.update(f"{num}turkbet.com" for num in range(517, 825))
-WHITELIST_DOMAINS.update([
-    "copyrightturkbet.com", "officialturkbet.com",
-    "likerto.com", "lilikom.com", "putukma.com", "tuklida.com",
-    "tb.belloatech.dev",
-])
 
 # Yeni affiliate domainleri ekle (www + m + bare)
 WHITELIST_DOMAINS.update(NEW_AFFILIATES)
