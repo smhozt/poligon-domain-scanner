@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 */6 * * *'  # Her 6 saatte bir çalışır (0, 6, 12, 18)
   workflow_dispatch:
+    inputs:
+      seed:
+        description: 'SEED modu: bulunanlar Sheets e yazilir, Telegram atlanir, hafizaya kaydedilir'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -31,6 +36,7 @@ jobs:
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
           SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+          SEED: ${{ inputs.seed && '1' || '' }}
         run: python turkbet_scanner.py
 
       - name: Commit reported.json
