@@ -162,7 +162,7 @@
   "superbet1110.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:42.233814+03:00"
+    "detected_at": "2026-10-29T00:09:02.081171+03:00"
   },
   "superbetin2045.com": {
     "cluster": null,
@@ -192,7 +192,7 @@
   "superbet1145.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:45.343046+03:00"
+    "detected_at": "2026-10-29T00:09:04.106101+03:00"
   },
   "superbet1133.com": {
     "cluster": null,
@@ -287,7 +287,7 @@
   "superbet1150.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:38.164730+03:00"
+    "detected_at": "2026-10-29T00:08:57.989196+03:00"
   },
   "superbet1121.com": {
     "cluster": null,
@@ -317,7 +317,7 @@
   "superbetin2200.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:13:01.663697+03:00"
+    "detected_at": "2026-10-29T00:09:20.420373+03:00"
   },
   "superbet2025.com": {
     "cluster": null,
@@ -352,7 +352,7 @@
   "superbetin1699.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:55.539226+03:00"
+    "detected_at": "2026-10-29T00:09:14.336389+03:00"
   },
   "superbet1117.com": {
     "cluster": null,
@@ -382,12 +382,12 @@
   "superbet1132.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:49.424537+03:00"
+    "detected_at": "2026-10-29T00:09:08.230247+03:00"
   },
   "superbet1108.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:51.446041+03:00"
+    "detected_at": "2026-10-29T00:09:10.271299+03:00"
   },
   "m-superbetin1241.com": {
     "cluster": null,
@@ -397,7 +397,7 @@
   "superbet1134.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:13:05.868963+03:00"
+    "detected_at": "2026-10-29T00:09:24.805564+03:00"
   },
   "superbet1137.com": {
     "cluster": null,
@@ -527,7 +527,7 @@
   "superbetin2298.cam": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:13:09.947411+03:00"
+    "detected_at": "2026-10-29T00:09:28.906653+03:00"
   },
   "superbetin3021.com": {
     "cluster": null,
@@ -537,7 +537,7 @@
   "superbetin2298.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:13:07.896721+03:00"
+    "detected_at": "2026-10-29T00:09:26.864112+03:00"
   },
   "superbetin2599.com": {
     "cluster": null,
@@ -917,7 +917,7 @@
   "betsatyatirim.icu": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:53.495654+03:00"
+    "detected_at": "2026-10-29T00:09:12.306034+03:00"
   },
   "superbetinegirislerim.top": {
     "cluster": null,
@@ -937,7 +937,7 @@
   "dumbsammy.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:47.402592+03:00"
+    "detected_at": "2026-10-29T00:09:06.172712+03:00"
   },
   "betsat-resmi-giris.com": {
     "cluster": null,
@@ -967,26 +967,41 @@
   "superbetingirisadresi.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:35.121684+03:00"
+    "detected_at": "2026-10-29T00:08:55.949681+03:00"
   },
   "superbetin-giris724.top": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:40.214845+03:00"
+    "detected_at": "2026-10-29T00:09:00.039755+03:00"
   },
   "guvenlikagit.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:57.618091+03:00"
+    "detected_at": "2026-10-29T00:09:16.361506+03:00"
   },
   "tr-betsat-resmi-gir.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:12:59.640743+03:00"
+    "detected_at": "2026-10-29T00:09:18.382599+03:00"
   },
   "10betsat.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-28T12:13:03.829196+03:00"
+    "detected_at": "2026-10-29T00:09:22.764624+03:00"
+  },
+  "casacoletta.it": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-29T00:09:31.164188+03:00"
+  },
+  "blackbachelor.com": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-29T00:09:33.190789+03:00"
+  },
+  "turkbet.casino": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-29T00:09:35.525358+03:00"
   }
 }
