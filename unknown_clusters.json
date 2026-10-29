@@ -77,7 +77,7 @@
   "superbet1113.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:51.835804+03:00"
+    "detected_at": "2026-10-30T00:09:41.340166+03:00"
   },
   "superbet1130.com": {
     "cluster": null,
@@ -162,7 +162,7 @@
   "superbet1110.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:29.174127+03:00"
+    "detected_at": "2026-10-30T00:09:25.066334+03:00"
   },
   "superbetin2045.com": {
     "cluster": null,
@@ -242,7 +242,7 @@
   "superbet1109.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:45.659193+03:00"
+    "detected_at": "2026-10-30T00:09:35.239566+03:00"
   },
   "superbet1124.com": {
     "cluster": null,
@@ -272,7 +272,7 @@
   "superbet1147.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:49.763631+03:00"
+    "detected_at": "2026-10-30T00:09:39.294127+03:00"
   },
   "superbet1111.com": {
     "cluster": null,
@@ -402,7 +402,7 @@
   "superbet1137.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:13:04.100899+03:00"
+    "detected_at": "2026-10-30T00:09:53.733520+03:00"
   },
   "superbet1105.com": {
     "cluster": null,
@@ -437,7 +437,7 @@
   "superbetin2277.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:58.009010+03:00"
+    "detected_at": "2026-10-30T00:09:47.452643+03:00"
   },
   "2077superbetin.com": {
     "cluster": null,
@@ -452,7 +452,7 @@
   "superbetin997.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:13:02.075004+03:00"
+    "detected_at": "2026-10-30T00:09:51.698534+03:00"
   },
   "wwwsuperbetin2077.com": {
     "cluster": null,
@@ -497,7 +497,7 @@
   "superbetin2221.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:55.940444+03:00"
+    "detected_at": "2026-10-30T00:09:45.419684+03:00"
   },
   "superbetin3018.com": {
     "cluster": null,
@@ -627,7 +627,7 @@
   "superbetin2247.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:13:07.169815+03:00"
+    "detected_at": "2026-10-30T00:09:55.750124+03:00"
   },
   "superbetin2205.com": {
     "cluster": null,
@@ -727,7 +727,7 @@
   "superbetin2242.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:43.603603+03:00"
+    "detected_at": "2026-10-30T00:09:33.211944+03:00"
   },
   "superbetin2605.com": {
     "cluster": null,
@@ -1007,36 +1007,46 @@
   "betsat-online.co": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:27.120812+03:00"
+    "detected_at": "2026-10-30T00:09:23.042837+03:00"
   },
   "superbetfut.club": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:31.188746+03:00"
+    "detected_at": "2026-10-30T00:09:27.099640+03:00"
   },
   "betsatguncelresmi.org": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:39.523100+03:00"
+    "detected_at": "2026-10-30T00:09:29.145967+03:00"
   },
   "betsat1828.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:41.551434+03:00"
+    "detected_at": "2026-10-30T00:09:31.188005+03:00"
   },
   "betsatt1845.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:47.713758+03:00"
+    "detected_at": "2026-10-30T00:09:37.265130+03:00"
   },
   "superbettin.com": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:12:53.888606+03:00"
+    "detected_at": "2026-10-30T00:09:43.367098+03:00"
   },
   "mergentest7.live": {
     "cluster": null,
     "status": "unrecognized",
-    "detected_at": "2026-10-29T12:13:00.023303+03:00"
+    "detected_at": "2026-10-30T00:09:49.637742+03:00"
+  },
+  "glas-paetzold.de": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-30T00:09:58.859563+03:00"
+  },
+  "betsat-taka.com": {
+    "cluster": null,
+    "status": "unrecognized",
+    "detected_at": "2026-10-30T00:10:00.887019+03:00"
   }
 }
